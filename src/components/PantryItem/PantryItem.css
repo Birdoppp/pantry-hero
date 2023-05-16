@@ -1,0 +1,177 @@
+/*////////////////////////
+    Table of Contents
+    1. Pantry item
+    2. Image container and buttons
+    3. Item name
+    4. Item expiry
+
+////////////////////////*/
+
+/* ------------ 1. Pantry item---------------- ------------ */
+.pantry-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    width: 244px;
+    height: 244px;
+    background: var(--color-beige);
+    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 24px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+/* ------------ 2. Image container and buttons ------------ */
+.pantry-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 124px;
+    width: 244px;
+    background: #FFFFFF;
+    border-radius: 24px 24px 0 0;
+}
+
+
+.ingredient-options {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 10px;
+}
+
+.pantry-item-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.ingredient-options button {
+    background: none;
+    border: none;
+    border-radius: 5px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.ingredient-options svg {
+    width: 24px;
+    height: 24px;
+    fill: black;
+}
+
+.ingredient-options svg:hover {
+    fill: var(--color-white);
+}
+
+.ingredient-options button:hover {
+    background: var(--color-dark-green);
+}
+
+.ingredient-options button:active {
+    animation: pulse 0.2s linear;
+}
+
+/* ------------ 3. Item name ------------ */
+.item-title {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--color-dark-green);
+    color: var(--color-white);
+    font-weight: bold;
+    font-size: 17px;
+}
+
+/* ------------ 4. Item Expiry ------------ */
+.pantry-ingredient-information {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.expiry-green {
+    fill: var(--color-dark-green);
+    color: var(--color-dark-green);;
+}
+
+.expiry-orange {
+    fill: var(--color-orange);
+    color: var(--color-orange);
+}
+
+.expiry-red {
+    fill: var(--color-red);
+    color: var(--color-red);
+}
+
+.expiry-information {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+#icon-expiry {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 45px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* ------------ 5. Item amount ------------ */
+#amount-information {
+    height: 24px;
+    width: 166px;
+    background-color: var(--color-white);
+    border-radius: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#amount-information p {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.adjust-button {
+    background: none;
+    border: none;
+    width: 25px;
+    height: 25px;
+}
+
+#btn-reduce-amount {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    fill: var(--color-red);
+}
+
+#btn-increase-amount {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    fill: var(--color-dark-green);
+}

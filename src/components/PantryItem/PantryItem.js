@@ -29,15 +29,21 @@ function PantryItem ( { ingredient } ) {
                 <img src={ ingredient.ImagePath } alt={ ingredient.Name }/>
 
                 <nav className="ingredient-options">
-                    <button onClick={ () => {
-                        console.log("Clicked add to list")
-                    } }>
+                    <button
+                        type="button"
+                        onClick={ () => {
+                            console.log("Clicked add to list")
+                        }
+                    }>
                         <IconAddToList className="pantry-item-icon"/>
                     </button>
 
-                    <button onClick={ () => {
-                        console.log("Clicked remove from pantry");
-                    } }>
+                    <button
+                        type="button"
+                        onClick={ () => {
+                            console.log("Clicked remove from pantry");
+                        }
+                    }>
                         <IconRemoveFromPantry className="pantry-item-icon"/>
                     </button>
                 </nav>
@@ -56,10 +62,12 @@ function PantryItem ( { ingredient } ) {
                 <form id="amount-information" onSubmit={ (e) => { e.preventDefault() } }>
                     <button
                         className="adjust-button"
+                        type="button"
                         id="btn-reduce-amount"
                         onClick={ () => {
-                        ingredient.setAmount(ingredient.getAmount() - 1);
-                    } }>
+                            ingredient.setAmount(ingredient.getAmount() - 1);
+                        }
+                    }>
                         <IconReduceAmount
                             className="adjust-button"
                         />
@@ -76,10 +84,12 @@ function PantryItem ( { ingredient } ) {
 
                     <button
                         className="adjust-button"
+                        type="button"
                         id="btn-increase-amount"
                         onClick={ () => {
-                        ingredient.setAmount(ingredient.getAmount() + 1);
-                    } }>
+                            ingredient.setAmount(ingredient.getAmount() + 1);
+                        }
+                    }>
                         <IconIncreaseAmount
                             className="adjust-button"
                         />

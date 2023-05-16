@@ -11,7 +11,7 @@ import Ingredient from "./constructors/Ingredient/Ingredient";
 
 function App() {
     const date = new Date();
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate());
 
     const pineapple = new Ingredient(
         "pineapple",

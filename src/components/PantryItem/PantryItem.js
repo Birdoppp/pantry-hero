@@ -8,9 +8,19 @@ import {ReactComponent as IconExpiryInformation} from "../../assets/icon-expiry.
 import {ReactComponent as IconReduceAmount} from "../../assets/icon-reduce.svg";
 import {ReactComponent as IconIncreaseAmount} from "../../assets/icon-add.svg";
 
-function PantryItem ( {ingredient, index} ) {
+function PantryItem ( { ingredient } ) {
     const expiry = ingredient.getExpiry();
     const amount = ingredient.getAmount();
+
+    let expiryClass = "expiry-information";
+
+    if ( expiry > 3 ) {
+        expiryClass += " expiry-green";
+    } else if ( expiry > 0 ) {
+        expiryClass += " expiry-orange";
+    } else {
+        expiryClass += " expiry-red";
+    }
 
 
     return (
@@ -38,9 +48,9 @@ function PantryItem ( {ingredient, index} ) {
             </div>
 
             <div className="pantry-ingredient-information">
-                <div id="expiry-information">
+                <div className={expiryClass}>
                     <span><IconExpiryInformation id="icon-expiry"/></span>
-                    <span>{ expiry } days</span>
+                    <span>{ expiry } { expiry === 1 ? "day" : "days" }</span>
                 </div>
 
                 <form id="amount-information" onSubmit={ (e) => { e.preventDefault() } }>

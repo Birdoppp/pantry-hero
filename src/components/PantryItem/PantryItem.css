@@ -53,8 +53,30 @@
 }
 
 .ingredient-options button {
-    background: #FFFFFF;
+    background: none;
     border: none;
+    border-radius: 5px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.ingredient-options svg {
+    width: 24px;
+    height: 24px;
+    fill: black;
+}
+
+.ingredient-options svg:hover {
+    fill: var(--color-white);
+}
+
+.ingredient-options button:hover {
+    background: var(--color-dark-green);
+}
+
+.ingredient-options button:active {
+    animation: pulse 0.2s linear;
 }
 
 /* ------------ 3. Item name ------------ */
@@ -78,7 +100,22 @@
     align-items: center;
 }
 
-#expiry-information {
+.expiry-green {
+    fill: var(--color-dark-green);
+    color: var(--color-dark-green);;
+}
+
+.expiry-orange {
+    fill: var(--color-orange);
+    color: var(--color-orange);
+}
+
+.expiry-red {
+    fill: var(--color-red);
+    color: var(--color-red);
+}
+
+.expiry-information {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -128,7 +165,7 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    fill: #A01111;
+    fill: var(--color-red);
 }
 
 #btn-increase-amount {

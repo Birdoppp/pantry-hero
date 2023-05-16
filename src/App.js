@@ -11,7 +11,7 @@ import Ingredient from "./constructors/Ingredient/Ingredient";
 
 function App() {
     const date = new Date();
-    date.setDate(date.getDate() + 5);
+    date.setDate(date.getDate() + 1);
 
     const pineapple = new Ingredient(
         "pineapple",
@@ -45,21 +45,13 @@ function App() {
 
     const myPantry = [ pineapple, apple ];
 
-    // const handleDelete = ( index ) => {
-    //     const newArray = [...myPantry];
-    //     newArray.splice(index, 1);
-    //     setMyPantry(newArray);
-    // }
 
     return (
         <>
             <header></header>
             <main className="inner-container">
-                {myPantry.map( (obj, index) => (
-                    <PantryItem key={index}
-                                ingredient={obj}
-                                index={index}
-                    />
+                {myPantry.map( (obj) => (
+                    <PantryItem ingredient={obj}/>
                 ))}
             </main>
             <footer></footer>

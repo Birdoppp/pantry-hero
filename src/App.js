@@ -7,6 +7,9 @@ import React from "react";
 // Constructors
 import PantryItem from "./components/PantryItem/PantryItem";
 import Ingredient from "./constructors/Ingredient/Ingredient";
+import {db} from "./features/Database/db";
+import {useLiveQuery} from "dexie-react-hooks";
+import Pantry from "./components/Pantry/Pantry";
 
 
 function App() {
@@ -43,16 +46,32 @@ function App() {
         5
     );
 
-    const myPantry = [ pineapple, apple ];
+    //const myPantry = [ pineapple, apple ];
+
+
+
+    //addIngredient(pineapple).then( (value) => console.log(value) );
+    //db.pantry.clear();
+
+    const myPantry = useLiveQuery(
+        () => db.pantry.toArray()
+    );
+
 
 
     return (
         <>
             <header></header>
             <main className="inner-container">
-                {myPantry.map( (obj) => (
-                    <PantryItem ingredient={obj}/>
-                ))}
+                {/*{myPantry.map( (obj) => (*/}
+                {/*    <PantryItem ingredient={obj}/>*/}
+                {/*))}*/}
+
+                {/*{ myPantry?.map(item => (*/}
+                {/*    <PantryItem ingredient={item}/>*/}
+                {/*))}*/}
+                <Pantry/>
+                <PantryItem ingredient={pineapple}/>
             </main>
             <footer></footer>
         </>

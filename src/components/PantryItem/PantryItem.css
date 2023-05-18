@@ -148,6 +148,18 @@
     position: relative;
 }
 
+#amount-information input[type="number"] {
+    text-align: center;
+    margin-right: 2px;
+    -moz-appearance: textfield;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: Ubuntu, sans-serif;
+    font-weight: bold;
+    width: 35px;
+}
+
 #amount-information p {
     font-weight: bold;
     font-size: 13px;

@@ -2,53 +2,52 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import {options} from "axios";
 import Ingredient from "../../constructors/Ingredient/Ingredient";
+import {useLiveQuery} from "dexie-react-hooks";
+import {db} from "../../features/Database/db";
+import PantryItem from "../PantryItem/PantryItem";
 
 function Pantry() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );
-    const watchSelectedReferrer = watch("found-through")
-    const allUnits = [ "g", "l", "serving", "piece" ];
+    //const watchSelectedReferrer = watch("found-through");
+    const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
 
-    // Test with Dexie Database:
-    // async function addIngredient( ingredient ) {
-    //     const name = ingredient.Name;
-    //     const possibleUnits = ingredient.PossibleUnits;
-    //     const unit = ingredient.Unit;
-    //     const type = ingredient.Type;
-    //     const imagePath = ingredient.ImagePath;
-    //     const amount = ingredient.getAmount();
-    //     const expiryDate = ingredient.ExpiryDate;
-    //     const ingredientExpiryDays = ingredient.IngredientExpiryDays;
-    //
-    //     try{
-    //         const id = await db.pantry.add( {
-    //             name,
-    //             possibleUnits,
-    //             unit,
-    //             type,
-    //             imagePath,
-    //             amount,
-    //             expiryDate,
-    //             ingredientExpiryDays
-    //         } )
-    //     } catch ( e ) {
-    //         console.error( e )
-    //     }
-    // }
+    const myPantry = useLiveQuery(
+        () => db.pantry.toArray()
+    );
 
-    function handleFormSubmit( data ) {
-        // Adjust properties when linked to API
-        const tmpIngredient = new Ingredient(
+    async function addIngredient( name, possibleUnits, unit, type, imagePath, amount, expiryDate, ingredientExpiryDays ) {
+
+        try{
+            const id = await db.pantry.add( {
+                name,
+                possibleUnits,
+                unit,
+                type,
+                imagePath,
+                amount,
+                expiryDate,
+                ingredientExpiryDays
+            } )
+        } catch ( e ) {
+            console.error( e )
+        }
+    }
+
+    function handleFormSubmit( data, e ) {
+        const amount = parseInt(data.amount);
+
+        addIngredient(
             data.name,
             allUnits,
             data.unit,
-            "produce",
-            (data.name + ".jpg"),
-            data.amount,
-            data.date,
+            "Produce",
+            (data.name.toLowerCase() + ".jpg"),
+            amount,
+            data.expiryDate,
             5
-        )
+        );
 
-        console.log(tmpIngredient)
+        e.target.reset();
     }
 
     return (
@@ -57,8 +56,12 @@ function Pantry() {
                 <input type="text"
                        id="input-name"
                        placeholder="name"
+                       autoComplete="off"
                        { ...register( "name", {
-
+                            required: {
+                                value: true,
+                                message: "An ingredient name needs to be entered"
+                            }
                        } ) }
                 />
 
@@ -66,7 +69,10 @@ function Pantry() {
                        id="input-amount"
                        placeholder="amount"
                        { ...register( "amount", {
-
+                           required: {
+                               value: true,
+                               message: "Enter at least one"
+                           }
                        } ) }
                 />
 
@@ -85,6 +91,22 @@ function Pantry() {
                 />
 
                 <button type="submit">add</button>
+
+                { myPantry?.map(item => (
+                     <PantryItem key={item.id}
+                                 ingredient={ new Ingredient (
+                                     item.id,
+                                     item.name,
+                                     item.possibleUnits,
+                                     item.unit,
+                                     item.type,
+                                     item.imagePath,
+                                     item.amount,
+                                     item.expiryDate,
+                                     item.ingredientExpiryDays,
+                                 )}
+                     />
+                ))}
             </form>
         </div>
     );

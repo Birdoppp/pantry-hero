@@ -6,24 +6,27 @@ import { Routes, Route } from "react-router-dom";
 //import axios from "axios";
 
 // Constructors
-import Pantry from "./components/Pantry/Pantry";
+import Navigation from "./components/Navigation/Navigation";
+import Pantry from "./pages/pantry/Pantry";
 
 function App() {
     return (
         <>
             <header>
-                <Routes>
-                    <Route path="/" element={"homepage hier neerzetten"}/>
-                </Routes>
+                <Navigation/>
             </header>
 
             <main className="inner-container">
-                <Pantry/>
+                <Routes>
+                    <Route path="/" element={ <Pantry/> }/>
+                </Routes>
             </main>
 
             <footer>
 
             </footer>
+
+
         </>
     );
 }

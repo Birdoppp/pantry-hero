@@ -4,7 +4,7 @@ import {options} from "axios";
 import Ingredient from "../../constructors/Ingredient/Ingredient";
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
-import PantryItem from "../PantryItem/PantryItem";
+import PantryItem from "../../components/PantryItem/PantryItem";
 
 function Pantry() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );

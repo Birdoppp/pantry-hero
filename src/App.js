@@ -2,59 +2,28 @@ import './App.css';
 
 // Dependencies
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 //import axios from "axios";
 
 // Constructors
-import PantryItem from "./components/PantryItem/PantryItem";
-import Ingredient from "./constructors/Ingredient/Ingredient";
-
+import Pantry from "./components/Pantry/Pantry";
 
 function App() {
-    const date = new Date();
-    date.setDate(date.getDate());
-
-    const pineapple = new Ingredient(
-        "pineapple",
-        ["piece",
-            "slice",
-            "fruit",
-            "g",
-            "oz",
-            "cup",
-            "serving"],
-        "piece",
-        "Produce",
-        "pineapple.jpg",
-        10,
-        date,
-        5
-    );
-
-    const apple = new Ingredient(
-        "apple",
-        ["pieces",
-            "serving",
-            "g"],
-        "g",
-        "Produce",
-        "apple.jpg",
-        8,
-        date,
-        5
-    );
-
-    const myPantry = [ pineapple, apple ];
-
-
     return (
         <>
-            <header></header>
+            <header>
+                <Routes>
+                    <Route path="/" element={"homepage hier neerzetten"}/>
+                </Routes>
+            </header>
+
             <main className="inner-container">
-                {myPantry.map( (obj) => (
-                    <PantryItem ingredient={obj}/>
-                ))}
+                <Pantry/>
             </main>
-            <footer></footer>
+
+            <footer>
+
+            </footer>
         </>
     );
 }

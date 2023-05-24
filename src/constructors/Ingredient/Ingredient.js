@@ -25,10 +25,14 @@ function Ingredient(
 
     // Methods:
     this.getExpiry = () => {
-        const today = new Date();
-        const difference = this.ExpiryDate.getTime() - today.getTime();
+        if ( expiryDate ) {
+            const today = new Date();
+            const difference = this.ExpiryDate.getTime() - today.getTime();
 
-        return Math.ceil(difference / (1000 * 3600 * 24));
+            return Math.ceil(difference / (1000 * 3600 * 24));
+        } else {
+            return null;
+        }
     };
 
     this.getAmount = () => {

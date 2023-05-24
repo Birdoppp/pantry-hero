@@ -1,4 +1,5 @@
 import './App.css';
+import { ReactComponent as BackgroundImage } from "./assets/icon-logo.svg"
 
 // Dependencies
 import React from "react";
@@ -12,6 +13,8 @@ import Pantry from "./pages/pantry/Pantry";
 function App() {
     return (
         <>
+            {/*<BackgroundImage className="background-image"/> LATER DE SVG VAN DE JUISTE CSS VOORZIEN  */}
+
             <header>
                 <Navigation/>
             </header>
@@ -25,8 +28,6 @@ function App() {
             <footer>
 
             </footer>
-
-
         </>
     );
 }

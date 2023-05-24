@@ -17,12 +17,16 @@ function PantryItem ( { ingredient } ) {
 
     let expiryClass = "expiry-information";
 
-    if ( expiry > 3 ) {
-        expiryClass += " expiry-green";
-    } else if ( expiry > 0 ) {
-        expiryClass += " expiry-orange";
+    if ( expiry ) {
+        if ( expiry > 3 ) {
+            expiryClass += " expiry-green";
+        } else if ( expiry > 0 ) {
+            expiryClass += " expiry-orange";
+        } else {
+            expiryClass += " expiry-red";
+        }
     } else {
-        expiryClass += " expiry-red";
+        expiryClass += " no-expiry"
     }
 
     function handleConfirmation( bool ) {
@@ -67,7 +71,7 @@ function PantryItem ( { ingredient } ) {
             <div className="pantry-ingredient-information">
                 <div className={expiryClass}>
                     <span><IconExpiryInformation id="icon-expiry"/></span>
-                    <span>{ expiry } { expiry === 1 ? "day" : "days" }</span>
+                    { expiry ? <span>{ expiry } { expiry === 1 ? "day" : "days" }</span> : <span>no expiry</span> }
                 </div>
 
                 <div id="amount-information">
@@ -86,7 +90,7 @@ function PantryItem ( { ingredient } ) {
 
                     <input
                         type="number"
-                        value={amount}
+                        value={ amount }
                         onChange={( e) => {
                             ingredient.setAmount(e.target.valueAsNumber);
                             setAmount(e.target.valueAsNumber);

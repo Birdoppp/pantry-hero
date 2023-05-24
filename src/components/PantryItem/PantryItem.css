@@ -119,6 +119,11 @@
     color: var(--color-red);
 }
 
+.no-expiry {
+    fill: var(--color-black);
+    color: var(--color-black);
+}
+
 .expiry-information {
     display: flex;
     align-items: center;
@@ -161,7 +166,9 @@
     outline: none;
     font-family: Ubuntu, sans-serif;
     font-weight: bold;
+    font-size: 13px;
     width: 35px;
+    padding: 0;
 }
 
 #amount-information p {

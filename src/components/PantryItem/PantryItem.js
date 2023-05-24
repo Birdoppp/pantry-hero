@@ -17,7 +17,7 @@ function PantryItem ( { ingredient } ) {
 
     let expiryClass = "expiry-information";
 
-    if ( expiry ) {
+    if ( expiry || expiry === 0 ) {
         if ( expiry > 3 ) {
             expiryClass += " expiry-green";
         } else if ( expiry > 0 ) {
@@ -71,7 +71,7 @@ function PantryItem ( { ingredient } ) {
             <div className="pantry-ingredient-information">
                 <div className={expiryClass}>
                     <span><IconExpiryInformation id="icon-expiry"/></span>
-                    { expiry ? <span>{ expiry } { expiry === 1 ? "day" : "days" }</span> : <span>no expiry</span> }
+                    { ( expiry || expiry === 0 ) ? <span>{ expiry } { expiry === 1 ? "day" : "days" }</span> : <span>no expiry</span> }
                 </div>
 
                 <div id="amount-information">

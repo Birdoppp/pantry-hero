@@ -1,0 +1,8 @@
+#pantry-overview {
+    display: flex;
+    border: red 4px double;
+}
+
+#ingredients-overview {
+    border: green 4px double;
+}

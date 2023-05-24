@@ -11,7 +11,7 @@ function Checkbox({ id, checked, clickHandler, registerHandler }) {
                 id={id}
                 checked={checked}
                 onClick={clickHandler}
-                {...registerHandler}
+                { ...registerHandler }
             />
             <span className="checkmark">
         {checked && <Checkmark />}

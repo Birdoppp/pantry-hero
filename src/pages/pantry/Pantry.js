@@ -1,22 +1,25 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import Ingredient from "../../constructors/Ingredient/Ingredient";
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
+import {useState} from "react";
+
+import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
 import Dashboard from "../../components/Dashboard/Dashboard";
-import {useState} from "react";
-import Button from "../../components/Button/Button";
 import Checkbox from "../../components/Checkbox/Checkbox";
+import Ingredient from "../../constructors/Ingredient/Ingredient";
+
+import "./Pantry.css"
 
 
 
 function Pantry() {
     // VARIABLES
-    //const watchSelectedReferrer = watch("found-through");
-    const { register, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );
-    const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
+    const { register, reset, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );
     const [isExpiryInfinite, setIsExpiryInfinite] = useState(false);
+
+    const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
 
     // DATABASE UPDATER
     const myPantry = useLiveQuery(
@@ -43,11 +46,11 @@ function Pantry() {
     }
 
     // HANDLERS
-    const handleRadioChange = () => {
+    const handleCheckboxChange = () => {
         setIsExpiryInfinite( prev => !prev );
     };
 
-    function handleFormSubmit( data, e ) {
+    function handleFormSubmit( data ) {
         const amount = parseInt(data.amount);
         const expiry = data.infiniteExpiry ? null : data.expiryDate;
 
@@ -62,14 +65,13 @@ function Pantry() {
             5
         );
 
-
-        setIsExpiryInfinite( prev => false );
-        e.target.reset();
+        setIsExpiryInfinite( false );
+        reset();
     }
 
     // HTML ELEMENTS
     return (
-        <div>
+        <div id="pantry-overview">
             <Dashboard>
                 <div>Child 1</div>
                 <div>Child 2</div>
@@ -120,8 +122,8 @@ function Pantry() {
                             <Checkbox
                                 id="input-no-expiry"
                                 checked={ isExpiryInfinite }
-                                clickHandler={ handleRadioChange }
-                                registerHandler={ register( "infiniteExpiry") }
+                                clickHandler={ handleCheckboxChange }
+                                registerHandler={ register( "infiniteExpiry" ) }
                             />
 
                             <span>Ingredient does not expire</span>
@@ -132,7 +134,7 @@ function Pantry() {
                                 textValue="clear"
                                 type="submit"
                                 clickHandler={ () => {
-                                    console.log("Clearing form") } }
+                                    console.log( isExpiryInfinite ) } }
                                 filledStatus={ false }
                             />
 
@@ -146,21 +148,23 @@ function Pantry() {
                 </div>
             </Dashboard>
 
-            { myPantry?.map(item => (
-                <PantryItem key={item.id}
-                            ingredient={ new Ingredient (
-                                item.id,
-                                item.name,
-                                item.possibleUnits,
-                                item.unit,
-                                item.type,
-                                item.imagePath,
-                                item.amount,
-                                item.expiryDate,
-                                item.ingredientExpiryDays,
-                            )}
-                />
-            ))}
+            <div id="ingredients-overview">
+                { myPantry?.map(item => (
+                    <PantryItem key={item.id}
+                                ingredient={ new Ingredient (
+                                    item.id,
+                                    item.name,
+                                    item.possibleUnits,
+                                    item.unit,
+                                    item.type,
+                                    item.imagePath,
+                                    item.amount,
+                                    item.expiryDate,
+                                    item.ingredientExpiryDays,
+                                )}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

@@ -1,23 +1,24 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, {useEffect, useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
-import {useState} from "react";
 
 import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Ingredient from "../../constructors/Ingredient/Ingredient";
+import InformationTag from "../../components/InformationTag/InformationTag";
 
 import "./Pantry.css"
-
-
 
 function Pantry() {
     // VARIABLES
     const { register, reset, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );
     const [isExpiryInfinite, setIsExpiryInfinite] = useState(false);
+    const [expiryGoodCount, setExpiryGoodCount] = useState(0);
+    const [expiryCloseCount, setExpiryCloseCount] = useState(0);
+    const [expiredCount, setExpiredCount] = useState(0);
 
     const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
 
@@ -26,8 +27,21 @@ function Pantry() {
         () => db.pantry.toArray()
     );
 
+    useEffect(() => {
+        setExpiryGoodCount(getExpiryItemsCount(3));
+    }, [myPantry]);
+
+    useEffect(() => {
+        setExpiryCloseCount(getExpiryItemsCount(3, 0));
+    }, [myPantry]);
+
+    useEffect(() => {
+        setExpiredCount(getExpiryItemsCount(0));
+    }, [myPantry]);
+
+
     // DATABASE FUNCTIONS
-    async function addIngredient( name, possibleUnits, unit, type, imagePath, amount, expiryDate, ingredientExpiryDays ) {
+    async function addIngredient( name, possibleUnits, unit, type, imagePath, amount, expiryDate ) {
 
         try{
             const id = await db.pantry.add( {
@@ -37,12 +51,25 @@ function Pantry() {
                 type,
                 imagePath,
                 amount,
-                expiryDate,
-                ingredientExpiryDays
+                expiryDate
             } )
         } catch ( e ) {
             console.error( e )
         }
+    }
+
+    function getExpiryItemsCount( offset, checkDate ) {
+        return myPantry?.filter((item) => {
+            if (item.expiryDate || item.expiryDate === 0) {
+                if ( checkDate || checkDate === 0 ) {
+                    return item.expiryDate <= getExpiryString(offset) && item.expiryDate > getExpiryString(checkDate)
+                } else if ( offset === 0 ) {
+                    return item.expiryDate <= getExpiryString(offset);
+                } else {
+                    return item.expiryDate > getExpiryString(offset);
+                }
+            }
+        }).length;
     }
 
     // HANDLERS
@@ -62,19 +89,51 @@ function Pantry() {
             (data.name.toLowerCase() + ".jpg"),
             amount,
             expiry,
-            5
         );
 
         setIsExpiryInfinite( false );
         reset();
     }
 
+    function handleFormClear() {
+        reset();
+    }
+
+    function getExpiryString( offSet ) {
+        const today = new Date();
+        today.setDate( today.getDate() + offSet );
+
+        return today.toISOString().split("T")[0];
+    }
+
+
     // HTML ELEMENTS
     return (
         <div id="pantry-overview">
             <Dashboard>
                 <div>Child 1</div>
-                <div>Child 2</div>
+                <div>
+                    <h3>Status:</h3>
+                    <div id="expiry-overview">
+                        <InformationTag
+                            title="Good"
+                            displayNum={ expiryGoodCount }
+                            expiryClass="expiry-green"
+                        />
+
+                        <InformationTag
+                            title="Close"
+                            displayNum={ expiryCloseCount }
+                            expiryClass="expiry-orange"
+                        />
+
+                        <InformationTag
+                            title="Expired"
+                            displayNum={ expiredCount }
+                            expiryClass="expiry-red"
+                        />
+                    </div>
+                </div>
                 <div>
                     <h3>Add ingredient:</h3>
                     <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
@@ -133,8 +192,7 @@ function Pantry() {
                             <Button
                                 textValue="clear"
                                 type="submit"
-                                clickHandler={ () => {
-                                    console.log( isExpiryInfinite ) } }
+                                clickHandler={ handleFormClear }
                                 filledStatus={ false }
                             />
 
@@ -160,7 +218,6 @@ function Pantry() {
                                     item.imagePath,
                                     item.amount,
                                     item.expiryDate,
-                                    item.ingredientExpiryDays,
                                 )}
                     />
                 ))}

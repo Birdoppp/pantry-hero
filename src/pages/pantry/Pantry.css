@@ -1,3 +1,4 @@
+/* ----------- Pantry page ----------- */
 #pantry-overview {
     display: flex;
     border: red 4px double;
@@ -5,4 +6,40 @@
 
 #ingredients-overview {
     border: green 4px double;
+}
+
+/* ----------- Dashboard Status overview ----------- */
+#expiry-overview {
+    display: flex;
+    justify-content: space-around;
+    margin: 14px 0;
+}
+
+/* ----------- Dashboard Add Item ----------- */
+#pantry-add-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: flex-start;
+    margin: 14px 0;
+}
+
+#form-amount-information {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+#form-amount-information input {
+    max-width: 125px;
+}
+
+#form-handler-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+#check-no-expiry {
+    display: flex;
+    gap: 16px;
 }

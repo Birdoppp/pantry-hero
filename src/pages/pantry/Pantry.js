@@ -11,6 +11,7 @@ import Ingredient from "../../constructors/Ingredient/Ingredient";
 import InformationTag from "../../components/InformationTag/InformationTag";
 
 import "./Pantry.css"
+import FilterSelector from "../../components/FilterSelector/FilterSelector";
 
 function Pantry() {
     // VARIABLES
@@ -111,7 +112,15 @@ function Pantry() {
     return (
         <div id="pantry-overview">
             <Dashboard>
-                <div>Child 1</div>
+                <div>
+                    <h3>Sort by:</h3>
+                    <FilterSelector>
+                        <button>A-Z</button>
+                        <button>expiry</button>
+                        <button>type</button>
+                    </FilterSelector>
+
+                </div>
                 <div>
                     <h3>Status:</h3>
                     <div id="expiry-overview">

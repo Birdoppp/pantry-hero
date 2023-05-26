@@ -13,13 +13,13 @@ import Pantry from "./pages/pantry/Pantry";
 function App() {
     return (
         <>
-            {/*<BackgroundImage className="background-image"/> LATER DE SVG VAN DE JUISTE CSS VOORZIEN  */}
+            <BackgroundImage className="background-image"/>
 
             <header>
                 <Navigation/>
             </header>
 
-            <main className="inner-container">
+            <main>
                 <Routes>
                     <Route path="/" element={ <Pantry/> }/>
                 </Routes>

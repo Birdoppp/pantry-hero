@@ -9,9 +9,10 @@ import Dashboard from "../../components/Dashboard/Dashboard";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Ingredient from "../../constructors/Ingredient/Ingredient";
 import InformationTag from "../../components/InformationTag/InformationTag";
+import FilterSelector from "../../components/FilterSelector/FilterSelector";
+import PageContainer from "../../components/PageContainer/PageContainer";
 
 import "./Pantry.css"
-import FilterSelector from "../../components/FilterSelector/FilterSelector";
 
 function Pantry() {
     // VARIABLES
@@ -21,9 +22,9 @@ function Pantry() {
     const [expiryCloseCount, setExpiryCloseCount] = useState(0);
     const [expiredCount, setExpiredCount] = useState(0);
 
-
     const [sortOption, setSortOption] = useState("A-Z");
     const [sortedData, setSortedData] = useState(null);
+    const [searchResults, setSearchResults] = useState(null);
 
     const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
 
@@ -34,6 +35,18 @@ function Pantry() {
             return number;
         }
     }
+
+    const searchIngredients = async (query) => {
+        if (query.trim() === "") {
+            setSearchResults(null);
+        } else {
+            const results = await db.pantry
+                .where('name')
+                .startsWithIgnoreCase(query)
+                .toArray();
+            setSearchResults(results);
+        }
+    };
 
     // DATABASE UPDATER
     const myPantry = useLiveQuery(
@@ -153,129 +166,152 @@ function Pantry() {
 
     // HTML ELEMENTS
     return (
-        <div id="pantry-overview">
-            <Dashboard>
-                <div>
-                    <h3>Sort by:</h3>
-                    <FilterSelector>
-                        <button onClick={ handleSortByAZ }>A-Z</button>
-                        <button onClick={ handleSortByExpiry }>expiry</button>
-                        <button onClick={ handleSortByType }>type</button>
-                    </FilterSelector>
 
-                </div>
-                <div>
-                    <h3>Status:</h3>
-                    <div id="expiry-overview">
-                        <InformationTag
-                            title="Good"
-                            displayNum={ formatNumber(expiryGoodCount) }
-                            expiryClass="expiry-green"
-                        />
+        <PageContainer
+            title="My pantry"
+            searchPlaceHolder="ingredients"
+            onSearch={ searchIngredients }
+        >
+            <div id="pantry-overview"
+                 className="inner-container">
+                    <Dashboard className="dashBoard">
+                        <div>
+                            <h3>Sort by:</h3>
+                            <FilterSelector>
+                                <button onClick={ handleSortByAZ }>A-Z</button>
+                                <button onClick={ handleSortByExpiry }>expiry</button>
+                                <button onClick={ handleSortByType }>type</button>
+                            </FilterSelector>
 
-                        <InformationTag
-                            title="Close"
-                            displayNum={ formatNumber(expiryCloseCount) }
-                            expiryClass="expiry-orange"
-                        />
+                        </div>
+                        <div>
+                            <h3>Status:</h3>
+                            <div id="expiry-overview">
+                                <InformationTag
+                                    title="Good"
+                                    displayNum={ formatNumber(expiryGoodCount) }
+                                    expiryClass="expiry-green"
+                                />
 
-                        <InformationTag
-                            title="Expired"
-                            displayNum={ formatNumber(expiredCount) }
-                            expiryClass="expiry-red"
-                        />
+                                <InformationTag
+                                    title="Close"
+                                    displayNum={ formatNumber(expiryCloseCount) }
+                                    expiryClass="expiry-orange"
+                                />
+
+                                <InformationTag
+                                    title="Expired"
+                                    displayNum={ formatNumber(expiredCount) }
+                                    expiryClass="expiry-red"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <h3>Add ingredient:</h3>
+                            <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
+                                <input type="text"
+                                       id="input-name"
+                                       placeholder="name"
+                                       autoComplete="off"
+                                       { ...register( "name", {
+                                           required: {
+                                               value: true,
+                                               message: "An ingredient name needs to be entered"
+                                           }
+                                       } ) }
+                                />
+
+                                <div id="form-amount-information">
+                                    <input type="number"
+                                           id="input-amount"
+                                           placeholder="amount"
+                                           { ...register( "amount", {
+                                               required: {
+                                                   value: true,
+                                                   message: "Enter at least one"
+                                               }
+                                           } ) }
+                                    />
+
+                                    <select id="input-unit"
+                                            {...register("unit")}>
+                                        { allUnits.map( (item, index) => {
+                                            return (<option key={index} value={item}>{item}</option>)
+                                        } ) }
+                                    </select>
+                                </div>
+
+                                <input type="date"
+                                       id="input-date"
+                                       disabled={ isExpiryInfinite }
+                                       { ...register( "expiryDate", {
+
+                                       } ) }
+                                />
+
+                                <div id="check-no-expiry">
+                                    <Checkbox
+                                        id="input-no-expiry"
+                                        checked={ isExpiryInfinite }
+                                        clickHandler={ handleCheckboxChange }
+                                        registerHandler={ register( "infiniteExpiry" ) }
+                                    />
+
+                                    <span>Ingredient does not expire</span>
+                                </div>
+
+                                <div id="form-handler-buttons">
+                                    <Button
+                                        textValue="clear"
+                                        type="submit"
+                                        clickHandler={ handleFormClear }
+                                        filledStatus={ false }
+                                    />
+
+                                    <Button
+                                        textValue="add"
+                                        type="submit"
+                                        filledStatus={ true }
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </Dashboard>
+
+
+                    <div id="ingredients-overview">
+                        {  searchResults ?
+                            searchResults.map(item => (
+                                <PantryItem key={item.id}
+                                            ingredient={ new Ingredient (
+                                                item.id,
+                                                item.name,
+                                                item.possibleUnits,
+                                                item.unit,
+                                                item.type,
+                                                item.imagePath,
+                                                item.amount,
+                                                item.expiryDate,
+                                            )}
+                                />
+                            )) : sortedData && sortedData.map(item => (
+                            <PantryItem key={item.id}
+                                        ingredient={ new Ingredient (
+                                            item.id,
+                                            item.name,
+                                            item.possibleUnits,
+                                            item.unit,
+                                            item.type,
+                                            item.imagePath,
+                                            item.amount,
+                                            item.expiryDate,
+                                        )}
+                            />
+                        ))}
                     </div>
                 </div>
-                <div>
-                    <h3>Add ingredient:</h3>
-                    <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
-                        <input type="text"
-                               id="input-name"
-                               placeholder="name"
-                               autoComplete="off"
-                               { ...register( "name", {
-                                   required: {
-                                       value: true,
-                                       message: "An ingredient name needs to be entered"
-                                   }
-                               } ) }
-                        />
+        </PageContainer>
 
-                        <div id="form-amount-information">
-                            <input type="number"
-                                   id="input-amount"
-                                   placeholder="amount"
-                                   { ...register( "amount", {
-                                       required: {
-                                           value: true,
-                                           message: "Enter at least one"
-                                       }
-                                   } ) }
-                            />
-
-                            <select id="input-unit"
-                                    {...register("unit")}>
-                                { allUnits.map( (item, index) => {
-                                    return (<option key={index} value={item}>{item}</option>)
-                                } ) }
-                            </select>
-                        </div>
-
-                        <input type="date"
-                               id="input-date"
-                               disabled={ isExpiryInfinite }
-                               { ...register( "expiryDate", {
-
-                               } ) }
-                        />
-
-                        <div id="check-no-expiry">
-                            <Checkbox
-                                id="input-no-expiry"
-                                checked={ isExpiryInfinite }
-                                clickHandler={ handleCheckboxChange }
-                                registerHandler={ register( "infiniteExpiry" ) }
-                            />
-
-                            <span>Ingredient does not expire</span>
-                        </div>
-
-                        <div id="form-handler-buttons">
-                            <Button
-                                textValue="clear"
-                                type="submit"
-                                clickHandler={ handleFormClear }
-                                filledStatus={ false }
-                            />
-
-                            <Button
-                                textValue="add"
-                                type="submit"
-                                filledStatus={ true }
-                            />
-                        </div>
-                    </form>
-                </div>
-            </Dashboard>
-
-
-            <div id="ingredients-overview">
-                {  sortedData && sortedData.map(item => (
-                    <PantryItem key={item.id}
-                                ingredient={ new Ingredient (
-                                    item.id,
-                                    item.name,
-                                    item.possibleUnits,
-                                    item.unit,
-                                    item.type,
-                                    item.imagePath,
-                                    item.amount,
-                                    item.expiryDate,
-                                )}
-                    />
-                ))}
-            </div>
-        </div>
     );
 };
 

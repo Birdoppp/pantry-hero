@@ -2,7 +2,7 @@ import React from 'react';
 import "./InformationTag.css"
 
 function InformationTag( { title, displayNum, expiryClass } ) {
-    const itemClass = "outer-container " + expiryClass;
+    const itemClass = "inner-container " + expiryClass;
 
     return (
         <div className="information-tag">

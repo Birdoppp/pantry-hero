@@ -21,12 +21,43 @@ function Pantry() {
     const [expiryCloseCount, setExpiryCloseCount] = useState(0);
     const [expiredCount, setExpiredCount] = useState(0);
 
+
+    const [sortOption, setSortOption] = useState("A-Z");
+    const [sortedData, setSortedData] = useState(null);
+
     const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
+
+    function formatNumber(number) {
+        if ( number < 10 ) {
+            return "0" + number;
+        } else {
+            return number;
+        }
+    }
 
     // DATABASE UPDATER
     const myPantry = useLiveQuery(
         () => db.pantry.toArray()
     );
+
+    // DATABASE EFFECTS
+    useEffect(() => {
+        if (myPantry) {
+            const sorted = [...myPantry].sort((a, b) => {
+                if (sortOption === "type") {
+                        return a.type.localeCompare(b.type);
+                    } else if (sortOption === "expiry") {
+                        const dateA = new Date(a.expiryDate);
+                        const dateB = new Date(b.expiryDate);
+
+                        return dateA - dateB;
+                    } else {
+                        return a.name.localeCompare(b.name);
+                    }
+            });
+            setSortedData(sorted);
+        }
+    }, [myPantry, sortOption]);
 
     useEffect(() => {
         setExpiryGoodCount(getExpiryItemsCount(3));
@@ -108,6 +139,18 @@ function Pantry() {
     }
 
 
+    const handleSortByAZ = () => {
+        setSortOption("A-Z");
+    };
+
+    const handleSortByExpiry = () => {
+        setSortOption("expiry");
+    };
+
+    const handleSortByType = () => {
+        setSortOption("type");
+    };
+
     // HTML ELEMENTS
     return (
         <div id="pantry-overview">
@@ -115,9 +158,9 @@ function Pantry() {
                 <div>
                     <h3>Sort by:</h3>
                     <FilterSelector>
-                        <button>A-Z</button>
-                        <button>expiry</button>
-                        <button>type</button>
+                        <button onClick={ handleSortByAZ }>A-Z</button>
+                        <button onClick={ handleSortByExpiry }>expiry</button>
+                        <button onClick={ handleSortByType }>type</button>
                     </FilterSelector>
 
                 </div>
@@ -126,19 +169,19 @@ function Pantry() {
                     <div id="expiry-overview">
                         <InformationTag
                             title="Good"
-                            displayNum={ expiryGoodCount }
+                            displayNum={ formatNumber(expiryGoodCount) }
                             expiryClass="expiry-green"
                         />
 
                         <InformationTag
                             title="Close"
-                            displayNum={ expiryCloseCount }
+                            displayNum={ formatNumber(expiryCloseCount) }
                             expiryClass="expiry-orange"
                         />
 
                         <InformationTag
                             title="Expired"
-                            displayNum={ expiredCount }
+                            displayNum={ formatNumber(expiredCount) }
                             expiryClass="expiry-red"
                         />
                     </div>
@@ -215,8 +258,9 @@ function Pantry() {
                 </div>
             </Dashboard>
 
+
             <div id="ingredients-overview">
-                { myPantry?.map(item => (
+                {  sortedData && sortedData.map(item => (
                     <PantryItem key={item.id}
                                 ingredient={ new Ingredient (
                                     item.id,

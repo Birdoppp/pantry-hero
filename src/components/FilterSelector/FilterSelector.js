@@ -1,27 +1,40 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import "./FilterSelector.css"
 
-function FilterSelector( { children } ) {
-    const [highlightedButton, setHighlightedButton] = useState(null);
+function FilterSelector({ children }) {
+    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(null);
 
-    const handleButtonClick = (button) => {
-        setHighlightedButton(button);
+    const handleButtonClick = (buttonIndex) => {
+        setHighlightedButtonIndex(buttonIndex);
+
+        setTimeout(() => {
+            children[buttonIndex].props.onClick();
+        }, 0);
     };
+
+    useEffect(() => {
+        if (highlightedButtonIndex !== null && (highlightedButtonIndex < 0 || highlightedButtonIndex >= children.length)) {
+            setHighlightedButtonIndex(null);
+        }
+    }, [children, highlightedButtonIndex]);
 
     return (
         <div className="button-group">
             {React.Children.map(children, (child, index) => {
-                const isHighlighted = child === highlightedButton;
-                //const childClickHandler = () => { child.props.onClick() }
+                const isHighlighted = index === highlightedButtonIndex;
+                const childClickHandler = () => {
+                    handleButtonClick(index);
+                };
 
-                return React.cloneElement(child, {
-                    key: index,
-                    className: `button ${isHighlighted ? "highlighted" : ""}`,
-                    onClick: () =>  {
-                        console.log("clicked")
-                        handleButtonClick(child)
-                    },
-                });
+                return (
+                    <button
+                        key={index}
+                        className={`button ${isHighlighted ? "highlighted" : ""}`}
+                        onClick={childClickHandler}
+                    >
+                        {child.props.children}
+                    </button>
+                );
             })}
         </div>
     );

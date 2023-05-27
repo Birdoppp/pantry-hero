@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import "./PageContainer.css"
+import "./PageContainer.css";
+import { ReactComponent as SearchIcon } from "../../assets/icon-search.svg";
 
 function PageContainer( { title, searchPlaceHolder, onSearch, children }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -14,13 +15,17 @@ function PageContainer( { title, searchPlaceHolder, onSearch, children }) {
             <div id="page-navigation">
                 <h1 className="title">{title}</h1>
 
-                <input
-                    className="search-bar"
-                    type="text"
-                    value={searchQuery}
-                    onChange={ handleInputChange }
-                    placeholder={ searchPlaceHolder }
-                />
+                <div className="search-bar-container">
+                    <SearchIcon className="search-icon"/>
+                    <input
+                        className="search-bar"
+                        type="text"
+                        value={searchQuery}
+                        onChange={ handleInputChange }
+                        placeholder={ searchPlaceHolder }
+                    />
+                </div>
+
 
                 <div></div>
             </div>

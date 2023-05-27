@@ -2,13 +2,15 @@ import React from 'react';
 import "./Dashboard.css";
 
 function Dashboard( { children } ) {
+    const childElements = Array.isArray(children) ? children : [children];
+
     return (
         <div className="dashboard">
-            { children.map(( child, index ) => {
+            { childElements.map(( child, index ) => {
                 return (
                 <React.Fragment key={ index }>
                     { child }
-                    { index !== children.length - 1 &&  <div className="divider"></div>}
+                    { index !== childElements.length - 1 &&  <div className="divider"></div>}
                 </React.Fragment>
             )
             } ) }

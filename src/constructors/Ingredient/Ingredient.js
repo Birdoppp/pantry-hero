@@ -9,7 +9,6 @@ function Ingredient(
     imagePath,
     amount,
     expiryDate,
-    ingredientExpiryDays,
 ) {
     // Constructor properties:
     this.id = id;
@@ -21,14 +20,17 @@ function Ingredient(
         "https://spoonacular.com/cdn/ingredients_100x100/" + imagePath;
     this.Amount = amount;
     this.ExpiryDate = new Date(expiryDate);
-    this.IngredientExpiryDays = ingredientExpiryDays;
 
     // Methods:
     this.getExpiry = () => {
-        const today = new Date();
-        const difference = this.ExpiryDate.getTime() - today.getTime();
+        if ( expiryDate ) {
+            const today = new Date();
+            const difference = this.ExpiryDate.getTime() - today.getTime();
 
-        return Math.ceil(difference / (1000 * 3600 * 24));
+            return Math.ceil(difference / (1000 * 3600 * 24));
+        } else {
+            return null;
+        }
     };
 
     this.getAmount = () => {

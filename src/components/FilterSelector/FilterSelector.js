@@ -1,0 +1,43 @@
+import React, { useState, useEffect } from 'react';
+import "./FilterSelector.css"
+
+function FilterSelector({ children }) {
+    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(null);
+
+    const handleButtonClick = (buttonIndex) => {
+        setHighlightedButtonIndex(buttonIndex);
+
+        setTimeout(() => {
+            children[buttonIndex].props.onClick();
+        }, 0);
+    };
+
+    useEffect(() => {
+        if (highlightedButtonIndex !== null && (highlightedButtonIndex < 0 || highlightedButtonIndex >= children.length)) {
+            setHighlightedButtonIndex(null);
+        }
+    }, [children, highlightedButtonIndex]);
+
+    return (
+        <div className="button-group">
+            {React.Children.map(children, (child, index) => {
+                const isHighlighted = index === highlightedButtonIndex;
+                const childClickHandler = () => {
+                    handleButtonClick(index);
+                };
+
+                return (
+                    <button
+                        key={index}
+                        className={`button ${isHighlighted ? "highlighted" : ""}`}
+                        onClick={childClickHandler}
+                    >
+                        {child.props.children}
+                    </button>
+                );
+            })}
+        </div>
+    );
+}
+
+export default FilterSelector;

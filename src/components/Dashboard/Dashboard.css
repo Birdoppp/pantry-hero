@@ -1,0 +1,45 @@
+/* ----------- Base dashboard ----------- */
+.dashboard {
+    background-color: var(--color-beige);
+    border: 2px solid var(--color-dark-green);
+    border-radius: 24px;
+    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
+    padding: 24px;
+    width: 288px;
+    height: fit-content;
+}
+
+.dashboard h3 {
+    font-family: 'Alkatra', cursive;
+    font-weight: bold;
+    color: var(--color-dark-green);
+    font-size: 20px;
+}
+
+.dashboard span {
+    font-family: 'Alkatra', cursive;
+    color: var(--color-dark-green);
+    font-weight: bold;
+}
+
+.divider {
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--color-dark-green);
+    margin: 20px 0;
+}
+
+.dashboard input[type="text"], input[type="number"], input[type="date"], select {
+    border: var(--color-dark-green) 2px solid;
+    border-radius: 13px;
+    height: 36px;
+    font-family: 'Alkatra', cursive;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 0 12px;
+    color: var(--color-dark-green);
+}
+
+::placeholder {
+    color: rgba(6, 68, 32, 0.5);
+}

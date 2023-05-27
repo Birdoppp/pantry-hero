@@ -1,4 +1,5 @@
 import './App.css';
+import { ReactComponent as BackgroundImage } from "./assets/icon-logo.svg"
 
 // Dependencies
 import React from "react";
@@ -12,21 +13,23 @@ import Pantry from "./pages/pantry/Pantry";
 function App() {
     return (
         <>
+            <BackgroundImage className="background-image"/>
+
             <header>
                 <Navigation/>
             </header>
 
-            <main className="inner-container">
+            <main>
                 <Routes>
-                    <Route path="/" element={ <Pantry/> }/>
+                    <Route path="/pantry" element={ <Pantry/> }/>
+                    <Route path="/shoppinglist" element={ <Pantry/> }/>
+                    <Route path="/recipes" element={ <Pantry/> }/>
                 </Routes>
             </main>
 
             <footer>
 
             </footer>
-
-
         </>
     );
 }

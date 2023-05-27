@@ -1,0 +1,31 @@
+.lbl-checkbox {
+    margin: 4px;
+    position: relative;
+    cursor: pointer;
+}
+
+.lbl-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.lbl-checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--color-dark-green);
+    border-radius: 3px;
+    background-color: var(--color-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lbl-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: var(--color-dark-green);
+}
+
+.lbl-checkbox input[type="checkbox"]:checked + .checkmark svg {
+    fill: var(--color-white);
+}

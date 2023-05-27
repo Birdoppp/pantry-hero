@@ -86,12 +86,11 @@ function Pantry() {
 
 
     // DATABASE FUNCTIONS
-    async function addIngredient( name, possibleUnits, unit, type, imagePath, amount, expiryDate ) {
+    async function addIngredient( name, unit, type, imagePath, amount, expiryDate ) {
 
         try{
             const id = await db.pantry.add( {
                 name,
-                possibleUnits,
                 unit,
                 type,
                 imagePath,
@@ -128,7 +127,6 @@ function Pantry() {
 
         addIngredient(
             data.name,
-            allUnits,
             data.unit,
             "Produce",
             (data.name.toLowerCase() + ".jpg"),

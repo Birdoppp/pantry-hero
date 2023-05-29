@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
+import {fetchData} from "../../features/API/Spoonacular";
 
 import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
@@ -25,6 +26,9 @@ function Pantry() {
     const [sortOption, setSortOption] = useState("A-Z");
     const [sortedData, setSortedData] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
+
+    // API:
+    const [ data, setData ] = useState( {} );
 
     const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
 
@@ -152,10 +156,12 @@ function Pantry() {
 
     const handleSortByAZ = () => {
         setSortOption("A-Z");
+        fetchData( setData );
     };
 
     const handleSortByExpiry = () => {
         setSortOption("expiry");
+        console.log( data );
     };
 
     const handleSortByType = () => {

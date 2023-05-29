@@ -23,6 +23,9 @@
 .page-link-list {
     display: flex;
     gap: 40px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .default-menu-link::after {
@@ -60,6 +63,7 @@
 }
 
 .navigation-bar {
+    position: relative;
     width: 100%;
     height: 50px;
     padding: 0 50px;

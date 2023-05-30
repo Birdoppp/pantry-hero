@@ -26,7 +26,6 @@ function PageContainer( { title, searchPlaceHolder, onSearch, children }) {
                     />
                 </div>
 
-
                 <div></div>
             </div>
 

@@ -28,7 +28,9 @@
     font-family: 'Ubuntu', sans-serif;
 }
 
-
+::-webkit-scrollbar {
+    display: none;
+}
 
 /* ---------------------- 1.1 Color variables ----------------------- */
 :root {
@@ -46,6 +48,10 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+input:focus {
+    outline: none;
 }
 
 /* ---------------------- 1.3 Animations ----------------------- */

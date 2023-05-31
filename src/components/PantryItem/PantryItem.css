@@ -169,6 +169,7 @@
     font-size: 13px;
     width: 35px;
     padding: 0;
+    color: var(--color-black);
 }
 
 #amount-information p {

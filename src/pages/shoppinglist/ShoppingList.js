@@ -88,10 +88,9 @@ function ShoppingList(props) {
                      <Dashboard className="dashboard">
                          <div>
                              <h3>Sort by:</h3>
-
                              <FilterSelector>
                                  <button onClick={ handleSortByAZ }>A-Z</button>
-                                 <button onClick={ handleSortByType }>Type</button>
+                                 <button onClick={ handleSortByType }>type</button>
                              </FilterSelector>
                          </div>
                      </Dashboard>

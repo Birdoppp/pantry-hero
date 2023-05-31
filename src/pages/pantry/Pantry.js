@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
+import {fetchIngredientSuggestion} from "../../features/API/Spoonacular";
 
 import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
@@ -14,9 +15,12 @@ import PageContainer from "../../components/PageContainer/PageContainer";
 
 import "./Pantry.css"
 
+
 function Pantry() {
+    const allUnits = ["piece", "slice", "fruit", "g", "oz", "cup", "serving"];
+
     // VARIABLES
-    const { register, reset, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onBlur"} );
+    const {register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
     const [isExpiryInfinite, setIsExpiryInfinite] = useState(false);
     const [expiryGoodCount, setExpiryGoodCount] = useState(0);
     const [expiryCloseCount, setExpiryCloseCount] = useState(0);
@@ -26,7 +30,11 @@ function Pantry() {
     const [sortedData, setSortedData] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
 
-    const allUnits = [ "piece", "slice", "fruit", "g", "oz", "cup", "serving" ];
+    // API:
+    const [suggestions, setSuggestions] = useState([]);
+    const [showPopout, setShowPopout] = useState(false);
+    const [ingredientUnits, setIngredientUnits] = useState(allUnits)
+
 
     function formatNumber(number) {
         if ( number < 10 ) {
@@ -41,8 +49,7 @@ function Pantry() {
             setSearchResults(null);
         } else {
             const results = await db.pantry
-                .where('name')
-                .startsWithIgnoreCase(query)
+                .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
                 .toArray();
             setSearchResults(results);
         }
@@ -117,24 +124,25 @@ function Pantry() {
     }
 
     // HANDLERS
-    const handleCheckboxChange = () => {
+    function handleCheckboxChange() {
         setIsExpiryInfinite( prev => !prev );
-    };
+    }
 
     function handleFormSubmit( data ) {
         const amount = parseInt(data.amount);
         const expiry = data.infiniteExpiry ? null : data.expiryDate;
 
-        addIngredient(
+        void addIngredient(
             data.name,
             data.unit,
-            "Produce",
-            (data.name.toLowerCase() + ".jpg"),
+            data.type,
+            data.image,
             amount,
             expiry,
         );
 
         setIsExpiryInfinite( false );
+        setIngredientUnits( allUnits );
         reset();
     }
 
@@ -150,21 +158,32 @@ function Pantry() {
     }
 
 
-    const handleSortByAZ = () => {
+    function handleSortByAZ() {
         setSortOption("A-Z");
-    };
+    }
 
-    const handleSortByExpiry = () => {
+    function handleSortByExpiry() {
         setSortOption("expiry");
-    };
+    }
 
-    const handleSortByType = () => {
+    function handleSortByType() {
         setSortOption("type");
-    };
+    }
+
+    function handleSuggestionClick(suggestion) {
+        setValue("name", suggestion.name);
+        //setValue("unit", suggestion.possibleUnits[0]);
+        setValue("type", suggestion.aisle);
+        setValue("image", suggestion.image);
+        setIngredientUnits( suggestion.possibleUnits );
+
+        setSuggestions([]);
+        setShowPopout(false);
+    }
+
 
     // HTML ELEMENTS
     return (
-
         <PageContainer
             title="My pantry"
             searchPlaceHolder="ingredients"
@@ -207,17 +226,39 @@ function Pantry() {
                         <div>
                             <h3>Add ingredient:</h3>
                             <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
-                                <input type="text"
-                                       id="input-name"
-                                       placeholder="name"
-                                       autoComplete="off"
-                                       { ...register( "name", {
-                                           required: {
-                                               value: true,
-                                               message: "An ingredient name needs to be entered"
-                                           }
-                                       } ) }
-                                />
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        id="input-name"
+                                        className={ showPopout? "show" : "" }
+                                        placeholder="name"
+                                        autoComplete="off"
+                                        {...register("name", {
+                                            onChange: (e) => {
+                                                void fetchIngredientSuggestion(e.target.value, setSuggestions, setShowPopout);
+                                            },
+                                            required: {
+                                                value: true,
+                                                message: "An ingredient name needs to be entered",
+                                            },
+                                        })}
+                                    />
+                                    {showPopout && (
+                                        <div className="suggestion-popout">
+                                            {suggestions.map((suggestion, index) => (
+                                                <React.Fragment key={suggestion.id}>
+                                                    <div className="suggestion-divider" />
+                                                    <div
+                                                        className="suggestion-item"
+                                                        onClick={() => handleSuggestionClick(suggestion)}
+                                                    >
+                                                        {suggestion.name}
+                                                    </div>
+                                                </React.Fragment>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
 
                                 <div id="form-amount-information">
                                     <input type="number"
@@ -232,10 +273,13 @@ function Pantry() {
                                     />
 
                                     <select id="input-unit"
-                                            {...register("unit")}>
-                                        { allUnits.map( (item, index) => {
-                                            return (<option key={index} value={item}>{item}</option>)
-                                        } ) }
+                                            {...register("unit")}
+                                    >
+                                        {ingredientUnits.map((item, index) => (
+                                            <option key={item} value={item} selected={index === 0}>
+                                                {item}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
@@ -293,18 +337,18 @@ function Pantry() {
                                             )}
                                 />
                             )) : sortedData && sortedData.map(item => (
-                            <PantryItem key={item.id}
-                                        ingredient={ new Ingredient (
-                                            item.id,
-                                            item.name,
-                                            item.possibleUnits,
-                                            item.unit,
-                                            item.type,
-                                            item.imagePath,
-                                            item.amount,
-                                            item.expiryDate,
-                                        )}
-                            />
+                                <PantryItem key={item.id}
+                                            ingredient={ new Ingredient (
+                                                item.id,
+                                                item.name,
+                                                item.possibleUnits,
+                                                item.unit,
+                                                item.type,
+                                                item.imagePath,
+                                                item.amount,
+                                                item.expiryDate,
+                                            )}
+                                />
                         ))}
                     </div>
                 </div>

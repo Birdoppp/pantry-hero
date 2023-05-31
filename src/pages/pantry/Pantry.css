@@ -33,6 +33,16 @@
     margin: 14px 0;
 }
 
+#input-name {
+    border: 2px solid var(--color-dark-green);
+    width: 100%;
+}
+
+#input-name.show {
+    border-radius: 13px 13px 0 0;
+    border-bottom: none;
+}
+
 #form-amount-information {
     display: flex;
     justify-content: space-between;
@@ -53,6 +63,10 @@
     gap: 16px;
 }
 
+#input-unit {
+    max-width: 100px;
+}
+
 #input-date::-webkit-calendar-picker-indicator {
     background-image: url('../../assets/icon-date.svg');
 }
@@ -69,7 +83,48 @@
     flex: 0 1 100%;
     flex-wrap: wrap;
     gap: 20px;
-    height: 700px;
+    height: 85vh;
     padding-bottom: 50px;
     overflow-y: scroll;
+}
+
+/* ----------- Suggestions ----------- */
+.input-wrapper {
+    position: relative;
+}
+
+.suggestion-popout {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-white);
+    border: 2px solid var(--color-dark-green);
+    border-radius: 0 0 13px 13px;
+    border-top-width: 0;
+    z-index: 1;
+}
+
+.suggestion-item {
+    font-family: 'Alkatra', cursive;
+    text-align: left;
+    color: var(--color-dark-green);
+    opacity: 75%;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: var(--color-light-green);
+    border-radius: 13px;
+}
+
+.suggestion-divider {
+    height: 1px;
+    background: var(--color-dark-green);
+    opacity: 15%;
+    width: 90%;
+    align-self: center;
 }

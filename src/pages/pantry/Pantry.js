@@ -172,7 +172,7 @@ function Pantry() {
 
     function handleSuggestionClick(suggestion) {
         setValue("name", suggestion.name);
-        setValue("unit", suggestion.possibleUnits[0]);
+        //setValue("unit", suggestion.possibleUnits[0]);
         setValue("type", suggestion.aisle);
         setValue("image", suggestion.image);
         setIngredientUnits( suggestion.possibleUnits );
@@ -273,12 +273,13 @@ function Pantry() {
                                     />
 
                                     <select id="input-unit"
-                                            {...register("unit")}>
-                                        { ingredientUnits.map( (item, index) => {
-                                            return (
-                                                <option key={index} value={item} selected={index === 0}>{item}</option>
-                                            )
-                                        } ) }
+                                            {...register("unit")}
+                                    >
+                                        {ingredientUnits.map((item, index) => (
+                                            <option key={item} value={item} selected={index === 0}>
+                                                {item}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 

@@ -59,8 +59,14 @@
 }
 
 #check-no-expiry {
+    padding-left: 4px;
     display: flex;
-    gap: 16px;
+    align-items: center;
+    gap: 8px;
+}
+
+#expiry-text {
+    padding-top: 3px;
 }
 
 #input-unit {
@@ -100,7 +106,9 @@
     top: 100%;
     left: 0;
     width: 100%;
-    background-color: var(--color-white);
+    max-height: 150px;
+    overflow-y: scroll;
+    background-color: white;
     border: 2px solid var(--color-dark-green);
     border-radius: 0 0 13px 13px;
     border-top-width: 0;
@@ -122,9 +130,9 @@
 }
 
 .suggestion-divider {
-    height: 1px;
+    min-height: 1px;
     background: var(--color-dark-green);
-    opacity: 15%;
+    opacity: 100%;
     width: 90%;
     align-self: center;
 }

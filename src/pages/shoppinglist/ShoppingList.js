@@ -5,6 +5,8 @@ import Dashboard from "../../components/Dashboard/Dashboard";
 import FilterSelector from "../../components/FilterSelector/FilterSelector";
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "../../features/Database/db";
+import ListItem from "../../constructors/ListItem/ListItem";
+import ShoppingItem from "../../components/ShoppingItem/ShoppingItem";
 
 function ShoppingList(props) {
     const [sortOption, setSortOption] = useState("A-Z");
@@ -47,16 +49,15 @@ function ShoppingList(props) {
     }, [myShoppingList, sortOption]);
 
     // DATABASE FUNCTIONS
-    async function addItem( name, unit, type, imagePath, amount, expiryDate ) {
+    async function addItem( name, amount, unit, possibleUnits, type, ) {
 
         try{
             const id = await db.pantry.add( {
                 name,
-                unit,
-                type,
-                imagePath,
                 amount,
-                expiryDate
+                unit,
+                possibleUnits,
+                type,
             } )
         } catch ( e ) {
             console.error( e )
@@ -72,6 +73,8 @@ function ShoppingList(props) {
     const handleSortByType = () => {
         setSortOption("type");
     };
+
+    const testItem = new ListItem(10, "testName", 500, "g", ["g", "oz"], "other");
 
     return (
         <div>
@@ -93,9 +96,14 @@ function ShoppingList(props) {
                                  <button onClick={ handleSortByType }>type</button>
                              </FilterSelector>
                          </div>
+                         <div>
+                             <h3>Add item:</h3>
+                         </div>
                      </Dashboard>
+                    <div id="list-items-overview">
+                        <ShoppingItem listItem={testItem}/>
+                    </div>
                 </div>
-
             </PageContainer>
         </div>
     );

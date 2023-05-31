@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./FilterSelector.css"
 
 function FilterSelector({ children }) {
-    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(null);
+    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(0);
 
     const handleButtonClick = (buttonIndex) => {
         setHighlightedButtonIndex(buttonIndex);

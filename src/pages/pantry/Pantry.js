@@ -33,7 +33,7 @@ function Pantry() {
     // API:
     const [suggestions, setSuggestions] = useState([]);
     const [showPopout, setShowPopout] = useState(false);
-    const [ingredientUnits, setIngredientUnits] = useState(allUnits)
+    const [ingredientUnits, setIngredientUnits] = useState(allUnits);
 
 
     function formatNumber(number) {
@@ -90,6 +90,7 @@ function Pantry() {
     useEffect(() => {
         setExpiredCount(getExpiryItemsCount(0));
     }, [myPantry]);
+
 
 
     // DATABASE FUNCTIONS
@@ -172,11 +173,12 @@ function Pantry() {
 
     function handleSuggestionClick(suggestion) {
         setValue("name", suggestion.name);
-        //setValue("unit", suggestion.possibleUnits[0]);
+        setValue("unit", suggestion.possibleUnits[0]);
         setValue("type", suggestion.aisle);
         setValue("image", suggestion.image);
         setIngredientUnits( suggestion.possibleUnits );
 
+        console.log(suggestion.possibleUnits[0])
         setSuggestions([]);
         setShowPopout(false);
     }
@@ -273,10 +275,13 @@ function Pantry() {
                                     />
 
                                     <select id="input-unit"
-                                            {...register("unit")}
+                                            value={watch("unit")}
+                                            {...register("unit", {
+                                                defaultValue: ingredientUnits[0],
+                                            } ) }
                                     >
-                                        {ingredientUnits.map((item, index) => (
-                                            <option key={item} value={item} selected={index === 0}>
+                                        {ingredientUnits.map((item) => (
+                                            <option key={item} value={item}>
                                                 {item}
                                             </option>
                                         ))}
@@ -293,13 +298,13 @@ function Pantry() {
 
                                 <div id="check-no-expiry">
                                     <Checkbox
-                                        id="input-no-expiry"
                                         checked={ isExpiryInfinite }
                                         clickHandler={ handleCheckboxChange }
                                         registerHandler={ register( "infiniteExpiry" ) }
+                                        isLarge={ false }
                                     />
 
-                                    <span>Ingredient does not expire</span>
+                                    <span id="expiry-text">Ingredient does not expire</span>
                                 </div>
 
                                 <div id="form-handler-buttons">

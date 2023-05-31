@@ -1,0 +1,12 @@
+#shoppinglist-overview {
+    gap: 50px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+#list-items-overview {
+    width: 100%;
+    align-self: flex-start;
+}
+

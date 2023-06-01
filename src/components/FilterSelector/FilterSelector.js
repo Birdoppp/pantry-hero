@@ -12,12 +12,6 @@ function FilterSelector({ children }) {
         }, 0);
     };
 
-    useEffect(() => {
-        if (highlightedButtonIndex !== null && (highlightedButtonIndex < 0 || highlightedButtonIndex >= children.length)) {
-            setHighlightedButtonIndex(null);
-        }
-    }, [children, highlightedButtonIndex]);
-
     return (
         <div className="button-group">
             {React.Children.map(children, (child, index) => {

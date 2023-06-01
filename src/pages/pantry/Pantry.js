@@ -15,9 +15,9 @@ import PageContainer from "../../components/PageContainer/PageContainer";
 
 import "./Pantry.css"
 
+export const allUnits = [ "teaspoon", "tablespoon", "cup", "fluid ounce", "pint", "quart", "gallon", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "drop", "sprig", "slice", "piece", "can", "bottle" ];
 
 function Pantry() {
-    const allUnits = ["piece", "slice", "fruit", "g", "oz", "cup", "serving"];
 
     // VARIABLES
     const {register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
@@ -32,6 +32,7 @@ function Pantry() {
 
     // API:
     const [suggestions, setSuggestions] = useState([]);
+    const [isInputFocused, setIsInputFocused] = useState(false);
     const [showPopout, setShowPopout] = useState(false);
     const [ingredientUnits, setIngredientUnits] = useState(allUnits);
 
@@ -178,7 +179,6 @@ function Pantry() {
         setValue("image", suggestion.image);
         setIngredientUnits( suggestion.possibleUnits );
 
-        console.log(suggestion.possibleUnits[0])
         setSuggestions([]);
         setShowPopout(false);
     }
@@ -232,7 +232,7 @@ function Pantry() {
                                     <input
                                         type="text"
                                         id="input-name"
-                                        className={ showPopout? "show" : "" }
+                                        className={ showPopout && isInputFocused ? "show" : "" }
                                         placeholder="name"
                                         autoComplete="off"
                                         {...register("name", {
@@ -244,10 +244,16 @@ function Pantry() {
                                                 message: "An ingredient name needs to be entered",
                                             },
                                         })}
+                                        onBlur={ () => {
+                                            setTimeout( () => {setIsInputFocused(false)}, 200 );
+                                        } }
+                                        onFocus={ () => {
+                                            setIsInputFocused(true);
+                                        } }
                                     />
-                                    {showPopout && (
+                                    {showPopout && isInputFocused && (
                                         <div className="suggestion-popout">
-                                            {suggestions.map((suggestion, index) => (
+                                            {suggestions.map((suggestion) => (
                                                 <React.Fragment key={suggestion.id}>
                                                     <div className="suggestion-divider" />
                                                     <div

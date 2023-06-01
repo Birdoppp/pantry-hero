@@ -3,6 +3,7 @@ import {db} from "../../features/Database/db";
 import Checkbox from "../Checkbox/Checkbox";
 import "./ShoppingItem.css"
 import {ReactComponent as DeleteIcon} from "../../assets/icon-delete.svg";
+import ConfirmationPopup from "../ConfirmationPopup/ConfirmationPopup";
 
 
 function ShoppingItem( { listItem } ) {
@@ -31,19 +32,22 @@ function ShoppingItem( { listItem } ) {
                 id={"shopping-item-name"}
                 className={ isItemChecked? "shopping-item-name-checked" : "shopping-item-name-unchecked"}
             >
-                 {listItem.Name}
+                 <p>{ listItem.Name.charAt(0).toUpperCase() + listItem.Name.slice(1) }</p>
             </div>
 
-            <button
-                type="button"
-                className="list-item-button hidden-element"
-                onClick={ () => {
-                    console.log("Clicked delete button")
-                }
-                }
-            >
-                <DeleteIcon/>
-            </button>
+            <div id="shopping-item-buttons">
+                <button
+                    type="button"
+                    className="list-item-button hidden-element"
+                    onClick={ () => {
+                            setShowPopup( true );
+                        }
+                    }
+                >
+                    <DeleteIcon/>
+                </button>
+            </div>
+
 
             <div id="shopping-item-amount">
                 <span>{amount}</span>
@@ -55,6 +59,17 @@ function ShoppingItem( { listItem } ) {
                 clickHandler={ handleCheckboxChange }
                 isLarge={ true }
             />
+
+            {showPopup && (
+                <ConfirmationPopup message={`Are you sure you want to delete ${listItem.Name} from your list?`}
+                                   onConfirm={ () => {
+                                       handleConfirmation(true);
+                                   }}
+                                   onCancel={ () => {
+                                       handleConfirmation(false);
+                                   } }
+                />
+            )}
         </article>
     );
 }

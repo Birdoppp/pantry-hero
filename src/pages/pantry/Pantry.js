@@ -15,7 +15,7 @@ import PageContainer from "../../components/PageContainer/PageContainer";
 
 import "./Pantry.css"
 
-export const allUnits = [ "teaspoon", "tablespoon", "cup", "fluid ounce", "pint", "quart", "gallon", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "drop", "sprig", "slice", "piece", "can", "bottle" ];
+export const allUnits = [ "package", "teaspoon", "tablespoon", "cup", "fluid ounce", "pint", "quart", "gallon", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "drop", "sprig", "slice", "piece", "can", "bottle" ];
 
 export async function addIngredientToPantry ( name, unit, possibleUnits, type, imagePath, amount, expiryDate ) {
     let ingredientExpiryDays = null;

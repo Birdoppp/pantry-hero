@@ -40,7 +40,6 @@ function PantryItem ( { ingredient } ) {
             }
             setter(false);
         } else {
-
             setter(false);
         }
     }
@@ -49,6 +48,8 @@ function PantryItem ( { ingredient } ) {
         try {
             const thisIngredient = await db.pantry.get(ingredient.id);
 
+            const ingredientExpiresInDays = thisIngredient.ingredientExpiryDays;
+
             addItemToShoppingList(
                 thisIngredient.name,
                 listItemUnit,
@@ -56,7 +57,7 @@ function PantryItem ( { ingredient } ) {
                 thisIngredient.type,
                 thisIngredient.imagePath,
                 addListItemAmount,
-                thisIngredient.ingredientExpiresInDays,
+                ingredientExpiresInDays,
                 false
             )
         } catch ( e ) {

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useLiveQuery} from "dexie-react-hooks";
 import {useForm} from "react-hook-form";
-import {db} from "../../features/Database/db";
+import {db, checkIfEntryExists} from "../../features/Database/db";
 import {allUnits} from "../pantry/Pantry";
 import {fetchIngredientSuggestion} from "../../features/API/Spoonacular";
+import {addIngredientToPantry} from "../pantry/Pantry";
 
 import Button from "../../components/Button/Button";
 import PageContainer from "../../components/PageContainer/PageContainer";
@@ -42,6 +43,7 @@ function ShoppingList() {
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [showPopout, setShowPopout] = useState(false);
     const [ingredientUnits, setIngredientUnits] = useState(allUnits);
+    const [hasCheckedItem, setHasCheckedItem] = useState( false)
 
     const searchItems = async (query) => {
         if (query.trim() === "") {
@@ -71,6 +73,13 @@ function ShoppingList() {
             setSortedData(sorted);
         }
     }, [myShoppingList, sortOption]);
+
+    useEffect( () => {
+        if (myShoppingList) {
+            checkIfEntryExists( db.shoppinglist, "checked", true).then( (data) => setHasCheckedItem(data));
+        }
+    }, [myShoppingList])
+
 
     // DATABASE FUNCTIONS
 
@@ -118,6 +127,32 @@ function ShoppingList() {
         setShowPopout(false);
     }
 
+    async function handleCheckedItemsToPantry () {
+        try {
+            const items = await db.shoppinglist.toArray();
+
+            items.map( (item) => {
+                if (item.checked === true) {
+                    if (item.type !== "Other") {
+                        console.log(item)
+                        addIngredientToPantry(
+                            item.name,
+                            item.unit,
+                            item.possibleUnits,
+                            item.type,
+                            item.imagePath,
+                            item.amount,
+                        );
+                    }
+
+                    db.shoppinglist.delete(item.id);
+                }
+            } )
+        } catch ( e ) {
+            console.error( e );
+        }
+    }
+
     return (
         <div>
             <PageContainer
@@ -137,6 +172,18 @@ function ShoppingList() {
                                 <button onClick={ handleSortByType }>type</button>
                             </FilterSelector>
                         </div>
+
+                        {hasCheckedItem && (
+                            <div>
+                                <Button
+                                    textValue="Add checked items to pantry"
+                                    type="button"
+                                    clickHandler={ handleCheckedItemsToPantry }
+                                    filledStatus={ true }
+                                />
+                            </div>
+                        )}
+
                         <div>
                             <h3>Add item:</h3>
                             <form id="shopping-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>

@@ -1,16 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {db} from "../../features/Database/db";
 import Checkbox from "../Checkbox/Checkbox";
 import "./ShoppingItem.css"
 import {ReactComponent as DeleteIcon} from "../../assets/icon-delete.svg";
-import ConfirmationPopup from "../ConfirmationPopup/ConfirmationPopup";
+import Popup from "../Popup/Popup";
 
 
 function ShoppingItem( { listItem } ) {
     const [ amount, setAmount ] = React.useState(listItem.getAmount());
     const [ showPopup, setShowPopup ] = React.useState(false);
-    const [ isItemChecked, setIsItemChecked ] = React.useState(false);
-    const [ isHovered, setIsHovered ] = React.useState(false)
+    const [ isItemChecked, setIsItemChecked ] = React.useState(listItem.Checked);
 
     // HANDLERS:
     function handleConfirmation( bool ) {
@@ -25,6 +24,11 @@ function ShoppingItem( { listItem } ) {
     function handleCheckboxChange() {
         setIsItemChecked( prev => !prev );
     }
+
+    useEffect( () => {
+        db.shoppinglist.update(listItem.id, {checked: isItemChecked});
+        // db.shoppinglist.toArray().then(data => console.log(data));
+    }, [listItem.id, isItemChecked]);
 
     return (
         <article className={`shopping-item ${isItemChecked? "checked" : ""}`}>
@@ -61,14 +65,16 @@ function ShoppingItem( { listItem } ) {
             />
 
             {showPopup && (
-                <ConfirmationPopup message={`Are you sure you want to delete ${listItem.Name} from your list?`}
-                                   onConfirm={ () => {
+                <Popup message={`Are you sure you want to delete ${listItem.Name} from your list?`}
+                       onConfirm={ () => {
                                        handleConfirmation(true);
                                    }}
-                                   onCancel={ () => {
+                       onCancel={ () => {
                                        handleConfirmation(false);
                                    } }
-                />
+                >
+                    <p>Are you sure you want to delete {listItem.Name} from your list?</p>
+                </Popup>
             )}
         </article>
     );

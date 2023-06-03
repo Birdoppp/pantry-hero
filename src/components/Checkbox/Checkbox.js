@@ -4,7 +4,7 @@ import { ReactComponent as Checkmark } from '../../assets/icon-check.svg';
 
 function Checkbox({ checked, clickHandler, registerHandler, isLarge }) {
     function handleChange() {
-        console.log("checkbox clicked");
+        // Empty function to solve onChange necessity.
     }
 
     return (

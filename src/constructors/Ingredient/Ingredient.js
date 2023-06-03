@@ -14,8 +14,7 @@ function Ingredient(
     this.PossibleUnits = possibleUnits;
     this.Unit = unit;
     this.Type = type;
-    this.ImagePath =
-        "https://spoonacular.com/cdn/ingredients_100x100/" + imagePath;
+    this.ImagePath = imagePath;
     this.Amount = amount;
     this.ExpiryDate = new Date(expiryDate);
 
@@ -30,6 +29,10 @@ function Ingredient(
             return null;
         }
     };
+
+    this.getImage = () => {
+        return "https://spoonacular.com/cdn/ingredients_100x100/" + imagePath;
+    }
 
     this.getAmount = () => {
         return this.Amount;

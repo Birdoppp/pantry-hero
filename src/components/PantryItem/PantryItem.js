@@ -1,7 +1,8 @@
 import React from "react";
 import "./PantryItem.css";
 import {db} from "../../features/Database/db";
-import ConfirmationPopup from "../ConfirmationPopup/ConfirmationPopup";
+import Popup from "../Popup/Popup";
+import { addItemToShoppingList } from "../../pages/shoppinglist/ShoppingList";
 
 /* Images */
 import {ReactComponent as IconAddToList} from "../../assets/icon-add_to_list.svg";
@@ -12,8 +13,11 @@ import {ReactComponent as IconIncreaseAmount} from "../../assets/icon-add.svg";
 
 function PantryItem ( { ingredient } ) {
     const expiry = ingredient.getExpiry();
-    const [amount, setAmount] = React.useState(ingredient.getAmount());
-    const [ showPopup, setShowPopup ] = React.useState(false);
+    const [ amount, setAmount ] = React.useState(ingredient.getAmount());
+    const [ showDeletePopup, setShowDeletePopup ] = React.useState(false);
+    const [ showAddToListPopup, setShowAddToListPopup ] = React.useState(false);
+    const [ addListItemAmount, setAddListItemAmount ] = React.useState(0);
+    const [ listItemUnit, setListItemUnit ] = React.useState(ingredient.Unit);
 
     let expiryClass = "expiry-information";
 
@@ -29,25 +33,47 @@ function PantryItem ( { ingredient } ) {
         expiryClass += " no-expiry"
     }
 
-    function handleConfirmation( bool ) {
+    function handleConfirmation( bool, setter, callBack ) {
         if (bool) {
-            db.pantry.delete(ingredient.id);
-            setShowPopup(false);
+            if (callBack) {
+                callBack();
+            }
+            setter(false);
         } else {
-            setShowPopup(false);
+
+            setter(false);
+        }
+    }
+
+    async function handleAddItemToShoppingList( ) {
+        try {
+            const thisIngredient = await db.pantry.get(ingredient.id);
+
+            addItemToShoppingList(
+                thisIngredient.name,
+                listItemUnit,
+                thisIngredient.possibleUnits,
+                thisIngredient.type,
+                thisIngredient.imagePath,
+                addListItemAmount,
+                thisIngredient.ingredientExpiresInDays,
+                false
+            )
+        } catch ( e ) {
+            console.error( e )
         }
     }
 
     return (
         <article className="pantry-item">
             <div className="pantry-image-container">
-                <img src={ ingredient.ImagePath } alt={ ingredient.Name }/>
+                <img src={ ingredient.getImage() } alt={ ingredient.Name }/>
 
                 <nav className="ingredient-options">
                     <button
                         type="button"
                         onClick={ () => {
-                            console.log("Clicked add to list");
+                            setShowAddToListPopup(true);
                         }
                     }>
                         <IconAddToList className="pantry-item-icon"/>
@@ -56,7 +82,7 @@ function PantryItem ( { ingredient } ) {
                     <button
                         type="button"
                         onClick={ () => {
-                            setShowPopup(true);
+                            setShowDeletePopup(true);
                         }
                     }>
                         <IconRemoveFromPantry className="pantry-item-icon"/>
@@ -114,15 +140,60 @@ function PantryItem ( { ingredient } ) {
                     </button>
                 </div>
 
-                {showPopup && (
-                    <ConfirmationPopup message={`Are you sure you want to delete ${ingredient.Name} from your list?`}
-                                       onConfirm={ () => {
-                                           handleConfirmation(true);
-                                       }}
-                                       onCancel={ () => {
-                                           handleConfirmation(false);
-                                       } }
-                    />
+                {showDeletePopup && (
+                    <Popup
+                       onConfirm={ () => {
+                           handleConfirmation(
+                               true,
+                                setShowDeletePopup,
+                               () => { db.pantry.delete(ingredient.id) }
+                           );
+                       } }
+                       onCancel={ () => {
+                           handleConfirmation(false, setShowDeletePopup);
+                       } }
+                    >
+                        <p>Are you sure you want to delete {ingredient.Name} from your list?</p>
+                    </Popup>
+                )}
+
+                {showAddToListPopup && (
+                    <Popup
+                        onConfirm={ () => {
+                           handleConfirmation(
+                               true,
+                                setShowAddToListPopup,
+                                handleAddItemToShoppingList
+                           );
+                        } }
+                        onCancel={ () => {
+                           handleConfirmation(false, setShowAddToListPopup);
+                           setAddListItemAmount(0);
+                        } }>
+                        <p>Set the amount of {ingredient.Name} you want to add to your shopping list:</p>
+
+                        <div id="form-amount-information">
+                            <input type="number"
+                                   id="input-amount"
+                                   placeholder="amount"
+                                   onChange={ ( e ) => {
+                                       setAddListItemAmount( e.target.valueAsNumber );
+                                   } }
+                            />
+
+                            <select
+                                id="input-unit"
+                                onChange={ ( e ) => { setListItemUnit(e.target.value) } }
+                                value={ listItemUnit }
+                            >
+                                {ingredient.PossibleUnits.map((item) => (
+                                    <option key={item} value={item}>
+                                        {item}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </Popup>
                 )}
 
             </div>

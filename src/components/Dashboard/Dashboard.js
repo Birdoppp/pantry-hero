@@ -10,7 +10,7 @@ function Dashboard( { children } ) {
                 return (
                 <React.Fragment key={ index }>
                     { child }
-                    { index !== childElements.length - 1 &&  <div className="divider"></div>}
+                    { index !== childElements.length - 1 && React.isValidElement(child) && child.props.hasOwnProperty('children') && <div className="divider"></div>}
                 </React.Fragment>
             )
             } ) }

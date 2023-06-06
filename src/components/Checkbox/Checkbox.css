@@ -1,17 +1,15 @@
 .lbl-checkbox {
-    margin: 4px;
     position: relative;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
 }
 
-.lbl-checkbox input[type="checkbox"] {
+.lbl-checkbox input[type='checkbox'] {
     display: none;
 }
 
 .lbl-checkbox .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 15px;
     height: 15px;
     border: 2px solid var(--color-dark-green);
@@ -22,10 +20,15 @@
     align-items: center;
 }
 
-.lbl-checkbox input[type="checkbox"]:checked + .checkmark {
+.lbl-checkbox input[type='checkbox']:checked + .checkmark {
     background-color: var(--color-dark-green);
 }
 
-.lbl-checkbox input[type="checkbox"]:checked + .checkmark svg {
+.lbl-checkbox input[type='checkbox']:checked + .checkmark .checkmark-icon {
     fill: var(--color-white);
+}
+
+.large {
+    min-width: 24px;
+    min-height: 24px;
 }

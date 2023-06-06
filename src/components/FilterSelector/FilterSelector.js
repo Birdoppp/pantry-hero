@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./FilterSelector.css"
 
 function FilterSelector({ children }) {
-    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(null);
+    const [highlightedButtonIndex, setHighlightedButtonIndex] = useState(0);
 
     const handleButtonClick = (buttonIndex) => {
         setHighlightedButtonIndex(buttonIndex);
@@ -11,12 +11,6 @@ function FilterSelector({ children }) {
             children[buttonIndex].props.onClick();
         }, 0);
     };
-
-    useEffect(() => {
-        if (highlightedButtonIndex !== null && (highlightedButtonIndex < 0 || highlightedButtonIndex >= children.length)) {
-            setHighlightedButtonIndex(null);
-        }
-    }, [children, highlightedButtonIndex]);
 
     return (
         <div className="button-group">

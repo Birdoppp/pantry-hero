@@ -24,8 +24,6 @@ async function fetchIngredientSuggestion ( input, setData, showPopout ){
         } )
         const data = result.data;
 
-        console.log(data)
-
         setData( data );
         showPopout( data.length > 0 );
     } catch ( e ) {

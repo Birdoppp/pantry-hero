@@ -1,0 +1,79 @@
+#shoppinglist-overview {
+    gap: 50px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+#list-items-overview {
+    width: 100%;
+    align-self: flex-start;
+}
+
+#shopping-add-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: flex-start;
+    margin: 14px 0;
+}
+
+#input-name {
+    border: 2px solid var(--color-dark-green);
+    width: 100%;
+}
+
+#input-name.show {
+    border-radius: 13px 13px 0 0;
+    border-bottom: none;
+}
+
+#form-amount-information {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+#form-amount-information input {
+    max-width: 125px;
+}
+
+#form-handler-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+#input-unit {
+    max-width: 100px;
+}
+
+#list-items-overview {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    flex: 0 1 100%;
+    gap: 12px;
+    height: 85vh;
+    padding-bottom: 80px;
+    overflow-y: scroll;
+}
+
+.type-title {
+    font-family: 'Alkatra', cursive;
+    font-weight: bold;
+    font-size: 25px;
+    color: var(--color-dark-green);
+    position: relative;
+    align-self: flex-start;
+}
+
+.type-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 4px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-dark-green);
+    border-radius: 1px;
+}

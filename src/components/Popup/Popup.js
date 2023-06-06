@@ -1,12 +1,14 @@
 import React from "react";
-import "./ConformationPopup.css"
+import "./Popup.css"
 import Button from "../Button/Button";
 
-function ConfirmationPopup ( {message, onConfirm, onCancel } ) {
+function Popup ({children, onConfirm, onCancel } ) {
     return (
         <div className="popup-container">
             <div className="popup">
-                <p>{message}</p>
+
+                <div className="content">{ children }</div>
+
                 <div className="buttons">
                     <Button
                         textValue="Cancel"
@@ -26,4 +28,4 @@ function ConfirmationPopup ( {message, onConfirm, onCancel } ) {
     );
 }
 
-export default ConfirmationPopup;
+export default Popup;

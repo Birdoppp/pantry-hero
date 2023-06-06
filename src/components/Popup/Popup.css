@@ -17,6 +17,8 @@
     font-weight: bold;
     border-radius: 13px;
     max-width: 288px;
+    max-height: 75vh;
+    overflow-y: scroll;
     box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
 }
 
@@ -31,4 +33,10 @@
     justify-content: center;
     gap: 12px;
     margin-top: 20px;
+}
+
+.listed-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }

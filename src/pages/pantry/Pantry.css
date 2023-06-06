@@ -73,14 +73,6 @@
     max-width: 100px;
 }
 
-#input-date::-webkit-calendar-picker-indicator {
-    background-image: url('../../assets/icon-date.svg');
-}
-
-#input-date::-webkit-calendar-picker-indicator path {
-    fill: var(--color-dark-green);
-}
-
 /* ----------- Pantry ingredients overview ----------- */
 #ingredients-overview {
     position: relative;
@@ -91,6 +83,7 @@
     gap: 20px;
     height: 85vh;
     padding-bottom: 50px;
+    padding-right: 10px;
     overflow-y: scroll;
 }
 

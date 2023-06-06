@@ -3,6 +3,7 @@ import {db} from "../../features/Database/db";
 import Checkbox from "../Checkbox/Checkbox";
 import "./ShoppingItem.css"
 import {ReactComponent as DeleteIcon} from "../../assets/icon-delete.svg";
+import handleConfirmation from "../../helpers/handleConfirmation";
 import Popup from "../Popup/Popup";
 
 
@@ -12,17 +13,21 @@ function ShoppingItem( { listItem } ) {
     const [ isItemChecked, setIsItemChecked ] = React.useState(listItem.Checked);
 
     // HANDLERS:
-    function handleConfirmation( bool ) {
-        if (bool) {
-            db.shoppinglist.delete(listItem.id);
-            setShowPopup(false);
-        } else {
-            setShowPopup(false);
-        }
-    }
+    // function handleConfirmation( bool ) {
+    //     if (bool) {
+    //
+    //         setShowPopup(false);
+    //     } else {
+    //         setShowPopup(false);
+    //     }
+    // }
 
     function handleCheckboxChange() {
         setIsItemChecked( prev => !prev );
+    }
+
+    function handleDeleteFromShoppinglist() {
+        db.shoppinglist.delete(listItem.id);
     }
 
     useEffect( () => {
@@ -67,10 +72,10 @@ function ShoppingItem( { listItem } ) {
             {showPopup && (
                 <Popup message={`Are you sure you want to delete ${listItem.Name} from your list?`}
                        onConfirm={ () => {
-                                       handleConfirmation(true);
+                                       handleConfirmation( true, setShowPopup, handleDeleteFromShoppinglist );
                                    }}
                        onCancel={ () => {
-                                       handleConfirmation(false);
+                                       handleConfirmation(false, setShowPopup );
                                    } }
                 >
                     <p>Are you sure you want to delete {listItem.Name} from your list?</p>

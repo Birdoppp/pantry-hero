@@ -5,6 +5,7 @@ import {db, checkIfEntryExists} from "../../features/Database/db";
 import {allUnits} from "../pantry/Pantry";
 import {fetchIngredientSuggestion} from "../../features/API/Spoonacular";
 import {addIngredientToPantry} from "../pantry/Pantry";
+import handleConfirmation from "../../helpers/handleConfirmation";
 
 import Button from "../../components/Button/Button";
 import PageContainer from "../../components/PageContainer/PageContainer";
@@ -14,6 +15,8 @@ import ListItem from "../../constructors/ListItem/ListItem";
 import ShoppingItem from "../../components/ShoppingItem/ShoppingItem";
 
 import "./ShoppingList.css"
+import Popup from "../../components/Popup/Popup";
+import {logDOM} from "@testing-library/react";
 
 export async function addItemToShoppingList( name, unit, possibleUnits, type, imagePath, amount, ingredientExpiresInDays, checked ) {
 
@@ -43,7 +46,9 @@ function ShoppingList() {
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [showPopout, setShowPopout] = useState(false);
     const [ingredientUnits, setIngredientUnits] = useState(allUnits);
-    const [hasCheckedItem, setHasCheckedItem] = useState( false)
+    const [hasCheckedItem, setHasCheckedItem] = useState( false);
+    const [showAddToPantryPopup, setShowAddToPantryPopup] = useState(false);
+    const [pantryItemDates, setPantryItemDates] = useState({});
 
     const searchItems = async (query) => {
         if (query.trim() === "") {
@@ -80,8 +85,43 @@ function ShoppingList() {
         }
     }, [myShoppingList])
 
+    useEffect(() => {
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        if (sortedData) {
+            const updatedDates = sortedData.reduce((dates, item) => {
+                if (item.checked && item.type !== "Other") {
+                    if (item.ingredientExpiresInDays !== null) {
+                        const expiresInDays = item.ingredientExpiresInDays || 0;
+                        const expirationDate = new Date();
+
+                        expirationDate.setDate(expirationDate.getDate() + expiresInDays);
+                        const formattedExpirationDate = expirationDate.toISOString().split('T')[0];
+
+                        dates[item.id] = formattedExpirationDate || currentDate;
+                    } else {
+                        dates[item.id] = null;
+                    }
+                }
+                return dates;
+            }, {});
+
+            setPantryItemDates(updatedDates);
+        }
+    }, [sortedData]);
 
     // DATABASE FUNCTIONS
+    async function getCheckedItems () {
+        try {
+            const items = await db.shoppinglist.toArray();
+
+            const checkedItems = items.filter( item => item.checked === true );
+
+            return checkedItems;
+        } catch ( e ) {
+            console.error( e );
+        }
+    }
 
     // HANDLERS
     function handleFormSubmit( data ) {
@@ -127,27 +167,33 @@ function ShoppingList() {
         setShowPopout(false);
     }
 
-    async function handleCheckedItemsToPantry () {
+    function handleDateChange(itemId, date) {
+        setPantryItemDates((prevDates) => ({
+            ...prevDates,
+            [itemId]: date
+        }));
+    }
+
+    async function handleCheckedItemsToPantry() {
         try {
-            const items = await db.shoppinglist.toArray();
+            const checkedItems = await getCheckedItems();
 
-            items.map( (item) => {
-                if (item.checked === true) {
-                    if (item.type !== "Other") {
-                        console.log(item)
-                        addIngredientToPantry(
-                            item.name,
-                            item.unit,
-                            item.possibleUnits,
-                            item.type,
-                            item.imagePath,
-                            item.amount,
-                        );
-                    }
-
-                    db.shoppinglist.delete(item.id);
+            for (const item of checkedItems) {
+                if (item.type !== "Other") {
+                    const date = pantryItemDates[item.id];
+                    await addIngredientToPantry(
+                        item.name,
+                        item.unit,
+                        item.possibleUnits,
+                        item.type,
+                        item.imagePath,
+                        item.amount,
+                        date
+                    );
                 }
-            } )
+
+                await db.shoppinglist.delete(item.id);
+            }
         } catch ( e ) {
             console.error( e );
         }
@@ -178,7 +224,9 @@ function ShoppingList() {
                                 <Button
                                     textValue="Add checked items to pantry"
                                     type="button"
-                                    clickHandler={ handleCheckedItemsToPantry }
+                                    clickHandler={ () => {
+                                        setShowAddToPantryPopup( true )
+                                    } }
                                     filledStatus={ true }
                                 />
                             </div>
@@ -335,6 +383,41 @@ function ShoppingList() {
                     </div>
                 </div>
             </PageContainer>
+
+            {showAddToPantryPopup && (
+                <Popup
+                    onConfirm={ () => {
+                        handleConfirmation(
+                            true,
+                            setShowAddToPantryPopup,
+                            handleCheckedItemsToPantry
+                        )
+                    } }
+                    onCancel={ () => {
+                        handleConfirmation(
+                            false,
+                            setShowAddToPantryPopup
+                        )
+                    } }>
+                    <h3>Enter expiry dates:</h3>
+                    {sortedData &&
+                        sortedData
+                            .filter( (item) => item.checked && item.type !== "Other" )
+                            .map((item, index) => (
+                                <div
+                                    className="listed-input"
+                                    key={item.id}>
+                                    <hr/>
+                                    <p>{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }:</p>
+                                    <input
+                                        type="date"
+                                        value={pantryItemDates[item.id] || ""}
+                                        onChange={(e) => handleDateChange(item.id, e.target.value)}
+                                    />
+                                </div>
+                            ))}
+                </Popup>
+            )}
         </div>
     );
 }

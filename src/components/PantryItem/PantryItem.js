@@ -3,6 +3,7 @@ import "./PantryItem.css";
 import {db} from "../../features/Database/db";
 import Popup from "../Popup/Popup";
 import { addItemToShoppingList } from "../../pages/shoppinglist/ShoppingList";
+import handleConfirmation from "../../helpers/handleConfirmation";
 
 /* Images */
 import {ReactComponent as IconAddToList} from "../../assets/icon-add_to_list.svg";
@@ -31,17 +32,6 @@ function PantryItem ( { ingredient } ) {
         }
     } else {
         expiryClass += " no-expiry"
-    }
-
-    function handleConfirmation( bool, setter, callBack ) {
-        if (bool) {
-            if (callBack) {
-                callBack();
-            }
-            setter(false);
-        } else {
-            setter(false);
-        }
     }
 
     async function handleAddItemToShoppingList( ) {
@@ -74,7 +64,7 @@ function PantryItem ( { ingredient } ) {
                     <button
                         type="button"
                         onClick={ () => {
-                            setShowAddToListPopup(true);
+                            setShowAddToListPopup(true );
                         }
                     }>
                         <IconAddToList className="pantry-item-icon"/>
@@ -196,7 +186,6 @@ function PantryItem ( { ingredient } ) {
                         </div>
                     </Popup>
                 )}
-
             </div>
         </article>
     )

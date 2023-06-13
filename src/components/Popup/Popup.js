@@ -2,7 +2,7 @@ import React from "react";
 import "./Popup.css"
 import Button from "../Button/Button";
 
-function Popup ({children, onConfirm, onCancel } ) {
+function Popup ({ children, onConfirm, onCancel } ) {
     return (
         <div className="popup-container">
             <div className="popup">

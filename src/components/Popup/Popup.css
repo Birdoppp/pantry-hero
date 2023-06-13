@@ -1,3 +1,13 @@
+/* Table of Contents */
+/*
+1. Popup Container
+2. Popup
+3. Content
+4. Buttons
+5. Listed Input
+*/
+
+/* 1. Popup Container */
 .popup-container {
     position: fixed;
     top: 0;
@@ -11,6 +21,7 @@
     z-index: 3;
 }
 
+/* 2. Popup */
 .popup {
     background-color: var(--color-white);
     padding: 24px;
@@ -22,12 +33,14 @@
     box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
 }
 
+/* 3. Content */
 .content {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+/* 4. Buttons */
 .buttons {
     display: flex;
     justify-content: center;
@@ -35,6 +48,7 @@
     margin-top: 20px;
 }
 
+/* 5. Listed Input */
 .listed-input {
     display: flex;
     flex-direction: column;

@@ -1,6 +1,24 @@
+/* Table of Contents */
+/*
+1. Navigation Bar
+2. App Logo
+3. Page Links
+*/
 
+/* 1. Navigation Bar */
+.navigation-bar {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    padding: 0 50px;
+    background: white;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-/* -------------- LOGO -------------*/
+/* 2. App Logo */
 .app-logo {
     display: flex;
     align-items: center;
@@ -19,39 +37,13 @@
     color: var(--color-black);
 }
 
-/* -------------- NAVIGATION -------------*/
+/* 3. Page Links */
 .page-link-list {
     display: flex;
     gap: 40px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-}
-
-.default-menu-link::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 2px;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-black);
-    border-radius: 1px;
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
-}
-
-.active-menu-link::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 2px;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-black);
-    border-radius: 1px;
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
 }
 
 .page-link {
@@ -63,16 +55,25 @@
     position: relative;
 }
 
-.navigation-bar {
-    position: relative;
+.default-menu-link::after,
+.active-menu-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    height: 2px;
+    background-color: var(--color-black);
+    border-radius: 1px;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.default-menu-link::after {
+    width: 0;
+}
+
+.active-menu-link::after {
     width: 100%;
-    height: 50px;
-    padding: 0 50px;
-    background: white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 li {

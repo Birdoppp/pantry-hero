@@ -1,41 +1,50 @@
-/* ----------- Pantry page ----------- */
+/* Table of Contents */
+/*
+1. Pantry Page
+2. Dashboard
+3. Dashboard Status Overview
+4. Dashboard Add Item
+5. Pantry Ingredients Overview
+6. Suggestions
+*/
+
+/* 1. Pantry Page */
 #pantry-overview {
-    gap: 50px;
     justify-content: flex-start;
     flex-wrap: nowrap;
+    gap: 50px;
 }
 
+/* 2. Dashboard */
 .dashboard {
     align-self: flex-start;
+    overflow-y: scroll;
 }
 
-.dashboard input {
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-}
-
+.dashboard input,
 .dashboard select {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* ----------- Dashboard Status overview ----------- */
+/* 3. Dashboard Status Overview */
 #expiry-overview {
     display: flex;
     justify-content: space-around;
     margin: 14px 0;
 }
 
-/* ----------- Dashboard Add Item ----------- */
+/* 4. Dashboard Add Item */
 #pantry-add-item-form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
     justify-content: flex-start;
+    gap: 14px;
     margin: 14px 0;
 }
 
 #input-name {
-    border: 2px solid var(--color-dark-green);
     width: 100%;
+    border: 2px solid var(--color-dark-green);
 }
 
 #input-name.show {
@@ -45,12 +54,8 @@
 
 #form-amount-information {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 6px;
-}
-
-#form-amount-information input {
-    max-width: 125px;
 }
 
 #form-handler-buttons {
@@ -59,21 +64,25 @@
 }
 
 #check-no-expiry {
-    padding-left: 4px;
     display: flex;
     align-items: center;
     gap: 8px;
+    padding-left: 4px;
 }
 
 #expiry-text {
     padding-top: 3px;
 }
 
-#input-unit {
-    max-width: 100px;
+#input-amount {
+    width: 50%;
 }
 
-/* ----------- Pantry ingredients overview ----------- */
+#input-unit {
+    max-width: 50%;
+}
+
+/* 5. Pantry Ingredients Overview */
 #ingredients-overview {
     position: relative;
     display: flex;
@@ -87,7 +96,7 @@
     overflow-y: scroll;
 }
 
-/* ----------- Suggestions ----------- */
+/* 6. Suggestions */
 .input-wrapper {
     position: relative;
 }

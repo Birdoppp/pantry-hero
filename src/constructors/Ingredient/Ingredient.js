@@ -38,7 +38,7 @@ function Ingredient(
         return this.Amount;
     };
 
-    this.setAmount = (newAmount) => {
+    this.setAmount = ( newAmount ) => {
         this.Amount = newAmount;
     };
 }

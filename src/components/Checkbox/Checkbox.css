@@ -1,34 +1,46 @@
+/* Table of Contents */
+/*
+1. Checkbox Container
+2. Checkbox Input
+3. Checkbox Checkmark
+4. Checked Checkbox Styles
+*/
+
+/* 1. Checkbox Container */
 .lbl-checkbox {
-    position: relative;
     cursor: pointer;
-    display: inline-flex;
     align-items: center;
+    display: inline-flex;
+    position: relative;
 }
 
+.large {
+    min-height: 24px;
+    min-width: 24px;
+}
+
+/* 2. Checkbox Input */
 .lbl-checkbox input[type='checkbox'] {
     display: none;
 }
 
+/* 3. Checkbox Checkmark */
 .lbl-checkbox .checkmark {
-    width: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 15px;
-    border: 2px solid var(--color-dark-green);
+    width: 15px;
     border-radius: 3px;
     background-color: var(--color-white);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: 2px solid var(--color-dark-green);
 }
 
+/* 4. Checked Checkbox Styles */
 .lbl-checkbox input[type='checkbox']:checked + .checkmark {
     background-color: var(--color-dark-green);
 }
 
 .lbl-checkbox input[type='checkbox']:checked + .checkmark .checkmark-icon {
     fill: var(--color-white);
-}
-
-.large {
-    min-width: 24px;
-    min-height: 24px;
 }

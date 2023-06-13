@@ -1,8 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {useForm} from 'react-hook-form';
-import {useLiveQuery} from "dexie-react-hooks";
-import {db} from "../../features/Database/db";
-import {fetchIngredientSuggestion} from "../../features/API/Spoonacular";
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../../features/Database/db";
+import { fetchIngredientSuggestion, createAbortController } from "../../features/API/Spoonacular";
+import { addIngredientToPantry } from "../../helpers/addIngredientToPantry";
+import { formatNumber } from "../../helpers/formatNumber";
+import { getExpiryItemsCount } from "../../helpers/getExpiryItemsCount";
+import { handleSuggestionClick } from "../../helpers/handleSuggestionClick";
+import { handleSorting } from "../../helpers/handleSorting";
+import { debounce } from "../../helpers/debounce";
 
 import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
@@ -17,62 +23,25 @@ import "./Pantry.css"
 
 export const allUnits = [ "package", "teaspoon", "tablespoon", "cup", "fluid ounce", "pint", "quart", "gallon", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "drop", "sprig", "slice", "piece", "can", "bottle" ];
 
-export async function addIngredientToPantry ( name, unit, possibleUnits, type, imagePath, amount, expiryDate ) {
-    let ingredientExpiryDays = null;
-
-    if ( expiryDate ) {
-        const date = new Date(expiryDate)
-        const today = new Date();
-        const difference = date.getTime() - today.getTime();
-
-        ingredientExpiryDays = Math.ceil(difference / (1000 * 3600 * 24));
-    }
-
-    try{
-        const id = await db.pantry.add( {
-            name,
-            unit,
-            possibleUnits,
-            type,
-            imagePath,
-            amount,
-            expiryDate,
-            ingredientExpiryDays
-        } )
-    } catch ( e ) {
-        console.error( e )
-    }
-}
-
-
 function Pantry() {
-
-    // VARIABLES
-    const {register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
-    const [isExpiryInfinite, setIsExpiryInfinite] = useState(false);
-    const [expiryGoodCount, setExpiryGoodCount] = useState(0);
-    const [expiryCloseCount, setExpiryCloseCount] = useState(0);
-    const [expiredCount, setExpiredCount] = useState(0);
-
-    const [sortOption, setSortOption] = useState("A-Z");
-    const [sortedData, setSortedData] = useState(null);
-    const [searchResults, setSearchResults] = useState(null);
+    // STATE
+    const { register, reset, handleSubmit, setValue, formState: { errors }, watch } = useForm( {mode: "onSubmit"} );
+    const [ isExpiryInfinite, setIsExpiryInfinite ] = useState(false);
+    const [ expiryGoodCount, setExpiryGoodCount ] = useState(0);
+    const [ expiryCloseCount, setExpiryCloseCount ] = useState(0);
+    const [ expiredCount, setExpiredCount ] = useState(0);
+    const [ sortOption, setSortOption ] = useState("A-Z");
+    const [ sortedData, setSortedData ] = useState(null);
+    const [ searchResults, setSearchResults ] = useState(null);
 
     // API:
-    const [suggestions, setSuggestions] = useState([]);
-    const [isInputFocused, setIsInputFocused] = useState(false);
-    const [showPopout, setShowPopout] = useState(false);
-    const [ingredientUnits, setIngredientUnits] = useState(allUnits);
+    const [ suggestions, setSuggestions ] = useState([]);
+    const [ isInputFocused, setIsInputFocused ] = useState(false);
+    const [ showPopout, setShowPopout ] = useState(false);
+    const [ ingredientUnits, setIngredientUnits ] = useState(allUnits);
 
-    // db.shoppinglist.clear();
-
-    function formatNumber(number) {
-        if ( number < 10 ) {
-            return "0" + number;
-        } else {
-            return number;
-        }
-    }
+    const debouncedInputChange = debounce( handleInputChange, 200 );
+    const signal = createAbortController();
 
     const searchIngredients = async (query) => {
         if (query.trim() === "") {
@@ -92,15 +61,23 @@ function Pantry() {
 
     // DATABASE EFFECTS
     useEffect(() => {
-        if (myPantry) {
+        if ( myPantry ) {
             const sorted = [...myPantry].sort((a, b) => {
                 if (sortOption === "type") {
                     return a.type.localeCompare(b.type);
                 } else if (sortOption === "expiry") {
-                    const dateA = new Date(a.expiryDate);
-                    const dateB = new Date(b.expiryDate);
+                    const dateA = a.expiryDate ? new Date(a.expiryDate) : null;
+                    const dateB = b.expiryDate ? new Date(b.expiryDate) : null;
 
-                    return dateA - dateB;
+                    if (dateA === null && dateB === null) {
+                        return 0;
+                    } else if (dateA === null) {
+                        return 1;
+                    } else if (dateB === null) {
+                        return -1;
+                    } else {
+                        return dateA - dateB;
+                    }
                 } else {
                     return a.name.localeCompare(b.name);
                 }
@@ -110,31 +87,16 @@ function Pantry() {
     }, [myPantry, sortOption]);
 
     useEffect(() => {
-        setExpiryGoodCount(getExpiryItemsCount(3));
+        setExpiryGoodCount(getExpiryItemsCount(myPantry, 3));
     }, [myPantry]);
 
     useEffect(() => {
-        setExpiryCloseCount(getExpiryItemsCount(3, 0));
+        setExpiryCloseCount(getExpiryItemsCount(myPantry, 3, 0));
     }, [myPantry]);
 
     useEffect(() => {
-        setExpiredCount(getExpiryItemsCount(0));
+        setExpiredCount(getExpiryItemsCount(myPantry, 0));
     }, [myPantry]);
-
-    // DATABASE FUNCTIONS
-    function getExpiryItemsCount( offset, checkDate ) {
-        return myPantry?.filter((item) => {
-            if (item.expiryDate || item.expiryDate === 0) {
-                if ( checkDate || checkDate === 0 ) {
-                    return item.expiryDate <= getExpiryString(offset) && item.expiryDate > getExpiryString(checkDate)
-                } else if ( offset === 0 ) {
-                    return item.expiryDate <= getExpiryString(offset);
-                } else {
-                    return item.expiryDate > getExpiryString(offset);
-                }
-            }
-        }).length;
-    }
 
     // HANDLERS
     function handleCheckboxChange() {
@@ -143,13 +105,14 @@ function Pantry() {
 
     function handleFormSubmit( data ) {
         const amount = parseInt(data.amount);
-        const expiry = data.infiniteExpiry ? null : data.expiryDate;
+        const expiry = data["infiniteExpiry"] ? null : data.expiryDate;
+        const type = data.type ? data.type : "other";
 
-        void addIngredientToPantry(
+        void addIngredientToPantry (
             data.name,
             data.unit,
             ingredientUnits,
-            data.type,
+            type,
             data.image,
             amount,
             expiry,
@@ -164,35 +127,15 @@ function Pantry() {
         reset();
     }
 
-    function getExpiryString( offSet ) {
-        const today = new Date();
-        today.setDate( today.getDate() + offSet );
-
-        return today.toISOString().split("T")[0];
-    }
-
-
-    function handleSortByAZ() {
-        setSortOption("A-Z");
-    }
-
-    function handleSortByExpiry() {
-        setSortOption("expiry");
-    }
-
-    function handleSortByType() {
-        setSortOption("type");
-    }
-
-    function handleSuggestionClick(suggestion) {
-        setValue("name", suggestion.name);
-        setValue("unit", suggestion.possibleUnits[0]);
-        setValue("type", suggestion.aisle);
-        setValue("image", suggestion.image);
-        setIngredientUnits( suggestion.possibleUnits );
-
-        setSuggestions([]);
-        setShowPopout(false);
+    async function handleInputChange ( input ) {
+        if ( input.trim() === "" ) {
+            setSuggestions([]);
+            setShowPopout(false);
+        } else {
+            const data = await fetchIngredientSuggestion( input, signal );
+            setSuggestions( data );
+            setShowPopout(data.length > 0 );
+        }
     }
 
 
@@ -209,9 +152,9 @@ function Pantry() {
                     <div>
                         <h3>Sort by:</h3>
                         <FilterSelector>
-                            <button onClick={ handleSortByAZ }>A-Z</button>
-                            <button onClick={ handleSortByExpiry }>expiry</button>
-                            <button onClick={ handleSortByType }>type</button>
+                            <button onClick={ () => handleSorting( setSortOption, "A-Z" ) }>A-Z</button>
+                            <button onClick={ () => handleSorting( setSortOption, "expiry" ) }>expiry</button>
+                            <button onClick={ () => handleSorting( setSortOption, "type" ) }>type</button>
                         </FilterSelector>
 
                     </div>
@@ -220,19 +163,19 @@ function Pantry() {
                         <div id="expiry-overview">
                             <InformationTag
                                 title="Good"
-                                displayNum={ formatNumber(expiryGoodCount) }
+                                displayNum={ formatNumber( expiryGoodCount ) }
                                 expiryClass="expiry-green"
                             />
 
                             <InformationTag
                                 title="Close"
-                                displayNum={ formatNumber(expiryCloseCount) }
+                                displayNum={ formatNumber( expiryCloseCount ) }
                                 expiryClass="expiry-orange"
                             />
 
                             <InformationTag
                                 title="Expired"
-                                displayNum={ formatNumber(expiredCount) }
+                                displayNum={ formatNumber( expiredCount ) }
                                 expiryClass="expiry-red"
                             />
                         </div>
@@ -240,7 +183,8 @@ function Pantry() {
                     <div>
                         <h3>Add ingredient:</h3>
                         <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
-                            <div className="input-wrapper">
+                            <div className="input-wrapper error-wrapper">
+                                { errors.name && <p className="error-message">{ errors.name.message }</p> }
                                 <input
                                     type="text"
                                     id="input-name"
@@ -248,8 +192,8 @@ function Pantry() {
                                     placeholder="name"
                                     autoComplete="off"
                                     {...register("name", {
-                                        onChange: (e) => {
-                                            void fetchIngredientSuggestion(e.target.value, setSuggestions, setShowPopout);
+                                        onChange: ( e ) => {
+                                            debouncedInputChange( e.target.value )
                                         },
                                         required: {
                                             value: true,
@@ -257,22 +201,23 @@ function Pantry() {
                                         },
                                     })}
                                     onBlur={ () => {
-                                        setTimeout( () => {setIsInputFocused(false)}, 200 );
+                                        setTimeout( () => { setIsInputFocused( false ) }, 200 );
                                     } }
                                     onFocus={ () => {
-                                        setIsInputFocused(true);
+                                        setIsInputFocused( true );
                                     } }
                                 />
+
                                 {showPopout && isInputFocused && (
                                     <div className="suggestion-popout">
-                                        {suggestions.map((suggestion) => (
-                                            <React.Fragment key={suggestion.id}>
+                                        {suggestions.map(( suggestion ) => (
+                                            <React.Fragment key={ suggestion.id }>
                                                 <div className="suggestion-divider" />
                                                 <div
                                                     className="suggestion-item"
-                                                    onClick={() => handleSuggestionClick(suggestion)}
+                                                    onClick={() => handleSuggestionClick( suggestion, setValue, setIngredientUnits, setSuggestions, setShowPopout )}
                                                 >
-                                                    {suggestion.name}
+                                                    { suggestion.name }
                                                 </div>
                                             </React.Fragment>
                                         ))}
@@ -280,7 +225,11 @@ function Pantry() {
                                 )}
                             </div>
 
-                            <div id="form-amount-information">
+                            <div
+                                id="form-amount-information"
+                                className="error-wrapper"
+                            >
+                                { errors.amount && <p className="error-message">{ errors.amount.message }</p> }
                                 <input type="number"
                                        id="input-amount"
                                        placeholder="amount"
@@ -293,14 +242,14 @@ function Pantry() {
                                 />
 
                                 <select id="input-unit"
-                                        value={watch("unit")}
+                                        value={ watch("unit") }
                                         {...register("unit", {
                                             defaultValue: ingredientUnits[0],
                                         } ) }
                                 >
-                                    {ingredientUnits.map((item) => (
-                                        <option key={item} value={item}>
-                                            {item}
+                                    {ingredientUnits.map(( item ) => (
+                                        <option key={ item } value={ item }>
+                                            { item }
                                         </option>
                                     ))}
                                 </select>
@@ -347,7 +296,7 @@ function Pantry() {
                 <div id="ingredients-overview">
                     {  searchResults ?
                         searchResults.map(item => (
-                            <PantryItem key={item.id}
+                            <PantryItem key={ item.id }
                                         ingredient={ new Ingredient (
                                             item.id,
                                             item.name,
@@ -360,7 +309,7 @@ function Pantry() {
                                         )}
                             />
                         )) : sortedData && sortedData.map(item => (
-                        <PantryItem key={item.id}
+                        <PantryItem key={ item.id }
                                     ingredient={ new Ingredient (
                                         item.id,
                                         item.name,
@@ -378,7 +327,6 @@ function Pantry() {
         </PageContainer>
 
     );
-};
-
+}
 
 export default Pantry;

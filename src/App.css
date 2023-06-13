@@ -21,15 +21,51 @@
 ////////////////////////*/
 
 /* ------------------------------- 1. Global Styles -------------------------------- */
+
 * {
-    padding: 0;
     margin: 0;
+    padding: 0;
+}
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     font-family: 'Ubuntu', sans-serif;
 }
 
+button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style-type: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
 ::-webkit-scrollbar {
     display: none;
+}
+
+::placeholder {
+    color: rgba(6, 68, 32, 0.5);
 }
 
 /* ---------------------- 1.1 Color variables ----------------------- */
@@ -52,6 +88,20 @@ input::-webkit-inner-spin-button {
 
 input:focus {
     outline: none;
+}
+
+.dashboard input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    font-family: 'Alkatra', cursive;
+    font-size: 18px;
+    font-weight: bold;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 13px;
+    border: 2px solid var(--color-dark-green);
+    color: var(--color-dark-green);
 }
 
 ::-webkit-calendar-picker-indicator {
@@ -100,6 +150,21 @@ input:focus {
     flex-wrap: wrap;
 }
 /* ---------------------- 3.2 Specific ------------------------ */
+.error-wrapper {
+    position: relative;
+}
+
+.error-message {
+    position: absolute;
+    top: -12px;
+    left: 12px;
+    align-self: flex-start;
+    justify-self: flex-start;
+    font-weight: bold;
+    font-size: 10px;
+    color: var(--color-red);
+}
+
 /* ------------------------------- 4. Areas ---------------------------------------- */
 /* ---------------------- 4.1 Header -------------------------- */
 /* --------------- 4.1.1 Navigation Bar ---------------- */

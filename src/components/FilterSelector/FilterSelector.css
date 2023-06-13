@@ -1,9 +1,17 @@
+/* Table of Contents */
+/*
+1. Button Group
+2. Button
+*/
+
+/* 1. Button Group */
 .button-group {
     display: flex;
     justify-content: center;
     margin: 14px 0;
 }
 
+/* 2. Button */
 .button {
     font-family: 'Alkatra', cursive;
     font-weight: bold;

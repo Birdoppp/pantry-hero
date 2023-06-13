@@ -1,13 +1,13 @@
-/*////////////////////////
-    Table of Contents
-    1. Pantry item
-    2. Image container and buttons
-    3. Item name
-    4. Item expiry
+/* Table of Contents */
+/*
+1. Pantry item
+2. Image container and buttons
+3. Item name
+4. Item expiry
+5. Item amount
+*/
 
-////////////////////////*/
-
-/* ------------ 1. Pantry item---------------- ------------ */
+/* 1. Pantry item */
 .pantry-item {
     display: flex;
     flex-direction: column;
@@ -23,7 +23,7 @@
     flex-shrink: 0;
 }
 
-/* ------------ 2. Image container and buttons ------------ */
+/* 2. Image container and buttons */
 .pantry-image-container {
     position: relative;
     display: flex;
@@ -83,7 +83,7 @@
     animation: pulse 0.2s linear;
 }
 
-/* ------------ 3. Item name ------------ */
+/* 3. Item name */
 .item-title {
     width: 100%;
     height: 24px;
@@ -96,7 +96,7 @@
     font-size: 17px;
 }
 
-/* ------------ 4. Item Expiry ------------ */
+/* 4. Item expiry */
 .pantry-ingredient-information {
     width: 100%;
     display: flex;
@@ -106,7 +106,7 @@
 
 .expiry-green {
     fill: var(--color-dark-green);
-    color: var(--color-dark-green);;
+    color: var(--color-dark-green);
 }
 
 .expiry-orange {
@@ -145,7 +145,7 @@
     transform: translateY(-50%);
 }
 
-/* ------------ 5. Item amount ------------ */
+/* 5. Item amount */
 #amount-information {
     height: 24px;
     width: 166px;

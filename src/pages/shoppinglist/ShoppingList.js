@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {useLiveQuery} from "dexie-react-hooks";
-import {useForm} from "react-hook-form";
-import {db, checkIfEntryExists} from "../../features/Database/db";
-import {allUnits} from "../pantry/Pantry";
-import {fetchIngredientSuggestion} from "../../features/API/Spoonacular";
-import {addIngredientToPantry} from "../pantry/Pantry";
-import handleConfirmation from "../../helpers/handleConfirmation";
+import { useForm } from "react-hook-form";
+import { db, checkIfEntryExists, getCheckedItems } from "../../features/Database/db";
+import { allUnits } from "../pantry/Pantry";
+import { createAbortController, fetchIngredientSuggestion } from "../../features/API/Spoonacular";
+import { addIngredientToPantry } from "../../helpers/addIngredientToPantry";
+import { addItemToShoppingList } from "../../helpers/addItemToShoppingList";
+import { handleConfirmation } from "../../helpers/handleConfirmation";
+import { handleSuggestionClick } from "../../helpers/handleSuggestionClick";
+import { handleSorting } from "../../helpers/handleSorting";
+import { debounce } from "../../helpers/debounce";
 
 import Button from "../../components/Button/Button";
 import PageContainer from "../../components/PageContainer/PageContainer";
@@ -16,39 +20,23 @@ import ShoppingItem from "../../components/ShoppingItem/ShoppingItem";
 
 import "./ShoppingList.css"
 import Popup from "../../components/Popup/Popup";
-import {logDOM} from "@testing-library/react";
 
-export async function addItemToShoppingList( name, unit, possibleUnits, type, imagePath, amount, ingredientExpiresInDays, checked ) {
-
-    try{
-        const id = await db.shoppinglist.add( {
-            name,
-            unit,
-            possibleUnits,
-            type,
-            imagePath,
-            amount,
-            ingredientExpiresInDays,
-            checked
-        } )
-    } catch ( e ) {
-        console.error( e )
-    }
-}
 
 function ShoppingList() {
-    const {register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
-    const [sortOption, setSortOption] = useState("A-Z");
-    const [sortedData, setSortedData] = useState(null);
-    const [searchResults, setSearchResults] = useState(null);
+    const { register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
+    const [ sortOption, setSortOption ] = useState("A-Z");
+    const [ sortedData, setSortedData ] = useState(null);
+    const [ searchResults, setSearchResults ] = useState(null);
+    const [ suggestions, setSuggestions ] = useState([]);
+    const [ isInputFocused, setIsInputFocused ] = useState(false);
+    const [ showPopout, setShowPopout ] = useState(false);
+    const [ ingredientUnits, setIngredientUnits ] = useState(allUnits);
+    const [ hasCheckedItem, setHasCheckedItem ] = useState( false);
+    const [ showAddToPantryPopup, setShowAddToPantryPopup ] = useState(false);
+    const [ pantryItemDates, setPantryItemDates ] = useState({});
 
-    const [suggestions, setSuggestions] = useState([]);
-    const [isInputFocused, setIsInputFocused] = useState(false);
-    const [showPopout, setShowPopout] = useState(false);
-    const [ingredientUnits, setIngredientUnits] = useState(allUnits);
-    const [hasCheckedItem, setHasCheckedItem] = useState( false);
-    const [showAddToPantryPopup, setShowAddToPantryPopup] = useState(false);
-    const [pantryItemDates, setPantryItemDates] = useState({});
+    const debouncedInputChange = debounce( handleInputChange, 500 );
+    const signal = createAbortController();
 
     const searchItems = async (query) => {
         if (query.trim() === "") {
@@ -110,19 +98,6 @@ function ShoppingList() {
         }
     }, [sortedData]);
 
-    // DATABASE FUNCTIONS
-    async function getCheckedItems () {
-        try {
-            const items = await db.shoppinglist.toArray();
-
-            const checkedItems = items.filter( item => item.checked === true );
-
-            return checkedItems;
-        } catch ( e ) {
-            console.error( e );
-        }
-    }
-
     // HANDLERS
     function handleFormSubmit( data ) {
         const amount = parseInt(data.amount);
@@ -144,27 +119,7 @@ function ShoppingList() {
     }
 
     function handleFormClear() {
-        console.log(db.s)
         reset();
-    }
-
-    const handleSortByAZ = () => {
-        setSortOption("A-Z");
-    };
-
-    const handleSortByType = () => {
-        setSortOption("type");
-    };
-
-    function handleSuggestionClick(suggestion) {
-        setValue("name", suggestion.name);
-        setValue("unit", suggestion.possibleUnits[0]);
-        setValue("type", suggestion.aisle);
-        setValue("image", suggestion.image);
-        setIngredientUnits(suggestion.possibleUnits);
-
-        setSuggestions([]);
-        setShowPopout(false);
     }
 
     function handleDateChange(itemId, date) {
@@ -199,6 +154,17 @@ function ShoppingList() {
         }
     }
 
+    async function handleInputChange ( input ) {
+        if (input.trim() === '') {
+            setSuggestions([]);
+            setShowPopout(false);
+        } else {
+            const data = await fetchIngredientSuggestion(input, signal);
+            setSuggestions(data);
+            setShowPopout(data.length > 0);
+        }
+    }
+
     return (
         <div>
             <PageContainer
@@ -214,8 +180,8 @@ function ShoppingList() {
                         <div>
                             <h3>Sort by:</h3>
                             <FilterSelector>
-                                <button onClick={ handleSortByAZ }>A-Z</button>
-                                <button onClick={ handleSortByType }>type</button>
+                                <button onClick={ () => handleSorting( setSortOption, "A-Z") }>A-Z</button>
+                                <button onClick={ () => handleSorting( setSortOption, "type") }>type</button>
                             </FilterSelector>
                         </div>
 
@@ -235,7 +201,8 @@ function ShoppingList() {
                         <div>
                             <h3>Add item:</h3>
                             <form id="shopping-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
-                                <div className="input-wrapper">
+                                <div className="input-wrapper error-wrapper">
+                                    { errors.name && <p className="error-message">{ errors.name.message }</p> }
                                     <input
                                         type="text"
                                         id="input-name"
@@ -243,8 +210,8 @@ function ShoppingList() {
                                         placeholder="name"
                                         autoComplete="off"
                                         {...register("name", {
-                                            onChange: (e) => {
-                                                void fetchIngredientSuggestion(e.target.value, setSuggestions, setShowPopout);
+                                            onChange: ( e ) => {
+                                                debouncedInputChange( e.target.value );
                                             },
                                             required: {
                                                 value: true,
@@ -252,22 +219,22 @@ function ShoppingList() {
                                             },
                                         })}
                                         onBlur={() => {
-                                            setTimeout( () => {setIsInputFocused(false)}, 200 );
+                                            setTimeout( () => {setIsInputFocused( false )}, 200 );
                                         }}
                                         onFocus={() => {
-                                            setIsInputFocused(true);
+                                            setIsInputFocused( true );
                                         }}
                                     />
                                     {showPopout && isInputFocused && (
                                         <div className="suggestion-popout">
-                                            {suggestions.map((suggestion) => (
-                                                <React.Fragment key={suggestion.id}>
+                                            {suggestions.map(( suggestion ) => (
+                                                <React.Fragment key={ suggestion.id }>
                                                     <div className="suggestion-divider" />
                                                     <div
                                                         className="suggestion-item"
-                                                        onClick={() => handleSuggestionClick(suggestion)}
+                                                        onClick={() => handleSuggestionClick( suggestion, setValue, setIngredientUnits, setSuggestions, setShowPopout )}
                                                     >
-                                                        {suggestion.name}
+                                                        { suggestion.name }
                                                     </div>
                                                 </React.Fragment>
                                             ))}
@@ -275,7 +242,11 @@ function ShoppingList() {
                                     )}
                                 </div>
 
-                                <div id="form-amount-information">
+                                <div
+                                    id="form-amount-information"
+                                    className="error-wrapper"
+                                >
+                                    { errors.amount && <p className="error-message">{ errors.amount.message }</p> }
                                     <input type="number"
                                            id="input-amount"
                                            placeholder="amount"
@@ -293,9 +264,9 @@ function ShoppingList() {
                                                 defaultValue: ingredientUnits[0],
                                             } ) }
                                     >
-                                        {ingredientUnits.map((item) => (
-                                            <option key={item} value={item}>
-                                                {item}
+                                        {ingredientUnits.map(( item ) => (
+                                            <option key={ item } value={ item }>
+                                                { item }
                                             </option>
                                         ))}
                                     </select>
@@ -323,7 +294,7 @@ function ShoppingList() {
                         {searchResults ? (
                             searchResults.map(item => (
                                 <ShoppingItem
-                                    key={item.id}
+                                    key={ item.id }
                                     listItem={new ListItem(
                                         item.id,
                                         item.name,
@@ -341,12 +312,12 @@ function ShoppingList() {
                             <>
                                 {sortOption === "type" && sortedData ? (
                                     sortedData.map((item, index) => (
-                                        <React.Fragment key={item.id}>
+                                        <React.Fragment key={ item.id }>
                                             {index === 0 || item.type !== sortedData[index - 1].type ? (
                                                 <h3 className="type-title">{item.type.split(";")[0]}</h3>
                                             ) : null}
                                             <ShoppingItem
-                                                key={item.id}
+                                                key={ item.id }
                                                 listItem={new ListItem(
                                                     item.id,
                                                     item.name,
@@ -363,7 +334,7 @@ function ShoppingList() {
                                     ))
                                 ) : (sortedData && sortedData.map(item => (
                                         <ShoppingItem
-                                            key={item.id}
+                                            key={ item.id }
                                             listItem={new ListItem(
                                                 item.id,
                                                 item.name,
@@ -402,17 +373,17 @@ function ShoppingList() {
                     <h3>Enter expiry dates:</h3>
                     {sortedData &&
                         sortedData
-                            .filter( (item) => item.checked && item.type !== "Other" )
-                            .map((item, index) => (
+                            .filter( ( item ) => item.checked && item.type !== "Other" )
+                            .map(( item ) => (
                                 <div
                                     className="listed-input"
-                                    key={item.id}>
+                                    key={ item.id }>
                                     <hr/>
                                     <p>{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }:</p>
                                     <input
                                         type="date"
                                         value={pantryItemDates[item.id] || ""}
-                                        onChange={(e) => handleDateChange(item.id, e.target.value)}
+                                        onChange={( e ) => handleDateChange( item.id, e.target.value )}
                                     />
                                 </div>
                             ))}

@@ -1,26 +1,18 @@
-import React, {useEffect} from 'react';
-import {db} from "../../features/Database/db";
-import Checkbox from "../Checkbox/Checkbox";
+import React, { useEffect } from 'react';
 import "./ShoppingItem.css"
-import {ReactComponent as DeleteIcon} from "../../assets/icon-delete.svg";
-import handleConfirmation from "../../helpers/handleConfirmation";
-import Popup from "../Popup/Popup";
+import { db } from "../../features/Database/db";
 
+import Popup from "../Popup/Popup";
+import Checkbox from "../Checkbox/Checkbox";
+
+import { handleConfirmation } from "../../helpers/handleConfirmation";
+
+import { ReactComponent as DeleteIcon } from "../../assets/icon-delete.svg";
 
 function ShoppingItem( { listItem } ) {
-    const [ amount, setAmount ] = React.useState(listItem.getAmount());
+    const [ amount, setAmount ] = React.useState(listItem.getAmount()); // setAmount for future editing of shopping list items purpose
     const [ showPopup, setShowPopup ] = React.useState(false);
     const [ isItemChecked, setIsItemChecked ] = React.useState(listItem.Checked);
-
-    // HANDLERS:
-    // function handleConfirmation( bool ) {
-    //     if (bool) {
-    //
-    //         setShowPopup(false);
-    //     } else {
-    //         setShowPopup(false);
-    //     }
-    // }
 
     function handleCheckboxChange() {
         setIsItemChecked( prev => !prev );
@@ -32,13 +24,12 @@ function ShoppingItem( { listItem } ) {
 
     useEffect( () => {
         db.shoppinglist.update(listItem.id, {checked: isItemChecked});
-        // db.shoppinglist.toArray().then(data => console.log(data));
     }, [listItem.id, isItemChecked]);
 
     return (
-        <article className={`shopping-item ${isItemChecked? "checked" : ""}`}>
+        <article className={ `shopping-item ${isItemChecked? "checked" : ""}` }>
             <div
-                id={"shopping-item-name"}
+                id="shopping-item-name"
                 className={ isItemChecked? "shopping-item-name-checked" : "shopping-item-name-unchecked"}
             >
                  <p>{ listItem.Name.charAt(0).toUpperCase() + listItem.Name.slice(1) }</p>
@@ -59,8 +50,8 @@ function ShoppingItem( { listItem } ) {
 
 
             <div id="shopping-item-amount">
-                <span>{amount}</span>
-                <span>{listItem.Unit}</span>
+                <span>{ amount }</span>
+                <span>{ listItem.Unit }</span>
             </div>
 
             <Checkbox
@@ -70,7 +61,7 @@ function ShoppingItem( { listItem } ) {
             />
 
             {showPopup && (
-                <Popup message={`Are you sure you want to delete ${listItem.Name} from your list?`}
+                <Popup message={ `Are you sure you want to delete ${ listItem.Name } from your list?` }
                        onConfirm={ () => {
                                        handleConfirmation( true, setShowPopup, handleDeleteFromShoppinglist );
                                    }}
@@ -78,7 +69,7 @@ function ShoppingItem( { listItem } ) {
                                        handleConfirmation(false, setShowPopup );
                                    } }
                 >
-                    <p>Are you sure you want to delete {listItem.Name} from your list?</p>
+                    <p>Are you sure you want to delete { listItem.Name } from your list?</p>
                 </Popup>
             )}
         </article>

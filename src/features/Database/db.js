@@ -20,6 +20,18 @@ export async function checkIfEntryExists( table, key, value ) {
     }
 }
 
+export async function getCheckedItems () {
+    try {
+        const items = await db.shoppinglist.toArray();
+
+        const checkedItems = items.filter( item => item.checked === true );
+
+        return checkedItems;
+    } catch ( e ) {
+        console.error( e );
+    }
+}
+
 db.version(5).stores( {
     pantry: '++id, name, unit, possibleUnits, type, imagePath, amount, expiryDate, ingredientExpiresInDays',
     shoppinglist: '++id, name, unit, possibleUnits, type, imagePath, amount, ingredientExpiresInDays, checked'

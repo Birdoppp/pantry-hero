@@ -1,12 +1,9 @@
-function handleConfirmation( bool, setter, callBack ) {
-    if (bool) {
+export function handleConfirmation( isConfirm, stateSetter, callBack ) {
+    if (isConfirm) {
         if (callBack) {
             callBack();
         }
-        setter(false);
-    } else {
-        setter(false);
     }
-}
 
-export default handleConfirmation;
+    stateSetter(false);
+}

@@ -1,3 +1,11 @@
+/* Table of Contents */
+/*
+1. Information Tag
+2. Information Tag Title
+3. Expiry Tile
+*/
+
+/* 1. Information Tag */
 .information-tag {
     display: flex;
     flex-direction: column;
@@ -5,12 +13,14 @@
     gap: 12px;
 }
 
+/* 2. Information Tag Title */
 .information-tag h4 {
     font-family: 'Alkatra', cursive;
     font-size: 18px;
     color: var(--color-dark-green);
 }
 
+/* 3. Expiry Tile */
 #expiry-tile {
     font-weight: bold;
     font-size: 24px;

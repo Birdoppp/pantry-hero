@@ -1,15 +1,37 @@
+/* Table of Contents */
+/*
+1. Shopping List Overview
+2. List Items Overview
+3. Shopping Add Item Form
+4. Input Name
+5. Form Amount Information
+6. Form Handler Buttons
+7. Input Unit
+8. Type Title
+*/
+
+/* 1. Shopping List Overview */
 #shoppinglist-overview {
-    gap: 50px;
+    width: 100%;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    width: 100%;
+    gap: 50px;
 }
 
+/* 2. List Items Overview */
 #list-items-overview {
     width: 100%;
     align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 100%;
+    gap: 12px;
+    height: 85vh;
+    padding-bottom: 80px;
+    overflow-y: scroll;
 }
 
+/* 3. Shopping Add Item Form */
 #shopping-add-item-form {
     display: flex;
     flex-direction: column;
@@ -18,9 +40,10 @@
     margin: 14px 0;
 }
 
+/* 4. Input Name */
 #input-name {
-    border: 2px solid var(--color-dark-green);
     width: 100%;
+    border: 2px solid var(--color-dark-green);
 }
 
 #input-name.show {
@@ -28,6 +51,7 @@
     border-bottom: none;
 }
 
+/* 5. Form Amount Information */
 #form-amount-information {
     display: flex;
     justify-content: space-between;
@@ -38,26 +62,18 @@
     max-width: 125px;
 }
 
+/* 6. Form Handler Buttons */
 #form-handler-buttons {
     display: flex;
     justify-content: space-around;
 }
 
+/* 7. Input Unit */
 #input-unit {
     max-width: 100px;
 }
 
-#list-items-overview {
-    display: flex;
-    flex-direction: column;
-    align-self: flex-start;
-    flex: 0 1 100%;
-    gap: 12px;
-    height: 85vh;
-    padding-bottom: 80px;
-    overflow-y: scroll;
-}
-
+/* 8. Type Title */
 .type-title {
     font-family: 'Alkatra', cursive;
     font-weight: bold;

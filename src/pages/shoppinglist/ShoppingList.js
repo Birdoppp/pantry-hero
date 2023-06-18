@@ -34,8 +34,9 @@ function ShoppingList() {
     const [ hasCheckedItem, setHasCheckedItem ] = useState( false);
     const [ showAddToPantryPopup, setShowAddToPantryPopup ] = useState(false);
     const [ pantryItemDates, setPantryItemDates ] = useState({});
+    const [ showErrorMessage, setShowErrorMessage ] = useState(false);
 
-    const debouncedInputChange = debounce( handleInputChange, 500 );
+    const debouncedInputChange = debounce( handleInputChange, 300 );
     const signal = createAbortController();
 
     const searchItems = async (query) => {
@@ -97,6 +98,18 @@ function ShoppingList() {
             setPantryItemDates(updatedDates);
         }
     }, [sortedData]);
+
+    useEffect(() => {
+        if (showErrorMessage) {
+            const timeout = setTimeout(() => {
+                setShowErrorMessage(false);
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            return () => {
+                clearTimeout(timeout);
+            };
+        }
+    }, [showErrorMessage]);
 
     // HANDLERS
     function handleFormSubmit( data ) {
@@ -202,7 +215,7 @@ function ShoppingList() {
                             <h3>Add item:</h3>
                             <form id="shopping-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
                                 <div className="input-wrapper error-wrapper">
-                                    { errors.name && <p className="error-message">{ errors.name.message }</p> }
+                                    { errors.name && showErrorMessage && <p className="error-message">{ errors.name.message }</p> }
                                     <input
                                         type="text"
                                         id="input-name"
@@ -246,7 +259,7 @@ function ShoppingList() {
                                     id="form-amount-information"
                                     className="error-wrapper"
                                 >
-                                    { errors.amount && <p className="error-message">{ errors.amount.message }</p> }
+                                    { errors.amount && showErrorMessage && <p className="error-message">{ errors.amount.message }</p> }
                                     <input type="number"
                                            id="input-amount"
                                            placeholder="amount"
@@ -283,6 +296,11 @@ function ShoppingList() {
                                     <Button
                                         textValue="add"
                                         type="submit"
+                                        clickHandler={ () => {
+                                            if (errors) {
+                                                setShowErrorMessage( true );
+                                            }
+                                        } }
                                         filledStatus={ true }
                                     />
                                 </div>

@@ -17,14 +17,26 @@
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.btn-confirmation.black {
+    border: 2px solid var(--color-black);
+}
+
 /* 2. Filled Button Styles */
 .btn-filled {
     background-color: var(--color-dark-green);
     color: var(--color-white);
 }
 
+.btn-filled.black {
+    background-color: var(--color-black);
+}
+
 /* 3. Clear Button Styles */
 .btn-clear {
     background: none;
     color: var(--color-dark-green);
+}
+
+.btn-clear.black {
+    color: var(--color-black);
 }

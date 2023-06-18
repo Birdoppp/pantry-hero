@@ -33,6 +33,7 @@ function Pantry() {
     const [ sortOption, setSortOption ] = useState("A-Z");
     const [ sortedData, setSortedData ] = useState(null);
     const [ searchResults, setSearchResults ] = useState(null);
+    const [ showErrorMessage, setShowErrorMessage ] = useState(false);
 
     // API:
     const [ suggestions, setSuggestions ] = useState([]);
@@ -40,7 +41,7 @@ function Pantry() {
     const [ showPopout, setShowPopout ] = useState(false);
     const [ ingredientUnits, setIngredientUnits ] = useState(allUnits);
 
-    const debouncedInputChange = debounce( handleInputChange, 200 );
+    const debouncedInputChange = debounce( handleInputChange, 300 );
     const signal = createAbortController();
 
     const searchIngredients = async (query) => {
@@ -97,6 +98,18 @@ function Pantry() {
     useEffect(() => {
         setExpiredCount(getExpiryItemsCount(myPantry, 0));
     }, [myPantry]);
+
+    useEffect(() => {
+        if (showErrorMessage) {
+            const timeout = setTimeout(() => {
+                setShowErrorMessage(false);
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            return () => {
+                clearTimeout(timeout);
+            };
+        }
+    }, [showErrorMessage]);
 
     // HANDLERS
     function handleCheckboxChange() {
@@ -184,7 +197,7 @@ function Pantry() {
                         <h3>Add ingredient:</h3>
                         <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
                             <div className="input-wrapper error-wrapper">
-                                { errors.name && <p className="error-message">{ errors.name.message }</p> }
+                                { errors.name && showErrorMessage && <p className="error-message">{ errors.name.message }</p> }
                                 <input
                                     type="text"
                                     id="input-name"
@@ -229,7 +242,7 @@ function Pantry() {
                                 id="form-amount-information"
                                 className="error-wrapper"
                             >
-                                { errors.amount && <p className="error-message">{ errors.amount.message }</p> }
+                                { errors.amount && showErrorMessage && <p className="error-message">{ errors.amount.message }</p> }
                                 <input type="number"
                                        id="input-amount"
                                        placeholder="amount"
@@ -285,6 +298,11 @@ function Pantry() {
                                 <Button
                                     textValue="add"
                                     type="submit"
+                                    clickHandler={ () => {
+                                        if(errors)  {
+                                            setShowErrorMessage( true );
+                                        }
+                                    } }
                                     filledStatus={ true }
                                 />
                             </div>

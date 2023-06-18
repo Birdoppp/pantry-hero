@@ -1,8 +1,8 @@
 import React from 'react';
 import "./Button.css";
 
-function Button({ textValue, type, clickHandler, filledStatus }) {
-    const buttonClassName = filledStatus ? "btn-confirmation btn-filled" : "btn-confirmation btn-clear";
+function Button({ textValue, type, clickHandler, filledStatus, color }) {
+    const buttonClassName = color + (filledStatus ? " btn-confirmation btn-filled" : " btn-confirmation btn-clear");
 
     return (
         <button

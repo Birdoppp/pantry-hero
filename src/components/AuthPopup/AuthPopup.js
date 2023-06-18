@@ -1,12 +1,12 @@
 import React from "react";
-import "./Popup.css"
+import "./AuthPopup.css"
 import Button from "../Button/Button";
 
-function Popup ({ children, onConfirm, onCancel } ) {
+function AuthPopup ({ children, onConfirm, onCancel } ) {
 
     return (
         <div className="popup-container">
-            <div className="popup">
+            <div className="auth-popup">
 
                 <div className="content">{ children }</div>
 
@@ -16,12 +16,14 @@ function Popup ({ children, onConfirm, onCancel } ) {
                         type="button"
                         clickHandler={ onCancel }
                         filledStatus={ false }
+                        color="black"
                     />
                     <Button
                         textValue="Confirm"
-                        type="button"
+                        type="submit"
                         clickHandler={ onConfirm }
                         filledStatus={ true }
+                        color="black"
                     />
                 </div>
             </div>
@@ -29,4 +31,4 @@ function Popup ({ children, onConfirm, onCancel } ) {
     );
 }
 
-export default Popup;
+export default AuthPopup;

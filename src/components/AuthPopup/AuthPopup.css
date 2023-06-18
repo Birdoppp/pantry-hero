@@ -1,0 +1,82 @@
+/* Table of Contents */
+/*
+1. Popup
+2. Content
+3. Buttons
+4. Listed Input
+5. Auth form
+*/
+
+/* 1. Popup */
+.auth-popup {
+    background-color: white;
+    padding: 24px;
+    font-weight: bold;
+    border-radius: 13px;
+    min-width: 448px;
+    max-height: 75vh;
+    overflow-y: scroll;
+    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
+}
+
+.auth-popup h2 {
+    margin-left: 18px;
+}
+
+/* 2. Content */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 3. Buttons */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+
+/* 4. Listed Input */
+.listed-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* 5. Auth form */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    border: 3px solid var(--color-black);
+    border-radius: 18px;;
+}
+
+.input-wrapper label {
+    margin-left: 18px;
+}
+
+.auth-error {
+    font-size: 10px;
+    margin-right: 18px;
+    position: absolute;
+    bottom: -12px;
+    right: 0;
+    color: var(--color-red);
+}

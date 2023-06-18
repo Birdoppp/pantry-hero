@@ -1,0 +1,36 @@
+#homepage {
+    background-image: url("../../assets/pantry-wallpaper.jpeg");
+    background-size: cover;
+    height: 100vh;
+    background-position: center center;
+    position: relative;
+    z-index: -1;
+}
+
+#homepage::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.features {
+    background: white;
+    box-shadow: 10px 10px 10px 13px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 40px 60px;
+    z-index: 1;
+}
+
+.features h2 {
+    font-family: 'Alkatra', cursive;
+}
+
+.features li {
+    list-style-type: disc;
+    margin-top: 10px;
+    font-family: 'Alkatra', cursive;
+}

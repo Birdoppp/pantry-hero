@@ -21,6 +21,7 @@
 
 .auth-popup h2 {
     margin-left: 18px;
+    margin-bottom: 20px;
 }
 
 /* 2. Content */
@@ -31,14 +32,13 @@
 }
 
 /* 3. Buttons */
-.buttons {
+.auth-popup .buttons {
     display: flex;
     justify-content: center;
     gap: 80px;
     margin-top: 40px;
     margin-bottom: 20px;
 }
-
 
 /* 4. Listed Input */
 .listed-input {
@@ -79,4 +79,12 @@
     bottom: -12px;
     right: 0;
     color: var(--color-red);
+}
+
+/* 6. Auth message */
+.auth-message {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }

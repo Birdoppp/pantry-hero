@@ -1,11 +1,18 @@
 export function validatePassword( value ) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
+    const hasCapitalLetters = /[A-Z]/.test( value );
+    const hasNumbers = /\d/.test( value );
+    const hasSymbols = /[@$!%*?&]/.test( value );
 
     if ( !value ) {
         return "Password is required";
-    } else if ( !passwordRegex.test( value ) ) {
-        return "Invalid password."
-        //return "Invalid password. It should contain at least 10 characters, including a lowercase letter, an uppercase letter, a number, and a special symbol (@$!%*?&).";
+    } else if ( !hasCapitalLetters ) {
+        return "Invalid password, no capital letters";
+    } else if ( !hasNumbers ) {
+        return "Invalid password, no numbers";
+    } else if ( !hasSymbols ) {
+        return "Invalid password, no symbols";
+    } else if ( value.length < 10 ) {
+        return "Invalid password, too short";
     }
 
     return true;

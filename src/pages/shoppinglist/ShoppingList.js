@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {useLiveQuery} from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
 import { db, checkIfEntryExists, getCheckedItems } from "../../features/Database/db";
@@ -70,7 +70,7 @@ function ShoppingList() {
 
     useEffect( () => {
         if (myShoppingList) {
-            checkIfEntryExists( db.shoppinglist, "checked", true).then( (data) => setHasCheckedItem(data));
+            checkIfEntryExists( db.shoppinglist, "checked", true ).then( (data) => setHasCheckedItem(data));
         }
     }, [myShoppingList])
 

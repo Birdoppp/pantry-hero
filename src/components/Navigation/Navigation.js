@@ -1,30 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink } from "react-router-dom";
+import React, {useState, useEffect, useContext} from 'react';
 import Button from "../Button/Button";
 import AuthPopup from "../AuthPopup/AuthPopup";
+import { NavLink } from "react-router-dom";
 import { handleConfirmation } from "../../helpers/handleConfirmation";
 import { useForm } from 'react-hook-form';
 import { validateEmail } from "../../helpers/validateEmail";
 import { validatePassword } from "../../helpers/validatePassword";
-import {sendTestAuth} from "../../features/Authentication/Authentication";
+import { sendUserRegistration, sendUserLogin } from "../../features/Authentication/Authentication";
+import { AuthContext } from "../../context/AuthProvider";
 import { ReactComponent as Logo } from "../../assets/icon-logo.svg";
 import "./Navigation.css";
 
 function Navigation() {
     const { register, reset, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onSubmit"} );
+    const { isAuth, login, logout } = useContext( AuthContext );
     const [ showLoginPopup, setShowLoginPopup ] = useState(false);
     const [ showRegisterPopup, setShowRegisterPopup ] = useState(false);
     const [ showErrorMessage, setShowErrorMessage ] = useState(false);
+    const [ serverResponse, setServerResponse ] = useState(null);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     // HANDLERS
-    function handleLoginSubmit( data ) {
-        setShowLoginPopup( false )
-        console.log(data);
-        reset();
+    async function handleLoginSubmit( userData ) {
+        if ( !serverResponse ) {
+            setIsLoading ( true );
+
+            const user = {
+                username: userData.username,
+                password: userData.password
+            }
+
+            try {
+                await sendUserLogin( user ).then( (data) => {
+                    setServerResponse( data );
+                    if ( data.status === 200 ) {
+                        const token = data.data.accessToken;
+
+                        localStorage.setItem( "token", token );
+                        login( token )
+
+                        resetAuthPopup();
+                        setShowLoginPopup( false );
+                    } else if ( data.status === 401 ) {
+                        setIsLoading( false );
+                        setShowErrorMessage( true );
+                        reset();
+                    }
+                } );
+            } catch ( e ) {
+                console.error( e )
+            }
+        }
     }
 
-    function handleRegisterSubmit( data ) {
-        console.log( data );
+    async function handleRegisterSubmit( userData ) {
+        if ( !serverResponse ) {
+            setIsLoading( true );
+
+            const newUser = {
+                username: userData.username,
+                email: userData.username,
+                password: userData.password,
+                role: ["user"]
+            };
+
+            try {
+                const serverReply = await sendUserRegistration( newUser );
+                setServerResponse( serverReply );
+            } catch ( e ) {
+                console.error( e );
+            }
+
+            setIsLoading( false );
+            reset();
+        } else if ( serverResponse.status === 200 ) {
+            resetAuthPopup();
+            setShowRegisterPopup( false );
+        } else {
+            resetAuthPopup();
+        }
+    }
+
+    function resetAuthPopup() {
+        setIsLoading( false );
+        setServerResponse( null );
         reset();
     }
 
@@ -42,10 +101,11 @@ function Navigation() {
         if (showErrorMessage) {
             const timeout = setTimeout(() => {
                 setShowErrorMessage(false);
-            }, 3000); // 3000 milliseconds = 3 seconds
+                setServerResponse( null );
+            }, 3000 );
 
             return () => {
-                clearTimeout(timeout);
+                clearTimeout( timeout );
             };
         }
     }, [showErrorMessage]);
@@ -58,209 +118,235 @@ function Navigation() {
                     <h2>Pantry Hero</h2>
                 </div>
 
-                <ul className="page-link-list">
-                    <li>
-                        <NavLink
-                            className={({ isActive }) =>
-                                isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
-                            }
-                            to="/pantry"
-                        >
-                            My pantry
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className={({ isActive }) =>
-                                isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
-                            }
-                            to="/shoppinglist"
-                        >
-                            Shopping list
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className={({ isActive }) =>
-                                isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
-                            }
-                            to="/recipes"
-                        >
-                            Recipes
-                        </NavLink>
-                    </li>
-                </ul>
+                { isAuth &&
+                    <ul className="page-link-list">
+                        <li>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                }
+                                to="/pantry"
+                            >
+                                My pantry
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                }
+                                to="/shoppinglist"
+                            >
+                                Shopping list
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                }
+                                to="/recipes"
+                            >
+                                Recipes
+                            </NavLink>
+                        </li>
+                    </ul>
+                }
 
-                <div className="auth-buttons">
+                { ( !isAuth ) ? (
+                    <div className="auth-buttons">
+                        <Button
+                            textValue="Log in"
+                            type="button"
+                            clickHandler={ () => setShowLoginPopup( true ) }
+                            filledStatus={ false }
+                            color="black"
+                        />
+
+                        <Button
+                            textValue="Register"
+                            type="button"
+                            clickHandler={ () => setShowRegisterPopup( true ) }
+                            filledStatus={ true }
+                            color="black"
+                        />
+                    </div>
+                ) : (
                     <Button
-                        textValue="Log in"
+                        textValue="Log out"
                         type="button"
-                        clickHandler={ () => setShowLoginPopup( true ) }
+                        clickHandler={ () => logout() }
                         filledStatus={ false }
                         color="black"
                     />
+                )}
 
-                    <Button
-                        textValue="Register"
-                        type="button"
-                        clickHandler={ () => setShowRegisterPopup( true ) }
-                        filledStatus={ true }
-                        color="black"
-                    />
-                </div>
-                {/*<button*/}
-                {/*    type="button"*/}
-                {/*    onClick={ () => {*/}
-                {/*        void sendTestAuth();*/}
-                {/*    } }*/}
-                {/*> TEST </button>*/}
             </nav>
 
             { showLoginPopup && (
                 <AuthPopup
-                    onConfirm={() => {
+                    onConfirm={ () => {
                         if (errors) {
                             setShowErrorMessage( true );
                         }
                         handleSubmit( handleLoginSubmit )();
-                    }}
-                    onCancel={() => {
-                        reset();
+                    } }
+                    onCancel={ () => {
+                        resetAuthPopup();
                         handleConfirmation(false, setShowLoginPopup);
-                    }}
-                    type="submit"
-                    isRegistration={ true }
+                    } }
                 >
-                    <h2>Log in to your account</h2>
-
-                    <form
-                        id="user-login"
-                        className="auth-form"
-                    >
-                        <div className="input-wrapper">
-                            <label htmlFor="input-username">
-                                Email
-                            </label>
-
-                            <input
-                                type="text"
-                                id="input-username"
-                                autoComplete="off"
-                                {...register("username", {
-                                    required: {
-                                        value: true,
-                                        message: "You need to enter a username"
-                                    },
-                                    validate: validateEmail
-                                })}
-                            />
-                            {errors.username && showErrorMessage && <p className="auth-error">{errors.username.message}</p>}
+                    { isLoading ? (
+                        <div className="auth-message">
+                            <h2>Logging in</h2>
+                            <p>Awaiting response from server...</p>
                         </div>
+                    ) : (
+                        <>
+                            <h2>Log in to your account</h2>
 
-                        <div className="input-wrapper">
-                            <label htmlFor="input-user-password">
-                                Password
-                            </label>
+                            <form
+                                id="user-login"
+                                className="auth-form"
+                            >
+                                <div className="input-wrapper">
+                                    <label htmlFor="input-username">
+                                        Email
+                                    </label>
 
-                            <input
-                                type="password"
-                                id="input-password"
-                                autoComplete="off"
-                                {...register("password", {
-                                    required: {
-                                        value: true,
-                                        message: "You need to enter a password"
-                                    }
-                                })}
-                            />
-                            {errors.password && showErrorMessage && <p className="auth-error">{errors.password.message}</p>}
-                        </div>
-                    </form>
+                                    <input
+                                        type="text"
+                                        id="input-username"
+                                        autoComplete="off"
+                                        {...register("username", {
+                                            required: {
+                                                value: true,
+                                                message: "You need to enter a username"
+                                            },
+                                            validate: validateEmail
+                                        })}
+                                    />
+                                    {errors.username && showErrorMessage && <p className="auth-error">{ errors.username.message }</p>}
+                                </div>
+
+                                <div className="input-wrapper">
+                                    <label htmlFor="input-user-password">
+                                        Password
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        id="input-password"
+                                        autoComplete="off"
+                                        {...register("password", {
+                                            required: {
+                                                value: true,
+                                                message: "You need to enter a password"
+                                            }
+                                        })}
+                                    />
+                                    {serverResponse && serverResponse.status === 401 && showErrorMessage && <p className="auth-error">Invalid password or username.</p>}
+                                    {errors.password && showErrorMessage && <p className="auth-error">{ errors.password.message }</p>}
+                                </div>
+                            </form>
+                        </>
+                    )}
                 </AuthPopup>
             ) }
 
             { showRegisterPopup && (
                 <AuthPopup
-                    onConfirm={() => {
-                        if (errors) {
+                    onConfirm={ () => {
+                        if ( errors ) {
                             setShowErrorMessage( true );
                         }
                         handleSubmit( handleRegisterSubmit )();
-                    }}
-                    onCancel={() => {
-                        reset();
+                    } }
+                    onCancel={ () => {
+                        resetAuthPopup();
                         handleConfirmation(false, setShowRegisterPopup);
-                    }}
-                    type="submit"
-                    isRegistration={ true }
+                    } }
                 >
-                    <h2>Create an account</h2>
-
-                    <form
-                        id="user-registration"
-                        className="auth-form"
-                    >
-                        <div className="input-wrapper">
-                            <label htmlFor="input-username">
-                                Email
-                            </label>
-
-                            <input
-                                type="text"
-                                id="input-username"
-                                autoComplete="off"
-                                {...register("username", {
-                                    required: {
-                                        value: true,
-                                        message: "You need to enter a username"
-                                    },
-                                    validate: validateEmail
-                                })}
-                            />
-                            {errors.username && showErrorMessage && <p className="auth-error">{errors.username.message}</p>}
+                    { isLoading ? (
+                        <div className="auth-message">
+                            <h2>Creating account</h2>
+                            <p>Awaiting response from server...</p>
                         </div>
-
-                        <div className="input-wrapper">
-                            <label htmlFor="input-user-password">
-                                Password
-                            </label>
-
-                            <input
-                                type="password"
-                                id="input-password"
-                                autoComplete="off"
-                                {...register("password", {
-                                    required: {
-                                        value: true,
-                                        message: "You need to enter a password"
-                                    },
-                                    validate: validatePassword
-                                })}
-                            />
-                            {errors.password && showErrorMessage && <p className="auth-error">{errors.password.message}</p>}
+                    ) : serverResponse ? (
+                        <div className="auth-message">
+                            <h2>Creating account</h2>
+                            <p>{ serverResponse.data.message }</p>
                         </div>
+                    ) : (
+                        <>
+                            <h2>Create an account</h2>
 
-                        <div className="input-wrapper">
-                            <label htmlFor="input-user-password">
-                                Confirm password
-                            </label>
+                            <form
+                                id="user-registration"
+                                className="auth-form"
+                            >
+                                <div className="input-wrapper">
+                                    <label htmlFor="input-username">
+                                        Email
+                                    </label>
 
-                            <input
-                                type="password"
-                                id="input-password-confirm"
-                                autoComplete="off"
-                                {...register("password-confirm", {
-                                    required: {
-                                        value: true,
-                                        message: "You need to enter a password"
-                                    },
-                                    validate: validatePasswordMatch
-                                })}
-                            />
-                            {errors["password-confirm"] && <p className="auth-error">{errors["password-confirm"].message}</p>}
-                        </div>
-                    </form>
+                                    <input
+                                        type="text"
+                                        id="input-username"
+                                        autoComplete="off"
+                                        {...register("username", {
+                                            required: {
+                                                value: true,
+                                                message: "You need to enter a username"
+                                            },
+                                            validate: validateEmail
+                                        })}
+                                    />
+                                    {errors.username && showErrorMessage && <p className="auth-error">{ errors.username.message }</p>}
+                                </div>
 
+                                <div className="input-wrapper">
+                                    <label htmlFor="input-user-password">
+                                        Password
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        id="input-password"
+                                        autoComplete="off"
+                                        {...register("password", {
+                                            required: {
+                                                value: true,
+                                                message: "You need to enter a password"
+                                            },
+                                            validate: validatePassword
+                                        })}
+                                    />
+                                    {errors.password && showErrorMessage && <p className="auth-error">{ errors.password.message }</p>}
+                                </div>
+
+                                <div className="input-wrapper">
+                                    <label htmlFor="input-user-password">
+                                        Confirm password
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        id="input-password-confirm"
+                                        autoComplete="off"
+                                        {...register("password-confirm", {
+                                            required: {
+                                                value: true,
+                                                message: "You need to enter a password"
+                                            },
+                                            validate: validatePasswordMatch
+                                        })}
+                                    />
+                                    {errors["password-confirm"] && <p className="auth-error">{ errors["password-confirm"].message }</p>}
+                                </div>
+                            </form>
+                        </>
+                    ) }
                 </AuthPopup>
             ) }
         </>

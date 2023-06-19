@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import Button from "../Button/Button";
 import AuthPopup from "../AuthPopup/AuthPopup";
+import HamburgerMenu from "../HamburgerMenu/HamburgerMenu";
 import { NavLink } from "react-router-dom";
 import { handleConfirmation } from "../../helpers/handleConfirmation";
 import { useForm } from 'react-hook-form';
@@ -172,13 +173,7 @@ function Navigation() {
                         />
                     </div>
                 ) : (
-                    <Button
-                        textValue="Log out"
-                        type="button"
-                        clickHandler={ () => logout() }
-                        filledStatus={ false }
-                        color="black"
-                    />
+                    <HamburgerMenu/>
                 )}
 
             </nav>

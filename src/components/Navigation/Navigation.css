@@ -3,6 +3,8 @@
 1. Navigation Bar
 2. App Logo
 3. Page Links
+4. Buttons
+5. Login popup
 */
 
 /* 1. Navigation Bar */
@@ -78,4 +80,10 @@
 
 li {
     list-style: none;
+}
+
+/* 4. Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 20px;
 }

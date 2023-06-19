@@ -185,20 +185,6 @@ html, body {
     overflow: hidden;
 }
 
-.background-image {
-    z-index: -1;
-    position: absolute;
-    width: 100%;
-    height: auto;
-    left: -186px;
-    top: -296px;
-}
-
-.background-image path {
-    fill: var(--color-dark-green);
-    fill-opacity: 10%;
-}
-
 /* ------------------------------- 5. Media Queries -------------------------------- */
 
 @media screen and (max-width: 1200px) {

@@ -4,7 +4,7 @@ const baseURL = "https://api.spoonacular.com/";
 const numIngredientSuggestions = 3;
 let controller;
 
-async function fetchIngredientSuggestion(input, signal) {
+async function fetchIngredientSuggestion( input, signal ) {
     try {
         const result = await axios.get( `${ baseURL }food/ingredients/autocomplete?apiKey=${ process.env.REACT_APP_API_KEY }&query=${ input }&metaInformation=true&number=${ numIngredientSuggestions }`, {
              signal

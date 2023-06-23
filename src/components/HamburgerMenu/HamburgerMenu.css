@@ -1,14 +1,25 @@
+/* Table of Contents */
+/*
+1. Menu
+2. Line
+3. Hamburger Popout
+4. Animations
+5. Media Queries
+*/
+
+/* 1. Menu */
 .menu {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 30px;
     height: 20px;
     cursor: pointer;
     flex-shrink: 0;
 }
 
+/* 2. Line */
 .line {
     width: 80%;
     height: 4px;
@@ -33,6 +44,7 @@
     transform: rotate(-45deg) translate(6px, -5px);
 }
 
+/* 3. Hamburger Popout */
 .hamburger-popout {
     position: absolute;
     max-width: 400px;
@@ -56,6 +68,7 @@
     animation: slideOut 0.3s forwards;
 }
 
+/* Animations */
 @keyframes slideIn {
     from {
         transform: translateY(-100%);
@@ -67,7 +80,6 @@
     }
 }
 
-
 @keyframes slideOut {
     from {
         transform: translateY(0);
@@ -76,5 +88,12 @@
     to {
         transform: translateY(-100%);
         opacity: 0;
+    }
+}
+
+/* Media Queries */
+@media screen and (max-width: 600px) {
+    .menu {
+        width: 20px;
     }
 }

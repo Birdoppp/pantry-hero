@@ -1,40 +1,27 @@
 /* Table of Contents */
 /*
 1. Pantry Page
-2. Dashboard
-3. Dashboard Status Overview
-4. Dashboard Add Item
-5. Pantry Ingredients Overview
-6. Suggestions
-7. Media queries
+2. Dashboard Status Overview
+3. Dashboard Add Item
+4. Pantry Ingredients Overview
+5. Suggestions
+6. Media queries
 */
 
 /* 1. Pantry Page */
 #pantry-overview {
-    display: flex;
     flex-wrap: nowrap;
     gap: 50px;
 }
 
-/* 2. Dashboard */
-.dashboard {
-    align-self: flex-start;
-    overflow-y: scroll;
-}
-
-.dashboard input,
-.dashboard select {
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-/* 3. Dashboard Status Overview */
+/* 2. Dashboard Status Overview */
 #expiry-overview {
     display: flex;
     justify-content: space-around;
     margin: 14px 0;
 }
 
-/* 4. Dashboard Add Item */
+/* 3. Dashboard Add Item */
 #pantry-add-item-form {
     display: flex;
     flex-direction: column;
@@ -83,7 +70,7 @@
     min-width: 50%;
 }
 
-/* 5. Pantry Ingredients Overview */
+/* 4. Pantry Ingredients Overview */
 #ingredients-overview {
     position: relative;
     display: flex;
@@ -97,7 +84,7 @@
     overflow-y: scroll;
 }
 
-/* 6. Suggestions */
+/* 5. Suggestions */
 .input-wrapper {
     position: relative;
 }
@@ -140,12 +127,17 @@
     align-self: center;
 }
 
-/* 7. Media queries */
+/* 6. Media queries */
 @media screen and (max-width: 600px) {
     #pantry-overview {
         align-items: center;
         justify-content: center;
         flex-direction: column;
         gap: 10px;
+    }
+
+    #ingredients-overview {
+        justify-content: center;
+        max-height: 80vh;
     }
 }

@@ -105,9 +105,14 @@
 @media screen and (max-width: 600px) {
     #page-navigation {
         margin: 10px 0;
+        justify-content: center;
     }
 
     .title {
+        display: none;
+    }
+
+    .balancer {
         display: none;
     }
 

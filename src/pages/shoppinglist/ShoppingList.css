@@ -8,6 +8,7 @@
 6. Form Handler Buttons
 7. Input Unit
 8. Type Title
+9. Media queries
 */
 
 /* 1. Shopping List Overview */
@@ -92,4 +93,19 @@
     height: 2px;
     background-color: var(--color-dark-green);
     border-radius: 1px;
+}
+
+/* 9. Media queries */
+@media screen and (max-width: 600px) {
+    #shoppinglist-overview {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #list-items-overview {
+        padding-bottom: 60px;
+        max-height: 80vh;
+    }
 }

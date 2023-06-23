@@ -4,6 +4,7 @@
 3. Buttons
 4. Amount
 5. Functionality
+6. Media Queries
 */
 
 /* 1. Wrapper */
@@ -44,7 +45,6 @@
     border-radius: 5px;
     width: 26px;
     height: 26px;
-    cursor: pointer;
 }
 
 .list-item-button svg {
@@ -96,4 +96,41 @@
 
 .checked {
     background-color: #E8E5E3;
+}
+
+/* 6. Media queries */
+@media screen and (max-width: 600px) {
+    .shopping-item {
+        font-size: 12px;
+        justify-content: space-between;
+    }
+
+    .shopping-item-information {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .shopping-item .hidden-element {
+        display: block;
+    }
+
+    #shopping-item-name {
+        position: relative;
+        left: 0;
+    }
+
+    .shopping-item-name-unchecked::before {
+        height: 2px;
+        border-radius: 1px;
+    }
+
+    .shopping-item-name-checked::before {
+        height: 2px;
+        border-radius: 1px;
+    }
+
+    #shopping-item-buttons {
+        left: 60%;
+    }
 }

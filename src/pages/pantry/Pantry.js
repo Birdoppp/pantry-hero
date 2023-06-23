@@ -162,7 +162,7 @@ function Pantry() {
             <div id="pantry-overview"
                  className="inner-container"
             >
-                <Dashboard className="dashBoard">
+                <Dashboard className="dashboard">
                     <div>
                         <h3>Sort by:</h3>
                         <FilterSelector>

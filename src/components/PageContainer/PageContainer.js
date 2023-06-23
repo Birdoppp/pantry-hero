@@ -30,6 +30,8 @@ function PageContainer({ title, searchPlaceHolder, onSearch, children }) {
                             placeholder={ searchPlaceHolder }
                         />
                     </div>
+
+                    <div className="balancer"></div>
                 </div>
                 { children }
             </div>

@@ -1,6 +1,8 @@
 import React, {createContext, useEffect, useState} from "react";
 import jwtDecode from "jwt-decode";
+import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {checkTokenValidity} from "../helpers/checkTokenValidity";
 
 export const AuthContext = createContext( null );
 
@@ -11,18 +13,29 @@ function AuthContextProvider({ children }) {
         status: "pending",
     });
 
-    function login( token ) {
+    async function login( token, redirect ) {
         const decoded = jwtDecode( token );
 
-        setAuthState({
-            isAuth: true,
-            user: {
-                username: decoded.sub,
-            },
-            status: "done",
-        });
+        try {
+            const { data: { username } } = await axios.get(" https://frontend-educational-backend.herokuapp.com/api/user", {
+                headers : {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${ token }`
+                }
+            });
 
-        navigate("/pantry");
+            setAuthState({
+                isAuth: true,
+                user: {
+                    username,
+                },
+                status: "done",
+            });
+
+            if ( redirect ) navigate("/pantry");
+        } catch ( e ) {
+            console.error( e );
+        }
     }
 
     function logout() {
@@ -41,8 +54,8 @@ function AuthContextProvider({ children }) {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-        if (token && token !== "undefined") {
-            login( token );
+        if ( token && token !== "undefined" && checkTokenValidity( token ) ) {
+            void login( token );
         } else {
             setAuthState({
                 isAuth: false,
@@ -60,9 +73,8 @@ function AuthContextProvider({ children }) {
 
     return  (
         <AuthContext.Provider value={ data }>
-            {authState.status === "pending"
-                ? <p>Loading...</p>
-                : children
+            { authState.status === "pending" ?
+                <p>Loading...</p> : children
             }
         </AuthContext.Provider>
     );

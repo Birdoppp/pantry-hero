@@ -147,7 +147,6 @@ select {
     align-items: center;
     text-align: center;
     flex : 1 1;
-    flex-wrap: wrap;
 }
 /* ---------------------- 3.2 Specific ------------------------ */
 .error-wrapper {
@@ -187,6 +186,8 @@ html, body {
 
 /* ------------------------------- 5. Media Queries -------------------------------- */
 
-@media screen and (max-width: 1200px) {
-
+@media screen and (max-width: 600px) {
+    .outer-container {
+        padding: 0 10px;
+    }
 }

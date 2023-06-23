@@ -6,11 +6,12 @@
 4. Dashboard Add Item
 5. Pantry Ingredients Overview
 6. Suggestions
+7. Media queries
 */
 
 /* 1. Pantry Page */
 #pantry-overview {
-    justify-content: flex-start;
+    display: flex;
     flex-wrap: nowrap;
     gap: 50px;
 }
@@ -79,7 +80,7 @@
 }
 
 #input-unit {
-    max-width: 50%;
+    min-width: 50%;
 }
 
 /* 5. Pantry Ingredients Overview */
@@ -137,4 +138,14 @@
     opacity: 100%;
     width: 90%;
     align-self: center;
+}
+
+/* 7. Media queries */
+@media screen and (max-width: 600px) {
+    #pantry-overview {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+    }
 }

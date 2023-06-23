@@ -160,7 +160,8 @@ function Pantry() {
             onSearch={ searchIngredients }
         >
             <div id="pantry-overview"
-                 className="inner-container">
+                 className="inner-container"
+            >
                 <Dashboard className="dashBoard">
                     <div>
                         <h3>Sort by:</h3>

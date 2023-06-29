@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Button from "../../components/Button/Button";
 import DropDownMenu from "../../components/DropDownMenu/DropDownMenu";
 import Checkbox from "../../components/Checkbox/Checkbox";
+import RangeSelector from "../../components/RangeSelector/RangeSelector";
 import { useForm } from "react-hook-form";
 import "./Recipes.css"
 
@@ -51,6 +52,15 @@ function Recipes() {
         "Wheat"
     ];
 
+    // STATES
+    const [ calorieValues, setCalorieValues ] = useState([ 0, 1200 ]);
+
+    // USE EFFECTS
+    useEffect(() => {
+        setValue("calories", calorieValues);
+    }, [calorieValues, setValue]);
+
+    // HANDLERS
     function handleCuisineChange( cuisine ) {
         const cuisines = watch( "cuisines" ) || [];
         const updatedCuisines = cuisines.includes( cuisine ) ?
@@ -115,7 +125,13 @@ function Recipes() {
                                     ) ) }
                                 </DropDownMenu>
 
-                                <DropDownMenu title="Calories per portion">
+                                <DropDownMenu title="Calories per serving">
+                                    <RangeSelector
+                                        range={ calorieValues }
+                                        rangeSetter={ setCalorieValues }
+                                        rangeMin={ 0 }
+                                        rangeMax={ 1200 }
+                                    />
                                 </DropDownMenu>
 
                                 <div id="form-handler-buttons">

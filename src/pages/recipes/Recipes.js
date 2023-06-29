@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useForm } from "react-hook-form";
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Button from "../../components/Button/Button";
 import DropDownMenu from "../../components/DropDownMenu/DropDownMenu";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import RangeSelector from "../../components/RangeSelector/RangeSelector";
-import { useForm } from "react-hook-form";
+import SliderSelector from "../../components/SliderSelector/SliderSelector";
 import "./Recipes.css"
 
 function Recipes() {
@@ -54,11 +55,16 @@ function Recipes() {
 
     // STATES
     const [ calorieValues, setCalorieValues ] = useState([ 0, 1200 ]);
+    const [ maxCookingTime, setMaxCookingTime ] = useState(60);
 
     // USE EFFECTS
     useEffect(() => {
-        setValue("calories", calorieValues);
-    }, [calorieValues, setValue]);
+        setValue( "calories", calorieValues );
+    }, [ calorieValues, setValue ]);
+
+    useEffect( () => {
+        setValue( "maxCookingTime", maxCookingTime );
+    }, [ maxCookingTime, setValue ] )
 
     // HANDLERS
     function handleCuisineChange( cuisine ) {
@@ -82,7 +88,7 @@ function Recipes() {
     }
 
     return (
-        <div>
+        <>
             <PageContainer
                 title="My recipes"
                 searchPlaceHolder="recipes"
@@ -134,6 +140,13 @@ function Recipes() {
                                     />
                                 </DropDownMenu>
 
+                                <DropDownMenu title="Cooking time">
+                                    <SliderSelector
+                                        value={ maxCookingTime }
+                                        setter={ setMaxCookingTime }
+                                    />
+                                </DropDownMenu>
+
                                 <div id="form-handler-buttons">
                                     <Button
                                         textValue="refresh"
@@ -153,9 +166,8 @@ function Recipes() {
                         </div>
                     </Dashboard>
                 </div>
-
             </PageContainer>
-        </div>
+        </>
     );
 }
 

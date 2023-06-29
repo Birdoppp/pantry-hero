@@ -1,24 +1,31 @@
-import React from 'react';
-import './Checkbox.css';
-import { ReactComponent as Checkmark } from '../../assets/icon-check.svg';
+import React, { useEffect, useState } from "react";
+import "./Checkbox.css";
+import { ReactComponent as Checkmark } from "../../assets/icon-check.svg";
 
 function Checkbox({ checked, clickHandler, registerHandler, isLarge }) {
-    function handleChange () {
-        // Empty function to solve onChange necessity.
+
+    const [ isChecked, setIsChecked ] = useState( checked || false );
+
+    useEffect(() => {
+        setIsChecked( checked || false );
+    }, [checked]);
+
+    function handleClick () {
+        clickHandler();
+        setIsChecked( prev => !prev );
     }
 
     return (
-        <label className={`lbl-checkbox ${ isLarge ? 'large' : ''}` }>
+        <label className={`lbl-checkbox ${ isLarge ? "large" : ""}` }>
             <input
                 type="checkbox"
-                checked={ checked }
-                onClick={ clickHandler }
-                onChange={ handleChange }
+                defaultChecked={ isChecked }
+                onClick={ handleClick }
                 {...( registerHandler ? registerHandler : {} )}
             />
 
             <span className={ `checkmark ${ isLarge ? "large" : "" }` }>
-                { checked && <Checkmark className="checkmark-icon" /> }
+                { isChecked && <Checkmark className="checkmark-icon" /> }
             </span>
         </label>
     );

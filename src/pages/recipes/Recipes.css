@@ -1,0 +1,15 @@
+#search-recipe-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 14px;
+    margin: 14px 0;
+}
+
+.checkbox-selector {
+    display: flex;
+    gap: 8px;
+    margin: 4px;
+    font-size: 16px;
+    color: var(--color-dark-green);
+}

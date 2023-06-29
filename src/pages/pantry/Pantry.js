@@ -300,7 +300,7 @@ function Pantry() {
                                     textValue="add"
                                     type="submit"
                                     clickHandler={ () => {
-                                        if(errors)  {
+                                        if ( errors )  {
                                             setShowErrorMessage( true );
                                         }
                                     } }

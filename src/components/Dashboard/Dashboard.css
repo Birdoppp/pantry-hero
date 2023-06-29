@@ -31,6 +31,7 @@
     color: var(--color-dark-green);
 }
 
+
 .dashboard input,
 .dashboard select {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);

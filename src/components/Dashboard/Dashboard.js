@@ -7,16 +7,17 @@ function Dashboard({ children }) {
     const childElements = Array.isArray( children ) ? children : [ children ];
     const [ isVisible, setIsVisible ] = useState(true);
 
-    function handleToggleVisibility() {
-        setIsVisible( !isVisible );
+    function handleToggleVisibility( e ) {
+        setIsVisible( prev => !prev );
     }
 
     return (
         <div className="dashboard">
 
             <button
+                type="button"
                 className="btn-toggle-visibility"
-                onClick={ handleToggleVisibility }
+                onClick={ e => handleToggleVisibility( e ) }
             >
                 { isVisible ?
                     <ArrowUp className="btn-toggle-visibility"/> :

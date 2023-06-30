@@ -21,6 +21,18 @@ async function fetchIngredientSuggestion( input, signal ) {
     }
 }
 
+async function fetchRecipes ( input, ingredients ){
+    const { cuisines, intolerances, calories, maxCookingTime } = input;
+
+    try {
+        const result = await axios.get( `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredients.toString()}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=6` );
+
+        console.log(result)
+    } catch ( e ) {
+        console.error( e );
+    }
+}
+
 function createAbortController() {
     if (controller) {
         controller.abort();
@@ -31,4 +43,4 @@ function createAbortController() {
 
 
 
-export { fetchIngredientSuggestion, createAbortController }
+export { fetchIngredientSuggestion, fetchRecipes, createAbortController }

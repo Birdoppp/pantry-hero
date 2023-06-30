@@ -163,16 +163,15 @@ function Pantry() {
                  className="inner-container"
             >
                 <Dashboard className="dashboard">
-                    <div>
+                    <>
                         <h3>Sort by:</h3>
                         <FilterSelector>
                             <button onClick={ () => handleSorting( setSortOption, "A-Z" ) }>A-Z</button>
                             <button onClick={ () => handleSorting( setSortOption, "expiry" ) }>expiry</button>
                             <button onClick={ () => handleSorting( setSortOption, "type" ) }>type</button>
                         </FilterSelector>
-
-                    </div>
-                    <div>
+                    </>
+                    <>
                         <h3>Status:</h3>
                         <div id="expiry-overview">
                             <InformationTag
@@ -193,8 +192,8 @@ function Pantry() {
                                 expiryClass="expiry-red"
                             />
                         </div>
-                    </div>
-                    <div>
+                    </>
+                    <>
                         <h3>Add ingredient:</h3>
                         <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
                             <div className="input-wrapper error-wrapper">
@@ -308,7 +307,7 @@ function Pantry() {
                                 />
                             </div>
                         </form>
-                    </div>
+                    </>
                 </Dashboard>
 
 

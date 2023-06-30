@@ -1,8 +1,8 @@
 import React, {createContext, useEffect, useState} from "react";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {checkTokenValidity} from "../helpers/checkTokenValidity";
+import { useNavigate } from "react-router-dom";
+import { checkTokenValidity } from "../helpers/checkTokenValidity";
 
 export const AuthContext = createContext( null );
 
@@ -14,13 +14,11 @@ function AuthContextProvider({ children }) {
     });
 
     async function login( token, redirect ) {
-        const decoded = jwtDecode( token );
-
         try {
-            const { data: { username } } = await axios.get(" https://frontend-educational-backend.herokuapp.com/api/user", {
+            const { data: { username } } = await axios.get("https://frontend-educational-backend.herokuapp.com/api/user", {
                 headers : {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${ token }`
+                    "Authorization": `Bearer ${ token }`
                 }
             });
 
@@ -32,9 +30,13 @@ function AuthContextProvider({ children }) {
                 status: "done",
             });
 
-            if ( redirect ) navigate("/pantry");
+            if ( redirect ) navigate( "/pantry" );
         } catch ( e ) {
-            console.error( e );
+            if ( e.response.status === 401 ) {
+                logout();
+            } else {
+                console.error( e );
+            }
         }
     }
 

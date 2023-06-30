@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
+import { fetchRecipes } from "../../features/API/Spoonacular";
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Button from "../../components/Button/Button";
@@ -8,6 +9,9 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 import RangeSelector from "../../components/RangeSelector/RangeSelector";
 import SliderSelector from "../../components/SliderSelector/SliderSelector";
 import "./Recipes.css"
+import {useLiveQuery} from "dexie-react-hooks";
+import {db} from "../../features/Database/db";
+import {getExpiryString} from "../../helpers/getExpiryString";
 
 function Recipes() {
     const { handleSubmit, setValue, watch } = useForm( {mode: "onSubmit"} );
@@ -25,6 +29,8 @@ function Recipes() {
         "German",
         "Greek",
         "Indian",
+        "Irish",
+        "Italian",
         "Japanese",
         "Jewish",
         "Korean",
@@ -57,6 +63,11 @@ function Recipes() {
     const [ calorieValues, setCalorieValues ] = useState([ 0, 1200 ]);
     const [ maxCookingTime, setMaxCookingTime ] = useState(60);
 
+    // DATABASE
+    const myPantry = useLiveQuery(
+        () => db.pantry.toArray()
+    );
+
     // USE EFFECTS
     useEffect(() => {
         setValue( "calories", calorieValues );
@@ -84,7 +95,25 @@ function Recipes() {
     }
 
     function onSubmit (data) {
-        console.log(data);
+        const ingredients = ["grappa"];
+
+        //console.log(getExpiringIngredients( myPantry, 3, 0));
+
+        void fetchRecipes( data, ingredients );
+    }
+
+    function getExpiringIngredients( list, offset, checkDate ) {
+        return list?.filter((item) => {
+            if (item.expiryDate || item.expiryDate === 0) {
+                if ( checkDate || checkDate === 0 ) {
+                    return item.expiryDate <= getExpiryString( offset ) && item.expiryDate > getExpiryString( checkDate );
+                } else if ( offset === 0 ) {
+                    return item.expiryDate <= getExpiryString( offset );
+                } else {
+                    return item.expiryDate > getExpiryString( offset );
+                }
+            }
+        })
     }
 
     return (

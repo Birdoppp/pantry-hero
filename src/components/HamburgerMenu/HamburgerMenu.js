@@ -1,8 +1,8 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Button from "../Button/Button";
 import { AuthContext } from "../../context/AuthProvider";
-import "./HamburgerMenu.css"
 import Popup from "../Popup/Popup";
+import "./HamburgerMenu.css"
 
 
 function HamburgerMenu() {

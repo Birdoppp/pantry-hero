@@ -1,6 +1,6 @@
 import React from "react";
-import "./AuthPopup.css"
 import Button from "../Button/Button";
+import "./AuthPopup.css"
 
 function AuthPopup ({ children, onConfirm, onCancel } ) {
 

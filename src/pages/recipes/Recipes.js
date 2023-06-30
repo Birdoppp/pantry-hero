@@ -9,9 +9,9 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 import RangeSelector from "../../components/RangeSelector/RangeSelector";
 import SliderSelector from "../../components/SliderSelector/SliderSelector";
 import "./Recipes.css"
-import {useLiveQuery} from "dexie-react-hooks";
-import {db} from "../../features/Database/db";
-import {getExpiryString} from "../../helpers/getExpiryString";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../../features/Database/db";
+import { getRecipeIngredients } from "../../helpers/getRecipeIngredients";
 
 function Recipes() {
     const { handleSubmit, setValue, watch } = useForm( {mode: "onSubmit"} );
@@ -43,6 +43,13 @@ function Recipes() {
         "Spanish",
         "Thai",
         "Vietnamese"
+    ];
+    const allDiets = [
+        "Gluten free",
+        "Ketogenic",
+        "Vegetarian",
+        "Vegan",
+        "Paleo"
     ];
     const allIntolerances = [
         "Dairy",
@@ -86,6 +93,14 @@ function Recipes() {
         setValue("cuisines", updatedCuisines);
     }
 
+    function handleDietChange( diet ) {
+        const diets = watch( "diets" ) || [];
+        const updatedDiets = diets.includes( diet ) ?
+            diets.filter(( item ) => item !== diet) :
+            [ ...diets, diet ];
+        setValue("diets", updatedDiets);
+    }
+
     function handleIntoleranceChange( intolerance ) {
         const intolerances = watch( "intolerances" ) || [];
         const updatedIntolerances = intolerances.includes( intolerance ) ?
@@ -94,109 +109,106 @@ function Recipes() {
         setValue("intolerances", updatedIntolerances);
     }
 
-    function onSubmit (data) {
-        const ingredients = ["grappa"];
+    function onSubmit( data ) {
+        const ingredients = getRecipeIngredients( myPantry );
 
-        //console.log(getExpiringIngredients( myPantry, 3, 0));
-
-        void fetchRecipes( data, ingredients );
-    }
-
-    function getExpiringIngredients( list, offset, checkDate ) {
-        return list?.filter((item) => {
-            if (item.expiryDate || item.expiryDate === 0) {
-                if ( checkDate || checkDate === 0 ) {
-                    return item.expiryDate <= getExpiryString( offset ) && item.expiryDate > getExpiryString( checkDate );
-                } else if ( offset === 0 ) {
-                    return item.expiryDate <= getExpiryString( offset );
-                } else {
-                    return item.expiryDate > getExpiryString( offset );
-                }
-            }
-        })
+        void fetchRecipes( data, ingredients, 3 );
     }
 
     return (
-        <>
-            <PageContainer
-                title="My recipes"
-                searchPlaceHolder="recipes"
-                onSearch={ () => console.log("Searching...") }
+        <PageContainer
+            title="My recipes"
+            searchPlaceHolder="recipes"
+            onSearch={ () => console.log("Searching...") }
+        >
+            <div
+                id="recipe-overview"
+                className="inner-container"
             >
-                <div
-                    id="recipe-overview"
-                    className="inner-container"
-                >
-                    <Dashboard className="dashboard">
-                        <div>
-                            <h3>Preferences:</h3>
-                            <form id="search-recipe-form" onSubmit={ handleSubmit( onSubmit ) }>
-                                <DropDownMenu title="Cuisine">
-                                    { allCuisines.map(( cuisine, index) => (
-                                        <div
-                                            className="checkbox-selector"
-                                            key={ `cuisine-${ index }` }
-                                        >
-                                            <Checkbox
-                                                clickHandler={ () => handleCuisineChange( cuisine ) }
-                                                isLarge={ false }
-                                            />
-                                            <p>{ cuisine }</p>
-                                        </div>
-                                    ) ) }
-                                </DropDownMenu>
+                <Dashboard className="dashboard">
+                    <div>
+                        <h3>Preferences:</h3>
+                        <form id="search-recipe-form" onSubmit={ handleSubmit( onSubmit ) }>
+                            <DropDownMenu title="Cuisine">
+                                { allCuisines.map(( cuisine, index) => (
+                                    <div
+                                        className="checkbox-selector"
+                                        key={ `cuisine-${ index }` }
+                                    >
+                                        <Checkbox
+                                            clickHandler={ () => handleCuisineChange( cuisine ) }
+                                            isLarge={ false }
+                                        />
+                                        <p>{ cuisine }</p>
+                                    </div>
+                                ) ) }
+                            </DropDownMenu>
 
-                                <DropDownMenu title="Intolerances">
-                                    { allIntolerances.map(( intolerance, index ) => (
-                                        <div
-                                            className="checkbox-selector"
-                                            key={ `intolerance-${ index }` }
-                                        >
-                                            <Checkbox
-                                                clickHandler={ () => handleIntoleranceChange( intolerance ) }
-                                            />
-                                            <p>{ intolerance }</p>
-                                        </div>
-                                    ) ) }
-                                </DropDownMenu>
+                            <DropDownMenu title="Diet">
+                                { allDiets.map(( diet, index) => (
+                                    <div
+                                        className="checkbox-selector"
+                                        key={ `diet-${ index }` }
+                                    >
+                                        <Checkbox
+                                            clickHandler={ () => handleDietChange( diet ) }
+                                            isLarge={ false }
+                                        />
+                                        <p>{ diet }</p>
+                                    </div>
+                                ) ) }
+                            </DropDownMenu>
 
-                                <DropDownMenu title="Calories per serving">
-                                    <RangeSelector
-                                        range={ calorieValues }
-                                        rangeSetter={ setCalorieValues }
-                                        rangeMin={ 0 }
-                                        rangeMax={ 1200 }
-                                    />
-                                </DropDownMenu>
+                            <DropDownMenu title="Intolerances">
+                                { allIntolerances.map(( intolerance, index ) => (
+                                    <div
+                                        className="checkbox-selector"
+                                        key={ `intolerance-${ index }` }
+                                    >
+                                        <Checkbox
+                                            clickHandler={ () => handleIntoleranceChange( intolerance ) }
+                                        />
+                                        <p>{ intolerance }</p>
+                                    </div>
+                                ) ) }
+                            </DropDownMenu>
 
-                                <DropDownMenu title="Cooking time">
-                                    <SliderSelector
-                                        value={ maxCookingTime }
-                                        setter={ setMaxCookingTime }
-                                    />
-                                </DropDownMenu>
+                            <DropDownMenu title="Calories per serving">
+                                <RangeSelector
+                                    range={ calorieValues }
+                                    rangeSetter={ setCalorieValues }
+                                    rangeMin={ 0 }
+                                    rangeMax={ 1200 }
+                                />
+                            </DropDownMenu>
 
-                                <div id="form-handler-buttons">
-                                    <Button
-                                        textValue="refresh"
-                                        type="submit"
-                                        clickHandler={ () => console.log("Clicked refresh") }
-                                        filledStatus={ false }
-                                    />
+                            <DropDownMenu title="Cooking time">
+                                <SliderSelector
+                                    value={ maxCookingTime }
+                                    setter={ setMaxCookingTime }
+                                />
+                            </DropDownMenu>
 
-                                    <Button
-                                        textValue="apply"
-                                        type="submit"
-                                        clickHandler={ () => console.log("Clicked submit") }
-                                        filledStatus={ true }
-                                    />
-                                </div>
-                            </form>
-                        </div>
-                    </Dashboard>
-                </div>
-            </PageContainer>
-        </>
+                            <div id="form-handler-buttons">
+                                <Button
+                                    textValue="refresh"
+                                    type="submit"
+                                    clickHandler={ () => console.log("Clicked refresh") }
+                                    filledStatus={ false }
+                                />
+
+                                <Button
+                                    textValue="apply"
+                                    type="submit"
+                                    clickHandler={ () => console.log("Clicked submit") }
+                                    filledStatus={ true }
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </Dashboard>
+            </div>
+        </PageContainer>
     );
 }
 

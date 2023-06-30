@@ -21,15 +21,32 @@ async function fetchIngredientSuggestion( input, signal ) {
     }
 }
 
-async function fetchRecipes ( input, ingredients ){
-    const { cuisines, intolerances, calories, maxCookingTime } = input;
+async function fetchRecipes( input, ingredients ) {
+    const { cuisines, diets, intolerances, calories, maxCookingTime } = input;
+    const allResults = [];
 
     try {
-        const result = await axios.get( `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredients.toString()}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=6` );
+        async function processResult( ingredient ) {
+            const result = await axios.get(
+                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`
+            );
+            const data = result.data.results;
 
-        console.log(result)
-    } catch ( e ) {
-        console.error( e );
+            if (data.length === 3) {
+                for (let i = 0; i < data.length; i++) {
+                    allResults.push(data[i]);
+                }
+            } else {
+                await processResult();
+            }
+        };
+
+        const firstResult = await processResult( ingredients[0] );
+        const secondResult = await processResult( ingredients[1] );
+
+        console.log(allResults);
+    } catch (e) {
+        console.error(e);
     }
 }
 

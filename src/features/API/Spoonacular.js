@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseURL = "https://api.spoonacular.com/";
-const numIngredientSuggestions = 3;
+const numIngredientSuggestions = 5;
 let controller;
 
 async function fetchIngredientSuggestion( input, signal ) {

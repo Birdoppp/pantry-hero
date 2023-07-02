@@ -1,7 +1,7 @@
 import { getExpiryString } from "./getExpiryString";
 import { getRandomArrayEntries } from "./getRandomArrayEntries";
 
-export function getRecipeIngredients( list ) {
+export function getRandomIngredients(list ) {
     let ingredients;
 
     const nearExpiryList = list?.filter(( item ) => {

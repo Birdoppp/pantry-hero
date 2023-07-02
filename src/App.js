@@ -32,13 +32,9 @@ function App() {
             <main>
                 <Routes>
                     <Route path="/" element={ <Homepage/> }/>
-                    {isAuth && (
-                        <>
-                            <Route path="/pantry" element={<Pantry />} />
-                            <Route path="/shoppinglist" element={<ShoppingList />} />
-                            <Route path="/recipes" element={<Recipes />} />
-                        </>
-                    )}
+                    <Route path="/pantry" element={<Pantry />} />
+                    <Route path="/shoppinglist" element={<ShoppingList />} />
+                    <Route path="/recipes" element={<Recipes />} />
                 </Routes>
             </main>
 

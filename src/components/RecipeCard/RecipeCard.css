@@ -83,6 +83,6 @@
 /* 5. Media queries */
 @media screen and (max-width: 600px) {
     .recipe-card {
-        max-width: 310px;
+        max-width: 292px;
     }
 }

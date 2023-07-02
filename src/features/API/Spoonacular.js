@@ -21,14 +21,16 @@ async function fetchIngredientSuggestion( input, signal ) {
     }
 }
 
-async function fetchRecipes( input, ingredients ) {
+async function fetchRecipes( input, ingredients, signal ) {
     const { cuisines, diets, intolerances, calories, maxCookingTime } = input;
     const allResults = [];
 
     try {
         async function processResult( ingredient ) {
             const result = await axios.get(
-                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`
+                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`, {
+                    signal
+                }
             );
             const data = result.data.results;
 
@@ -39,12 +41,13 @@ async function fetchRecipes( input, ingredients ) {
             } else {
                 await processResult();
             }
-        };
+        }
 
-        const firstResult = await processResult( ingredients[0] );
-        const secondResult = await processResult( ingredients[1] );
+        await processResult( ingredients[0] );
+        await processResult( ingredients[1] );
 
-        console.log(allResults);
+        localStorage.removeItem("recipes");
+        localStorage.setItem("recipes", JSON.stringify(allResults));
     } catch (e) {
         console.error(e);
     }

@@ -1,5 +1,4 @@
 import React, {createContext, useEffect, useState} from "react";
-import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../helpers/checkTokenValidity";
@@ -65,7 +64,7 @@ function AuthContextProvider({ children }) {
                 status: 'done',
             });
         }
-    }, []);
+    }, [] );
 
     const data = {
         ...authState,

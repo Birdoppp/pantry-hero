@@ -40,7 +40,6 @@ function AuthContextProvider({ children }) {
     }
 
     function logout() {
-        console.log("logging out")
         localStorage.removeItem("token");
 
         setAuthState({
@@ -56,7 +55,16 @@ function AuthContextProvider({ children }) {
         const token = localStorage.getItem("token");
 
         if ( token && token !== "undefined" && checkTokenValidity( token ) ) {
-            void login( token );
+            //void login( token );
+
+            // TEMPORARY!!!
+            setAuthState({
+                isAuth: true,
+                user: {
+                    username: "OFFLINE",
+                },
+                status: "done",
+            });
         } else {
             setAuthState({
                 isAuth: false,

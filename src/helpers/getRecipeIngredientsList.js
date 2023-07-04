@@ -1,5 +1,6 @@
 export function getRecipeIngredientsList( recipe ) {
     const instructions = recipe.analyzedInstructions[0].steps;
+
     let ingredientsSet = new Set();
 
     for (let i = 0; i < instructions.length; i++) {

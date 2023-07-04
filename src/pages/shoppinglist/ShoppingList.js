@@ -39,17 +39,6 @@ function ShoppingList() {
     const debouncedInputChange = debounce( handleInputChange, 300 );
     const signal = createAbortController();
 
-    const searchItems = async (query) => {
-        if (query.trim() === "") {
-            setSearchResults(null);
-        } else {
-            const results = await db.shoppinglist
-                .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-                .toArray();
-            setSearchResults(results);
-        }
-    };
-
     const myShoppingList = useLiveQuery(
         () => db.shoppinglist.toArray()
     );
@@ -175,6 +164,17 @@ function ShoppingList() {
             const data = await fetchIngredientSuggestion(input, signal);
             setSuggestions(data);
             setShowPopout(data.length > 0);
+        }
+    }
+
+    async function searchItems( query ) {
+        if (query.trim() === "") {
+            setSearchResults(null);
+        } else {
+            const results = await db.shoppinglist
+                .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
+                .toArray();
+            setSearchResults(results);
         }
     }
 

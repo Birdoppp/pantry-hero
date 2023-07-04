@@ -44,17 +44,6 @@ function Pantry() {
     const debouncedInputChange = debounce( handleInputChange, 300 );
     const signal = createAbortController();
 
-    const searchIngredients = async (query) => {
-        if (query.trim() === "") {
-            setSearchResults(null);
-        } else {
-            const results = await db.pantry
-                .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-                .toArray();
-            setSearchResults(results);
-        }
-    };
-
     // DATABASE UPDATER
     const myPantry = useLiveQuery(
         () => db.pantry.toArray()
@@ -148,6 +137,17 @@ function Pantry() {
             const data = await fetchIngredientSuggestion( input, signal );
             setSuggestions( data );
             setShowPopout(data.length > 0 );
+        }
+    }
+
+    async function searchIngredients( query ) {
+        if ( query.trim() === "" ) {
+            setSearchResults(null);
+        } else {
+            const results = await db.pantry
+                .filter( item => item.name.toLowerCase().includes( query.toLowerCase() ) )
+                .toArray();
+            setSearchResults(results);
         }
     }
 

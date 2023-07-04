@@ -28,15 +28,15 @@ async function fetchRecipes( input, ingredients, signal ) {
     try {
         async function processResult( ingredient ) {
             const result = await axios.get(
-                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`, {
+                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`, {
                     signal
                 }
             );
             const data = result.data.results;
 
-            if (data.length === 3) {
+            if ( data.length === 3 ) {
                 for (let i = 0; i < data.length; i++) {
-                    allResults.push(data[i]);
+                    allResults.push( data[i] );
                 }
             } else {
                 await processResult();
@@ -47,10 +47,25 @@ async function fetchRecipes( input, ingredients, signal ) {
         await processResult( ingredients[1] );
 
         localStorage.removeItem("recipes");
-        localStorage.setItem("recipes", JSON.stringify(allResults));
+        localStorage.setItem("recipes", JSON.stringify( allResults ));
     } catch (e) {
         console.error(e);
     }
+}
+
+async function searchRecipeByString( stringInput, signal ) {
+    try {
+        const result = await axios.get( `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${ stringInput }&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&ignorePantry=false&sort=random&number=6`, {
+                signal
+            }
+        );
+
+        localStorage.removeItem("recipes");
+        localStorage.setItem("recipes", JSON.stringify( result.data.results ));
+    } catch ( e ) {
+        console.error( e );
+    }
+
 }
 
 function createAbortController() {
@@ -63,4 +78,4 @@ function createAbortController() {
 
 
 
-export { fetchIngredientSuggestion, fetchRecipes, createAbortController }
+export { fetchIngredientSuggestion, fetchRecipes, searchRecipeByString, createAbortController }

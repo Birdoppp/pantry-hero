@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
-import {createAbortController, fetchRecipes} from "../../features/API/Spoonacular";
+import {createAbortController, fetchRecipes, searchRecipeByString} from "../../features/API/Spoonacular";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
 import { getRandomIngredients } from "../../helpers/getRandomIngredients";
@@ -17,6 +17,7 @@ import "./Recipes.css"
 function Recipes() {
     const { handleSubmit, setValue, watch, reset } = useForm( {mode: "onSubmit"} );
     const signal = createAbortController();
+
     const allCuisines = [
         "African",
         "Asian",
@@ -71,7 +72,8 @@ function Recipes() {
     // STATES
     const [ calorieValues, setCalorieValues ] = useState([ 0, 1200 ]);
     const [ maxCookingTime, setMaxCookingTime ] = useState(60);
-    const [ recipes, setRecipes ] = useState( getParsedRecipes );
+    const [ recipes, setRecipes ] = useState(getParsedRecipes);
+    const [ searchResults, setSearchResults ] = useState(null);
 
     // DATABASE
     const myPantry = useLiveQuery(
@@ -125,17 +127,33 @@ function Recipes() {
         reset();
     }
 
+    function handleEnterPress() {
+        void searchRecipeByString( searchResults, signal ).then( () => {
+                setRecipes( getParsedRecipes );
+            }
+        );
+    }
+
     function getParsedRecipes() {
-        const storedRecipes = localStorage.getItem('recipes');
+        const storedRecipes = localStorage.getItem("recipes");
 
         return storedRecipes ? JSON.parse(storedRecipes) : [];
+    }
+
+    async function searchRecipes( query ) {
+        if ( query.trim() === "" ) {
+            setSearchResults( null );
+        } else {
+            setSearchResults( query );
+        }
     }
 
     return (
         <PageContainer
             title="My recipes"
             searchPlaceHolder="recipes"
-            onSearch={ () => console.log("Searching...") }
+            onSearch={ searchRecipes }
+            onEnterPress={ handleEnterPress }
         >
             <div
                 id="recipe-overview"

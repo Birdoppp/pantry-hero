@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import RecipePopup from "../RecipePopup/RecipePopup";
-import { getRequiredIngredients } from "../../helpers/getRequiredIngredients";
-import { matchRecipeToPantry } from "../../helpers/matchRecipeToPantry";
-import { db } from "../../features/Database/db";
+import {matchRecipeToPantry} from "../../helpers/matchRecipeToPantry";
+import {db} from "../../features/Database/db";
 
-import { ReactComponent as IconPrepTime } from "../../assets/icon-prep_time.svg"
-import { ReactComponent as IconIngredientsInfo } from "../../assets/icon-checklist.svg";
-import { ReactComponent as IconServingInfo } from "../../assets/icon-servings.svg";
+import {ReactComponent as IconPrepTime} from "../../assets/icon-prep_time.svg"
+import {ReactComponent as IconIngredientsInfo} from "../../assets/icon-checklist.svg";
+import {ReactComponent as IconServingInfo} from "../../assets/icon-servings.svg";
 import "./RecipeCard.css"
 
 function RecipeCard({ recipe }) {
     const { image, title, readyInMinutes, servings } = recipe
     const [ matchingIngredientsCount, setMatchingIngredientsCount ] = useState( 0 );
     const [ showFullRecipe, setShowFullRecipe ] = useState(false);
+    const [ ingredientAmountString, setIngredientAmountString ] = useState("");
 
     useEffect( () => {
-        matchRecipeToPantry( recipe, db ).then( ( matchingIngredientsNum ) => {
+         matchRecipeToPantry( recipe, db ).then( ( matchingIngredientsNum ) => {
             setMatchingIngredientsCount( matchingIngredientsNum );
         } )
-    }, [db.pantry, recipe]);
+    });
+
+    useEffect( () => {
+        function getIngredientAmountString() {
+            const totalIngredients = recipe.ingredients.length;
+
+            return `${matchingIngredientsCount}/${totalIngredients} ingredients`;
+        }
+
+        setIngredientAmountString( getIngredientAmountString );
+    }, [matchingIngredientsCount])
 
     return (
         <>
@@ -45,7 +55,7 @@ function RecipeCard({ recipe }) {
 
                         <div className="recipe-data-block">
                             <IconIngredientsInfo/>
-                            <div>{ `${ matchingIngredientsCount }/${ getRequiredIngredients( recipe ).length } ingredients` }</div>
+                            <div>{ ingredientAmountString }</div>
                         </div>
 
                         <div className="recipe-data-block">

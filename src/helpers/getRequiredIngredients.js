@@ -6,7 +6,7 @@ export function getRequiredIngredients( recipe ) {
     originalIngredientsList.forEach(( ingredient ) => {
         const { name, amount, unit } = ingredient;
 
-        if ( unit && name.toLowerCase() !== "water" ) {
+        if ( unit !== null && name.toLowerCase() !== "water" ) {
             if (newIngredientsList.hasOwnProperty( name )) {
                 newIngredientsList[ name ].amount += getNumericAmount( amount, servings );
             } else {

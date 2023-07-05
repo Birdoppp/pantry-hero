@@ -17,26 +17,35 @@ export async function matchRecipeToPantry( recipe, database ) {
             const matchingIngredient = matchingIngredients[0];
 
             if (matchingIngredient.unit !== ingredient.unit ) {
-                await adjustIngredientUnit( ingredient, matchingIngredient.unit ).then( (amount) => {
-                    const adjustedIngredient = {
-                        ...ingredient,
-                        amount,
-                        unit: matchingIngredient.unit,
-                    };
+                const amount = await adjustIngredientUnit( ingredient, matchingIngredient.unit );
 
-                    adjustedIngredientsList.push( adjustedIngredient );
-                });
+                const adjustedIngredient = {
+                    ...ingredient,
+                    amount,
+                    unit: matchingIngredient.unit,
+                };
+
+                adjustedIngredientsList.push( adjustedIngredient );
+
+                if ( matchingIngredient.amount >= adjustedIngredient.amount ) {
+                    matchingIngredientsAmount++;
+                }
+            } else {
+                adjustedIngredientsList.push( ingredient );
+
+                if ( matchingIngredient.amount >= ingredient.amount ) {
+                    matchingIngredientsAmount++;
+                }
             }
-
-            matchingIngredientsAmount++;
         } else {
             adjustedIngredientsList.push( ingredient );
         }
     }
 
-    await Promise.all( originalIngredientsList.map( queryDatabaseForIngredient ) );
-    recipe["ingredients"] = adjustedIngredientsList;
-    adjustRecipeById( recipe );
+    await Promise.all( originalIngredientsList.map( queryDatabaseForIngredient ) ).then( () => {
+        recipe["ingredients"] = adjustedIngredientsList;
+    });
 
+    adjustRecipeById( recipe );
     return matchingIngredientsAmount;
 }

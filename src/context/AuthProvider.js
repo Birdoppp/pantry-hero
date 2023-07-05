@@ -55,16 +55,7 @@ function AuthContextProvider({ children }) {
         const token = localStorage.getItem("token");
 
         if ( token && token !== "undefined" && checkTokenValidity( token ) ) {
-            //void login( token );
-
-            // TEMPORARY!!!
-            setAuthState({
-                isAuth: true,
-                user: {
-                    username: "OFFLINE",
-                },
-                status: "done",
-            });
+            void login( token );
         } else {
             setAuthState({
                 isAuth: false,

@@ -65,7 +65,18 @@ async function searchRecipeByString( stringInput, signal ) {
     } catch ( e ) {
         console.error( e );
     }
+}
 
+async function adjustIngredientUnit( ingredient, desiredUnit ) {
+    const { name, amount, unit } = ingredient;
+
+    try {
+        const result = await axios.get(`${baseURL}/recipes/convert?apiKey=${process.env.REACT_APP_API_KEY}&ingredientName=${name}&sourceAmount=${amount}&sourceUnit=${unit}&targetUnit=${desiredUnit}`);
+
+        return result.data.targetAmount;
+    } catch ( e ) {
+        console.error( e );
+    }
 }
 
 function createAbortController() {
@@ -78,4 +89,4 @@ function createAbortController() {
 
 
 
-export { fetchIngredientSuggestion, fetchRecipes, searchRecipeByString, createAbortController }
+export { fetchIngredientSuggestion, fetchRecipes, searchRecipeByString, adjustIngredientUnit, createAbortController }

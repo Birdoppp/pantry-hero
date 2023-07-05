@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
 import { fetchIngredientSuggestion, createAbortController } from "../../features/API/Spoonacular";
@@ -92,7 +92,7 @@ function Pantry() {
         if (showErrorMessage) {
             const timeout = setTimeout(() => {
                 setShowErrorMessage(false);
-            }, 3000); // 3000 milliseconds = 3 seconds
+            }, 3000);
 
             return () => {
                 clearTimeout(timeout);
@@ -106,9 +106,12 @@ function Pantry() {
     }
 
     function handleFormSubmit( data ) {
+        console.log(data);
+
         const amount = parseInt(data.amount);
         const expiry = data["infiniteExpiry"] ? null : data.expiryDate;
         const type = data.type ? data.type : "other";
+
 
         void addIngredientToPantry (
             data.name,
@@ -120,9 +123,10 @@ function Pantry() {
             expiry,
         );
 
-        setIsExpiryInfinite( false );
         setIngredientUnits( allUnits );
         reset();
+        setValue("infiniteExpiry", false);
+        setIsExpiryInfinite( false );
     }
 
     function handleFormClear() {
@@ -271,9 +275,7 @@ function Pantry() {
                             <input type="date"
                                    id="input-date"
                                    disabled={ isExpiryInfinite }
-                                   { ...register( "expiryDate", {
-
-                                   } ) }
+                                   { ...register( "expiryDate" ) }
                             />
 
                             <div id="check-no-expiry">

@@ -1,47 +1,33 @@
-import React, {useEffect, useState } from 'react';
-import { getRecipeIngredientsList } from "../../helpers/getRecipeIngredientsList";
+import React, { useEffect, useState } from 'react';
+import RecipePopup from "../RecipePopup/RecipePopup";
+import { getRequiredIngredients } from "../../helpers/getRequiredIngredients";
+import { matchRecipeToPantry } from "../../helpers/matchRecipeToPantry";
 import { db } from "../../features/Database/db";
+
 import { ReactComponent as IconPrepTime } from "../../assets/icon-prep_time.svg"
 import { ReactComponent as IconIngredientsInfo } from "../../assets/icon-checklist.svg";
 import { ReactComponent as IconServingInfo } from "../../assets/icon-servings.svg";
 import "./RecipeCard.css"
-import RecipePopup from "../RecipePopup/RecipePopup";
-import {getRequiredIngredients} from "../../helpers/getRequiredIngredients";
 
 function RecipeCard({ recipe }) {
     const { image, title, readyInMinutes, servings } = recipe
     const [ matchingIngredientsCount, setMatchingIngredientsCount ] = useState( 0 );
     const [ showFullRecipe, setShowFullRecipe ] = useState(false);
 
-    useEffect(() => {
-        async function fetchMatchingIngredients() {
-            try {
-                const objects = await db.pantry
-                    .where( "name" )
-                    .anyOfIgnoreCase( getRecipeIngredientsList( recipe ) )
-                    .toArray();
-
-                const uniqueObjects = objects.filter(
-                    (object, index, self) => self.findIndex(obj => obj.name === object.name) === index
-                );
-
-                setMatchingIngredientsCount(uniqueObjects.length);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        void fetchMatchingIngredients();
-    }, [ recipe ]);
+    useEffect( () => {
+        matchRecipeToPantry( recipe, db ).then( ( matchingIngredientsNum ) => {
+            setMatchingIngredientsCount( matchingIngredientsNum );
+        } )
+    }, [db.pantry, recipe]);
 
     return (
         <>
             <article
                 className="recipe-card"
                 onClick={ () => {
-                    setShowFullRecipe( true );
-                    getRequiredIngredients( recipe );
-                    console.log(recipe);
+                    //setShowFullRecipe( true );
+
+                    console.log(recipe)
                 }}
             >
                 <div className="recipe-image-container">
@@ -59,7 +45,7 @@ function RecipeCard({ recipe }) {
 
                         <div className="recipe-data-block">
                             <IconIngredientsInfo/>
-                            <div>{ `${ matchingIngredientsCount }/${ getRecipeIngredientsList( recipe ).length } ingredients` }</div>
+                            <div>{ `${ matchingIngredientsCount }/${ getRequiredIngredients( recipe ).length } ingredients` }</div>
                         </div>
 
                         <div className="recipe-data-block">

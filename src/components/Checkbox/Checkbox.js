@@ -7,20 +7,29 @@ function Checkbox({ checked, clickHandler, registerHandler, isLarge }) {
     const [ isChecked, setIsChecked ] = useState( checked || false );
 
     useEffect(() => {
-        setIsChecked( checked || false );
-    }, [checked]);
+        setIsChecked( checked || false  );
+    }, [ checked ]);
+
+    useEffect(() => {
+        setIsChecked(checked || false);
+    }, [registerHandler]);
 
     function handleClick () {
-        clickHandler();
         setIsChecked( prev => !prev );
+        clickHandler();
+    }
+
+    function handleChange() {
+        // Empty function to prevent error messages in the console.
     }
 
     return (
         <label className={`lbl-checkbox ${ isLarge ? "large" : ""}` }>
             <input
                 type="checkbox"
-                defaultChecked={ isChecked }
+                checked={ isChecked }
                 onClick={ handleClick }
+                onChange={ handleChange }
                 {...( registerHandler ? registerHandler : {} )}
             />
 

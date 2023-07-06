@@ -106,8 +106,6 @@ function Pantry() {
     }
 
     function handleFormSubmit( data ) {
-        console.log(data);
-
         const amount = parseInt(data.amount);
         const expiry = data["infiniteExpiry"] ? null : data.expiryDate;
         const type = data.type ? data.type : "other";

@@ -66,7 +66,7 @@
 }
 
 .recipe-data-block {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: flex-start;
     gap: 4px;
@@ -79,6 +79,7 @@
     max-height: 100%;
     width: auto;
 }
+
 
 /* 5. Media queries */
 @media screen and (max-width: 600px) {

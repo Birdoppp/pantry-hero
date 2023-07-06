@@ -1,6 +1,7 @@
 import { adjustIngredientUnit } from "../features/API/Spoonacular";
 import { getRequiredIngredients } from "./getRequiredIngredients";
 import { adjustRecipeById } from "./adjustRecipeById";
+import {getFullIngredientAmount} from "./getFullIngredientAmount";
 
 export async function matchRecipeToPantry( recipe, database ) {
     const originalIngredientsList = recipe["ingredients"] ? recipe["ingredients"] : getRequiredIngredients( recipe );
@@ -26,16 +27,12 @@ export async function matchRecipeToPantry( recipe, database ) {
                 };
 
                 adjustedIngredientsList.push( adjustedIngredient );
-
-                if ( matchingIngredient.amount >= adjustedIngredient.amount ) {
-                    matchingIngredientsAmount++;
-                }
             } else {
                 adjustedIngredientsList.push( ingredient );
+            }
 
-                if ( matchingIngredient.amount >= ingredient.amount ) {
-                    matchingIngredientsAmount++;
-                }
+            if ( await getFullIngredientAmount( matchingIngredients ) >= ingredient.amount ) {
+                matchingIngredientsAmount++;
             }
         } else {
             adjustedIngredientsList.push( ingredient );

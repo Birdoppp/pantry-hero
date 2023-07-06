@@ -34,7 +34,9 @@
 #recipe-list-overview {
     display: flex;
     align-self: flex-start;
+    align-content: flex-start;
     flex: 0 1 100%;
+    flex-grow: 0;
     flex-wrap: wrap;
     gap: 20px;
     height: 85vh;

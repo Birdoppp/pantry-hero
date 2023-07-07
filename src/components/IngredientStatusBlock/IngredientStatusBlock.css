@@ -1,0 +1,27 @@
+/* Table of Contents */
+/*
+1. Ingredient Status Block
+2. Ingredient Status Text
+*/
+
+/* 1. Ingredient Status Block */
+#ingredient-status-block {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    height: 20px;
+    flex-grow: 1;
+    margin-bottom: 8px;
+}
+#ingredient-status-block svg {
+    max-height: 100%;
+    width: auto;
+}
+
+/* 2. Ingredient Status Text */
+.ingredient-status-text {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+

@@ -1,12 +1,31 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import "./Dashboard.css";
+import { ReactComponent as ArrowDown } from "../../assets/icon-arrow_down.svg";
+import { ReactComponent as ArrowUp } from "../../assets/icon-arrow_up.svg";
 
 function Dashboard({ children }) {
     const childElements = Array.isArray( children ) ? children : [ children ];
+    const [ isVisible, setIsVisible ] = useState(true);
+
+    function handleToggleVisibility( e ) {
+        setIsVisible( prev => !prev );
+    }
 
     return (
         <div className="dashboard">
-            {childElements.map(( child, index ) => (
+
+            <button
+                type="button"
+                className="btn-toggle-visibility"
+                onClick={ e => handleToggleVisibility( e ) }
+            >
+                { isVisible ?
+                    <ArrowUp className="btn-toggle-visibility"/> :
+                    <ArrowDown className="btn-toggle-visibility"/>
+                }
+            </button>
+
+            { isVisible && childElements.map(( child, index ) => (
                 <Fragment key={ `dashboard-item-${ index }` }>
                     { child }
                     { index !== childElements.length - 1 &&

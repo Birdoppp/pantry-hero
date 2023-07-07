@@ -28,30 +28,32 @@ function ShoppingItem( { listItem } ) {
 
     return (
         <article className={ `shopping-item ${isItemChecked? "checked" : ""}` }>
-            <div
-                id="shopping-item-name"
-                className={ isItemChecked? "shopping-item-name-checked" : "shopping-item-name-unchecked"}
-            >
-                 <p>{ listItem.Name.charAt(0).toUpperCase() + listItem.Name.slice(1) }</p>
-            </div>
+            <div className="shopping-item-information">
+                <div
+                    id="shopping-item-name"
+                    className={ isItemChecked? "shopping-item-name-checked" : "shopping-item-name-unchecked"}
+                >
+                    <p>{ listItem.Name.charAt(0).toUpperCase() + listItem.Name.slice(1) }</p>
+                </div>
 
-            <div id="shopping-item-buttons">
-                <button
-                    type="button"
-                    className="list-item-button hidden-element"
-                    onClick={ () => {
+                <div id="shopping-item-buttons">
+                    <button
+                        type="button"
+                        className="list-item-button hidden-element"
+                        onClick={ () => {
                             setShowPopup( true );
                         }
-                    }
-                >
-                    <DeleteIcon/>
-                </button>
-            </div>
+                        }
+                    >
+                        <DeleteIcon/>
+                    </button>
+                </div>
 
 
-            <div id="shopping-item-amount">
-                <span>{ amount }</span>
-                <span>{ listItem.Unit }</span>
+                <div id="shopping-item-amount">
+                    <span>{ amount }</span>
+                    <span>{ listItem.Unit }</span>
+                </div>
             </div>
 
             <Checkbox

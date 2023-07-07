@@ -109,9 +109,13 @@ function PantryItem({ ingredient }) {
                         type="button"
                         id="btn-reduce-amount"
                         onClick={() => {
-                            ingredient.setAmount(amount - 1);
-                            setAmount(amount - 1);
-                            db.pantry.update(ingredient.id, { amount: amount - 1 });
+                            if ( amount > 1 ) {
+                                ingredient.setAmount(amount - 1);
+                                setAmount(amount - 1);
+                                db.pantry.update(ingredient.id, { amount: amount - 1 });
+                            } else if ( amount === 1 ) {
+                                setShowDeletePopup(true);
+                            }
                         }}
                     >
                         <IconReduceAmount className="adjust-button" />
@@ -121,9 +125,14 @@ function PantryItem({ ingredient }) {
                         type="number"
                         value={amount.toString()}
                         onChange={(e) => {
-                            ingredient.setAmount(e.target.valueAsNumber);
-                            setAmount(e.target.valueAsNumber);
-                            db.pantry.update(ingredient.id, { amount: e.target.valueAsNumber });
+                            if ( e.target.valueAsNumber > 0 ) {
+                                ingredient.setAmount(e.target.valueAsNumber);
+                                setAmount(e.target.valueAsNumber);
+                                db.pantry.update(ingredient.id, { amount: e.target.valueAsNumber });
+                            } else if ( e.target.valueAsNumber <= 0 ) {
+                                setShowDeletePopup( true );
+                            }
+
                         }}
                     />
 

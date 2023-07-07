@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
 import { fetchIngredientSuggestion, createAbortController } from "../../features/API/Spoonacular";
@@ -43,17 +43,6 @@ function Pantry() {
 
     const debouncedInputChange = debounce( handleInputChange, 300 );
     const signal = createAbortController();
-
-    const searchIngredients = async (query) => {
-        if (query.trim() === "") {
-            setSearchResults(null);
-        } else {
-            const results = await db.pantry
-                .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-                .toArray();
-            setSearchResults(results);
-        }
-    };
 
     // DATABASE UPDATER
     const myPantry = useLiveQuery(
@@ -103,7 +92,7 @@ function Pantry() {
         if (showErrorMessage) {
             const timeout = setTimeout(() => {
                 setShowErrorMessage(false);
-            }, 3000); // 3000 milliseconds = 3 seconds
+            }, 3000);
 
             return () => {
                 clearTimeout(timeout);
@@ -121,6 +110,7 @@ function Pantry() {
         const expiry = data["infiniteExpiry"] ? null : data.expiryDate;
         const type = data.type ? data.type : "other";
 
+
         void addIngredientToPantry (
             data.name,
             data.unit,
@@ -131,9 +121,10 @@ function Pantry() {
             expiry,
         );
 
-        setIsExpiryInfinite( false );
         setIngredientUnits( allUnits );
         reset();
+        setValue("infiniteExpiry", false);
+        setIsExpiryInfinite( false );
     }
 
     function handleFormClear() {
@@ -151,6 +142,17 @@ function Pantry() {
         }
     }
 
+    async function searchIngredients( query ) {
+        if ( query.trim() === "" ) {
+            setSearchResults(null);
+        } else {
+            const results = await db.pantry
+                .filter( item => item.name.toLowerCase().includes( query.toLowerCase() ) )
+                .toArray();
+            setSearchResults(results);
+        }
+    }
+
 
     // HTML ELEMENTS
     return (
@@ -160,18 +162,18 @@ function Pantry() {
             onSearch={ searchIngredients }
         >
             <div id="pantry-overview"
-                 className="inner-container">
-                <Dashboard className="dashBoard">
-                    <div>
+                 className="inner-container"
+            >
+                <Dashboard className="dashboard">
+                    <>
                         <h3>Sort by:</h3>
                         <FilterSelector>
                             <button onClick={ () => handleSorting( setSortOption, "A-Z" ) }>A-Z</button>
                             <button onClick={ () => handleSorting( setSortOption, "expiry" ) }>expiry</button>
                             <button onClick={ () => handleSorting( setSortOption, "type" ) }>type</button>
                         </FilterSelector>
-
-                    </div>
-                    <div>
+                    </>
+                    <>
                         <h3>Status:</h3>
                         <div id="expiry-overview">
                             <InformationTag
@@ -192,8 +194,8 @@ function Pantry() {
                                 expiryClass="expiry-red"
                             />
                         </div>
-                    </div>
-                    <div>
+                    </>
+                    <>
                         <h3>Add ingredient:</h3>
                         <form id="pantry-add-item-form" onSubmit={ handleSubmit( handleFormSubmit ) }>
                             <div className="input-wrapper error-wrapper">
@@ -271,9 +273,7 @@ function Pantry() {
                             <input type="date"
                                    id="input-date"
                                    disabled={ isExpiryInfinite }
-                                   { ...register( "expiryDate", {
-
-                                   } ) }
+                                   { ...register( "expiryDate" ) }
                             />
 
                             <div id="check-no-expiry">
@@ -299,7 +299,7 @@ function Pantry() {
                                     textValue="add"
                                     type="submit"
                                     clickHandler={ () => {
-                                        if(errors)  {
+                                        if ( errors )  {
                                             setShowErrorMessage( true );
                                         }
                                     } }
@@ -307,7 +307,7 @@ function Pantry() {
                                 />
                             </div>
                         </form>
-                    </div>
+                    </>
                 </Dashboard>
 
 

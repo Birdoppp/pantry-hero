@@ -1,11 +1,12 @@
 import React from 'react';
 import "./Button.css";
 
-function Button({ textValue, type, clickHandler, filledStatus, color }) {
+function Button({ id, textValue, type, clickHandler, filledStatus, color }) {
     const buttonClassName = color + (filledStatus ? " btn-confirmation btn-filled" : " btn-confirmation btn-clear");
 
     return (
         <button
+            id={ id }
             type={ type }
             onClick={ clickHandler }
             className={ buttonClassName }

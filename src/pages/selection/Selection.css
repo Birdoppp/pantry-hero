@@ -1,0 +1,105 @@
+/* Table of Contents */
+/*
+1. Selection overview
+2. Selection item overview
+3. Selection title
+4. Selection list
+5. Dashboard
+6. Ingredient notifications
+7. Media queries
+*/
+
+/* 1. Selection overview */
+#selection-overview {
+    width: 100%;
+    gap: 50px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+}
+
+/* 2. Selection item overview */
+#selection-item-overview {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 12px;
+    height: 85vh;
+    overflow-y: scroll;
+}
+
+/* 3. Selection title */
+.selection-title {
+    font-family: "Alkatra", sans-serif;
+    font-size: 30px;
+    color: var(--color-dark-green);
+    text-align: left;
+    position: relative;
+}
+
+.selection-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 12px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-dark-green);
+    border-radius: 1px;
+}
+
+/* 4. Selection list */
+#selection-list-overview {
+    display: flex;
+    flex: 0 1 100%;
+    flex-grow: 0;
+    flex-wrap: wrap;
+    max-width: 100%;
+    align-self: flex-start;
+    align-content: flex-start;
+    gap: 20px;
+}
+
+/* 5. Dashboard */
+#quick-check-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#pantry-match-information {
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+#pantry-match-information svg {
+    max-height: 100%;
+    width: auto;
+}
+
+/* 6. Ingredient notification */
+.ingredient-notification {
+    text-align: left;
+    color: var(--color-dark-green);
+}
+
+.ingredient-notification.unmatched {
+    color: var(--color-orange);
+}
+
+/* 7. Media queries */
+@media screen and (max-width: 600px) {
+    #selection-overview {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #selection-item-overview {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        max-height: 80vh;
+    }
+}

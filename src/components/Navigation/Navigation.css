@@ -5,11 +5,11 @@
 3. Page Links
 4. Buttons
 5. Login popup
+6. Media queries
 */
 
 /* 1. Navigation Bar */
 .navigation-bar {
-    position: relative;
     width: 100%;
     height: 50px;
     padding: 0 50px;
@@ -43,9 +43,6 @@
 .page-link-list {
     display: flex;
     gap: 40px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .page-link {
@@ -86,4 +83,23 @@ li {
 .auth-buttons {
     display: flex;
     gap: 20px;
+}
+
+/* 6. Media queries */
+@media screen and (max-width: 600px) {
+    .navigation-bar {
+        padding: 0 10px;
+    }
+    
+    .logo-title {
+        display: none;
+    }
+
+    .page-link-list {
+        gap: 16px;
+    }
+    
+    .page-link {
+        max-width: 10px;
+    }
 }

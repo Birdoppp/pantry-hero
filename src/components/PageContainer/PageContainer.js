@@ -3,12 +3,21 @@ import "./PageContainer.css";
 import { ReactComponent as SearchIcon } from "../../assets/icon-search.svg";
 import { ReactComponent as BackgroundImage } from "../../assets/icon-logo.svg"
 
-function PageContainer({ title, searchPlaceHolder, onSearch, children }) {
+function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, isMirrored, children }) {
     const [ searchQuery, setSearchQuery ] = useState("");
 
     function handleInputChange ( e ) {
-        setSearchQuery(e.target.value);
-        onSearch(e.target.value);
+        setSearchQuery( e.target.value );
+        onSearch( e.target.value );
+    }
+
+    function handleEnterPress( e ) {
+        if ( onEnterPress && onEnterPress !== "undefined" ) {
+            if (e.key === "Enter") {
+                onEnterPress();
+                setSearchQuery( "" );
+            }
+        }
     }
 
     return (
@@ -18,7 +27,11 @@ function PageContainer({ title, searchPlaceHolder, onSearch, children }) {
                 <BackgroundImage className="background-image"/>
 
                 <div id="page-navigation">
-                    <h1 className="title">{ title }</h1>
+                    { isMirrored ? (
+                        <div className="balancer"></div>
+                    ) : (
+                        <h1 className="title">{ title }</h1>
+                    ) }
 
                     <div className="search-bar-container">
                         <SearchIcon className="search-icon" />
@@ -28,8 +41,15 @@ function PageContainer({ title, searchPlaceHolder, onSearch, children }) {
                             value={ searchQuery }
                             onChange={ handleInputChange }
                             placeholder={ searchPlaceHolder }
+                            onKeyDown={ handleEnterPress }
                         />
                     </div>
+
+                    { isMirrored ? (
+                        <h1 className="title">{ title }</h1>
+                    ) : (
+                        <div className="balancer"></div>
+                    ) }
                 </div>
                 { children }
             </div>

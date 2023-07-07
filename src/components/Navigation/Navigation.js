@@ -14,7 +14,7 @@ import "./Navigation.css";
 
 function Navigation() {
     const { register, reset, handleSubmit, formState: { errors }, watch } = useForm( {mode: "onSubmit"} );
-    const { isAuth, login, logout } = useContext( AuthContext );
+    const { isAuth, login } = useContext( AuthContext );
     const [ showLoginPopup, setShowLoginPopup ] = useState(false);
     const [ showRegisterPopup, setShowRegisterPopup ] = useState(false);
     const [ showErrorMessage, setShowErrorMessage ] = useState(false);
@@ -38,7 +38,7 @@ function Navigation() {
                         const token = data.data.accessToken;
 
                         localStorage.setItem( "token", token );
-                        login( token )
+                        login( token, "/pantry" );
 
                         resetAuthPopup();
                         setShowLoginPopup( false );
@@ -116,7 +116,7 @@ function Navigation() {
             <nav className="navigation-bar">
                 <div className="app-logo">
                     <Logo className="logo" />
-                    <h2>Pantry Hero</h2>
+                    <h2 className="logo-title">Pantry Hero</h2>
                 </div>
 
                 { isAuth &&

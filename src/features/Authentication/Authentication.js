@@ -2,10 +2,9 @@ import axios from "axios";
 
 const authApiUrl = "https://frontend-educational-backend.herokuapp.com";
 
-
 async function sendUserRegistration( userInformation ){
     try {
-        return await axios.post(`${authApiUrl}/api/auth/signup`, userInformation);
+        return await axios.post(`${ authApiUrl }/api/auth/signup`, userInformation);
 
     } catch ( e ) {
         if ( e.response.status === 400 ) {
@@ -18,7 +17,7 @@ async function sendUserRegistration( userInformation ){
 
 async function sendUserLogin ( userInformation ) {
     try {
-        return await axios.post(`${authApiUrl}/api/auth/signin`, userInformation);
+        return await axios.post(`${ authApiUrl }/api/auth/signin`, userInformation);
     } catch ( e ) {
         if( e.response.status === 401 ) {
             return e.response;

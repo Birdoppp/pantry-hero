@@ -1,0 +1,63 @@
+/* Table of Contents */
+/*
+1. Recipe page
+2. Dashboard
+3. Recipes
+4. Media Queries
+*/
+
+/* Recipe Page */
+#recipe-overview {
+    width: 100%;
+    gap: 50px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+/* 2. Dashboard */
+#search-recipe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 14px 0;
+}
+
+.checkbox-selector {
+    display: flex;
+    gap: 8px;
+    margin: 4px;
+    font-size: 16px;
+    color: var(--color-dark-green);
+}
+
+/* 3. Recipes */
+#recipe-list-overview {
+    display: flex;
+    align-self: flex-start;
+    align-content: flex-start;
+    flex: 0 1 100%;
+    flex-grow: 0;
+    flex-wrap: wrap;
+    gap: 20px;
+    height: 85vh;
+    max-width: 100%;
+    padding-bottom: 50px;
+    padding-right: 10px;
+    overflow-y: scroll;
+}
+
+/* 4. Media Queries */
+@media screen and (max-width: 600px) {
+    #recipe-overview {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #recipe-list-overview {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        max-height: 80vh;
+    }
+}

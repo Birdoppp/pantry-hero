@@ -4,14 +4,20 @@
 2. Dashboard Headings
 3. Dashboard Spans
 4. Divider
+5. Visibility toggle
+6. Media queries
 */
 
 /* 1. Base dashboard */
 .dashboard {
+    position: relative;
     overflow-y: scroll;
+    align-self: flex-start;
     height: fit-content;
     max-height: 75vh;
-    min-width: 288px;
+    width: 288px;
+    flex-grow: 0;
+    flex-shrink: 0;
     padding: 24px;
     border: 2px solid var(--color-dark-green);
     border-radius: 24px;
@@ -27,6 +33,12 @@
     color: var(--color-dark-green);
 }
 
+
+.dashboard input,
+.dashboard select {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
 /* 3. Dashboard Spans */
 .dashboard span {
     font-family: 'Alkatra', cursive;
@@ -40,4 +52,28 @@
     height: 4px;
     margin: 16px 0;
     background-color: var(--color-dark-green);
+}
+
+/* 5. Visibility toggle */
+.btn-toggle-visibility {
+    display: none;
+    width: 28px;
+    position: absolute;
+    left: 12px;
+    top: 1px;
+}
+
+.btn-toggle-visibility svg {
+    fill: var(--color-dark-green);
+}
+
+/* 6. Media queries */
+@media screen and (max-width: 600px) {
+    .dashboard {
+        align-self: center;
+    }
+
+    .btn-toggle-visibility {
+        display: block;
+    }
 }

@@ -10,9 +10,11 @@
     "dexie": "^3.2.3",
     "dexie-react-hooks": "^1.1.3",
     "jwt-decode": "^3.1.2",
+    "rc-slider": "^10.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
+    "react-responsive": "^9.0.2",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

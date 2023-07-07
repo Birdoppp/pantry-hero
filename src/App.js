@@ -1,8 +1,8 @@
 import './App.css';
 
 // Dependencies
-import React, {useContext, useEffect} from "react";
-import {Routes, Route, useNavigate} from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthProvider";
 
 // Constructors
@@ -11,6 +11,7 @@ import Pantry from "./pages/pantry/Pantry";
 import ShoppingList from "./pages/shoppinglist/ShoppingList";
 import Recipes from "./pages/recipes/Recipes";
 import Homepage from "./pages/homepage/Homepage";
+import Selection from "./pages/selection/Selection";
 
 function App() {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/pantry" element={<Pantry />} />
                     <Route path="/shoppinglist" element={<ShoppingList />} />
                     <Route path="/recipes" element={<Recipes />} />
+                    <Route path="/selection" element={<Selection />} />
                 </Routes>
             </main>
 

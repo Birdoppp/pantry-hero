@@ -1,9 +1,9 @@
 import { adjustIngredientUnit } from "../features/API/Spoonacular";
 import { getRequiredIngredients } from "./getRequiredIngredients";
 import { adjustRecipeById } from "./adjustRecipeById";
-import {getFullIngredientAmount} from "./getFullIngredientAmount";
+import { getFullIngredientAmount } from "./getFullIngredientAmount";
 
-export async function matchRecipeToPantry( recipe, database ) {
+export async function matchRecipeToPantry( recipe, database, storage ) {
     const originalIngredientsList = recipe["ingredients"] ? recipe["ingredients"] : getRequiredIngredients( recipe );
     const adjustedIngredientsList = [];
     let matchingIngredientsAmount = 0;
@@ -43,6 +43,6 @@ export async function matchRecipeToPantry( recipe, database ) {
         recipe["ingredients"] = adjustedIngredientsList;
     });
 
-    adjustRecipeById( recipe );
+    adjustRecipeById( recipe, storage );
     return matchingIngredientsAmount;
 }

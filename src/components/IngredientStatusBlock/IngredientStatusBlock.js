@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { checkForIngredientAvailability } from "../../helpers/checkForIngredientAvailability";
+import { formatUnitString } from "../../helpers/formatUnitString";
+import { ReactComponent as IconListItem } from "../../assets/icon-not_on_list.svg";
 import { ReactComponent as IconUnavailable } from "../../assets/icon-cross.svg";
 import { ReactComponent as IconAvailable } from "../../assets/icon-check-black.svg"
 import "./IngredientStatusBlock.css"
-import {formatUnitString} from "../../helpers/formatUnitString";
 
-function IngredientStatusBlock({ ingredient }) {
+function IngredientStatusBlock({ ingredient, isListItem }) {
     const [ isAvailable, setIsAvailable ] = useState( false );
 
     useEffect( () => {
@@ -16,19 +17,30 @@ function IngredientStatusBlock({ ingredient }) {
         }
 
         void checkAvailability();
-    })
+    });
+
+    function formatAmount( amount ) {
+        return Math.round( amount * 100 ) / 100;
+    }
 
     return (
         <div id="ingredient-status-block">
-            { isAvailable ? (
-                <IconAvailable/>
+            { isListItem ? (
+                <IconListItem/>
             ) : (
-                <IconUnavailable/>
-            ) }
+                isAvailable ? (
+                    <IconAvailable/>
+                ) : (
+                    <IconUnavailable/>
+                )
+            )}
+
+
+
 
             <div className="ingredient-status-text">
                 <p>{ ingredient.name }</p>
-                <p>{`${ ingredient.amount } ${ formatUnitString( ingredient.unit ) }`}</p>
+                <p>{`${ formatAmount(ingredient.amount) } ${ formatUnitString( ingredient.unit ) }`}</p>
             </div>
 
         </div>

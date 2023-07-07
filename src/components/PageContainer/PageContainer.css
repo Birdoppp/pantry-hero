@@ -79,6 +79,7 @@
     font-size: 50px;
     color: var(--color-dark-green);
     position: relative;
+    margin-right: 60px;
 }
 
 .title::after {

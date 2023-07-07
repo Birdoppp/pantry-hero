@@ -1,5 +1,5 @@
-export function adjustRecipeById( recipe ) {
-    const recipes = JSON.parse( localStorage.getItem( "recipes" ) || [] );
+export function adjustRecipeById( recipe, storage ) {
+    const recipes = JSON.parse( localStorage.getItem( storage ) || [] );
     const idIndex = recipes.findIndex( obj => obj.id === recipe.id );
 
     if ( idIndex !== -1 ) {
@@ -8,5 +8,5 @@ export function adjustRecipeById( recipe ) {
         recipes.push( recipe );
     }
 
-    localStorage.setItem( "recipes", JSON.stringify(recipes) );
+    localStorage.setItem( storage, JSON.stringify(recipes) );
 }

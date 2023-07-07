@@ -37,6 +37,7 @@
 /* 4. Underline */
 .underline {
     margin-top: -5px;
+    margin-bottom: 8px;
     height: 1px;
     border-radius: 1px;
     background-color: var(--color-dark-green);

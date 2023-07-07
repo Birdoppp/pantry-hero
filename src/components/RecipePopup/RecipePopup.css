@@ -1,13 +1,26 @@
+/* Table of Contents */
+/*
+1. Popup Container
+2. Image Container
+3. Return Button
+4. Recipe Container
+5. Recipe Information Tiles
+6. Recipe Ingredients Overview
+7. Recipe Step
+8. Add to Recipes Button
+9. Media queries
+*/
+
+/* 1. Popup Container */
 #recipe-popup {
     position: relative;
-    background-color: white;
-    font-weight: bold;
-    border-radius: 24px;
     width: 700px;
     height: 775px;
+    background-color: white;
+    border-radius: 24px;
+    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
     flex-grow: 0;
-    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.25);
 }
 
 #recipe-popup p {
@@ -18,15 +31,16 @@
 #recipe-popup::after {
     content: "";
     position: absolute;
-    border-radius: 0 0 24px 24px;
     left: 0;
     right: 0;
     bottom: 0;
     height: 120px;
     z-index: 5;
+    border-radius: 0 0 24px 24px;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
+/* 2. Image Container */
 #image-container {
     position: relative;
     width: 100%;
@@ -44,15 +58,16 @@
     height: auto;
 }
 
+/* 3. Return Button */
 .return-button {
     position: absolute;
+    top: 40px;
+    right: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    top: 40px;
-    right: 40px;
-    height: 50px;
     width: 50px;
+    height: 50px;
     border-radius: 25px;
     background: #FFFFFF;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
@@ -62,6 +77,7 @@
     max-height: 28px;
 }
 
+/* 4. Recipe Container */
 #recipe {
     display: flex;
     flex-direction: column;
@@ -73,30 +89,55 @@
     overflow-y: scroll;
 }
 
+/* 5. Recipe Information Tiles */
 #recipe-information-tiles {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.recipe-data-block + .right-aligned {
+.recipe-data-block.right-aligned {
     justify-content: flex-end;
 }
 
+/* 6. Recipe Ingredients Overview */
 #recipe-ingredients-overview {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 24px;
 }
 
+/* 7. Recipe Step */
 .recipe-step {
     margin-bottom: 24px;
 }
 
+/* 8. Add to Recipes Button */
 #btn-add-to-recipes {
     position: absolute;
     z-index: 6;
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+/* 9. Media queries */
+@media screen and (max-width: 600px) {
+    #recipe-popup {
+        width: 100%;
+        height: 100%;
+    }
+
+    #image-container {
+        height: 150px;
+    }
+
+    #recipe {
+        max-height: 80%;
+        padding: 20px 20px 44px;
+    }
+
+    #recipe-ingredients-overview {
+        grid-template-columns: 1fr;
+    }
 }

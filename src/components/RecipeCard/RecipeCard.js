@@ -8,15 +8,16 @@ import { ReactComponent as IconIngredientsInfo } from "../../assets/icon-checkli
 import { ReactComponent as IconServingInfo } from "../../assets/icon-servings.svg";
 import "./RecipeCard.css"
 
-function RecipeCard({ recipe }) {
+function RecipeCard({ recipe, isSelection }) {
     const { image, title, readyInMinutes, servings } = recipe
     const [ matchingIngredientsCount, setMatchingIngredientsCount ] = useState( 0 );
     const [ showFullRecipe, setShowFullRecipe ] = useState(false);
     const [ ingredientAmountString, setIngredientAmountString ] = useState("");
+    const storage = isSelection ? "recipeSelection" : "recipes";
 
     useEffect(() => {
         async function updateMatchingIngredients() {
-            const matchingIngredientsNum = await matchRecipeToPantry(recipe, db);
+            const matchingIngredientsNum = await matchRecipeToPantry(recipe, db, storage);
             setMatchingIngredientsCount(matchingIngredientsNum);
         }
 
@@ -75,6 +76,7 @@ function RecipeCard({ recipe }) {
                 recipe={ recipe }
                 onClose={ () => setShowFullRecipe( false ) }
                 ingredientAmount={ ingredientAmountString }
+                isSelection={ isSelection }
             /> }
         </>
     );

@@ -12,7 +12,9 @@ import { useForm } from "react-hook-form";
 import { createAbortController, fetchRecipes, searchRecipeByString } from "../../features/API/Spoonacular";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
+import { Link } from "react-router-dom";
 import { getRandomIngredients } from "../../helpers/getRandomIngredients";
+import { getParsedRecipes } from "../../helpers/getParsedRecipes";
 import "./Recipes.css"
 
 const signal = createAbortController();
@@ -73,7 +75,7 @@ function Recipes() {
     // STATES
     const [ calorieValues, setCalorieValues ] = useState([ 0, 1200 ]);
     const [ maxCookingTime, setMaxCookingTime ] = useState(60);
-    const [ recipes, setRecipes ] = useState(getParsedRecipes);
+    const [ recipes, setRecipes ] = useState( getParsedRecipes );
     const [ recipesAreLoading, setRecipesAreLoading ] = useState(false);
     const [ searchResults, setSearchResults ] = useState(null);
 
@@ -144,12 +146,6 @@ function Recipes() {
             .finally( () => {
                 setRecipesAreLoading( false );
             });
-    }
-
-    function getParsedRecipes() {
-        const storedRecipes = localStorage.getItem("recipes");
-
-        return storedRecipes ? JSON.parse(storedRecipes) : [];
     }
 
     async function searchRecipes( query ) {
@@ -246,11 +242,6 @@ function Recipes() {
                                 <Button
                                     textValue="apply"
                                     type="submit"
-                                    clickHandler={ () => {
-                                        if ( errors )  {
-                                            console.error( errors );
-                                        }
-                                    }  }
                                     filledStatus={ true }
                                 />
                             </div>
@@ -268,6 +259,10 @@ function Recipes() {
                         ))
                     ) }
                 </div>
+
+                <Link to="/selection">
+                    <button type="button">To other page</button>
+                </Link>
             </div>
         </PageContainer>
     );

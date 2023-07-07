@@ -3,7 +3,7 @@ import "./PageContainer.css";
 import { ReactComponent as SearchIcon } from "../../assets/icon-search.svg";
 import { ReactComponent as BackgroundImage } from "../../assets/icon-logo.svg"
 
-function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, children }) {
+function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, isMirrored, children }) {
     const [ searchQuery, setSearchQuery ] = useState("");
 
     function handleInputChange ( e ) {
@@ -27,7 +27,11 @@ function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, child
                 <BackgroundImage className="background-image"/>
 
                 <div id="page-navigation">
-                    <h1 className="title">{ title }</h1>
+                    { isMirrored ? (
+                        <div className="balancer"></div>
+                    ) : (
+                        <h1 className="title">{ title }</h1>
+                    ) }
 
                     <div className="search-bar-container">
                         <SearchIcon className="search-icon" />
@@ -41,7 +45,11 @@ function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, child
                         />
                     </div>
 
-                    <div className="balancer"></div>
+                    { isMirrored ? (
+                        <h1 className="title">{ title }</h1>
+                    ) : (
+                        <div className="balancer"></div>
+                    ) }
                 </div>
                 { children }
             </div>

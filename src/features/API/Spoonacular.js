@@ -7,8 +7,8 @@ let controller;
 async function fetchIngredientSuggestion( input, signal ) {
     try {
         const result = await axios.get( `${ baseURL }food/ingredients/autocomplete?apiKey=${ process.env.REACT_APP_API_KEY }&query=${ input }&metaInformation=true&number=${ numIngredientSuggestions }`, {
-             signal
-         } )
+            signal
+        } )
 
         return result.data;
     } catch ( e ) {
@@ -21,17 +21,14 @@ async function fetchIngredientSuggestion( input, signal ) {
     }
 }
 
-async function fetchRecipes( input, ingredients, signal ) {
+async function fetchRecipes( input, ingredients ) {
     const { cuisines, diets, intolerances, calories, maxCookingTime } = input;
     const allResults = [];
 
     try {
         async function processResult( ingredient ) {
             const result = await axios.get(
-                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`, {
-                    signal
-                }
-            );
+                `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${cuisines ? cuisines.toString() : ""}&diet=${diets ? diets.toString() : ""}&intolerances=${intolerances ? intolerances.toString() : ""}&includeIngredients=${ingredient ? ingredient.toLowerCase() : ""}&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&maxReadyTime=${maxCookingTime}&ignorePantry=false&minCalories=${calories[0]}&maxCalories=${calories[1]}&sort=random&number=3`);
             const data = result.data.results;
 
             if ( data.length === 3 ) {

@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
+// DEPENDENCIES
+import { db } from "../../features/Database/db";
+import { useLiveQuery } from "dexie-react-hooks";
+import { useForm } from "react-hook-form";
+import { createAbortController, fetchRecipes, searchRecipeByString } from "../../features/API/Spoonacular";
+
+// COMPONENTS
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Button from "../../components/Button/Button";
@@ -8,18 +16,17 @@ import RangeSelector from "../../components/RangeSelector/RangeSelector";
 import SliderSelector from "../../components/SliderSelector/SliderSelector";
 import RecipeCard from "../../components/RecipeCard/RecipeCard";
 import LoadingIcon from "../../components/LoadingIcon/LoadingIcon";
-import { useForm } from "react-hook-form";
-import { createAbortController, fetchRecipes, searchRecipeByString } from "../../features/API/Spoonacular";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../../features/Database/db";
-import { Link } from "react-router-dom";
+
+// HELPERS
 import { getRandomIngredients } from "../../helpers/getRandomIngredients";
 import { getParsedRecipes } from "../../helpers/getParsedRecipes";
+
+// STYLES
 import "./Recipes.css"
 
 const signal = createAbortController();
 function Recipes() {
-    const { handleSubmit, setValue, watch, reset, formState: { errors } } = useForm( {mode: "onSubmit"} );
+    const { handleSubmit, setValue, watch, reset } = useForm( {mode: "onSubmit"} );
 
     const allCuisines = [
         "African",
@@ -123,7 +130,7 @@ function Recipes() {
 
         const ingredients = getRandomIngredients( myPantry );
 
-        fetchRecipes( data, ingredients, signal )
+        fetchRecipes( data, ingredients )
             .then( () => {
                 setRecipes( getParsedRecipes );
             })
@@ -158,7 +165,7 @@ function Recipes() {
 
     return (
         <PageContainer
-            title="My recipes"
+            title="Suggestions"
             searchPlaceHolder="recipes"
             onSearch={ searchRecipes }
             onEnterPress={ handleEnterPress }
@@ -255,14 +262,10 @@ function Recipes() {
                     ) : (
                         recipes.length > 0 &&
                         recipes.map(( recipe, index ) => (
-                            <RecipeCard key={`recipe-${ index }`} recipe={ recipe } />
+                            <RecipeCard key={`recipe-${ index }`} recipe={ recipe } storage="recipes" />
                         ))
                     ) }
                 </div>
-
-                <Link to="/selection">
-                    <button type="button">To other page</button>
-                </Link>
             </div>
         </PageContainer>
     );

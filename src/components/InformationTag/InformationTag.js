@@ -1,4 +1,6 @@
 import React from 'react';
+
+// STYLES
 import "./InformationTag.css"
 
 function InformationTag({ title, displayNum, expiryClass }) {

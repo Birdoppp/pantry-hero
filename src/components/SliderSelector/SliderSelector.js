@@ -1,9 +1,15 @@
 import React from 'react';
+
+// DEPENDENCIES
 import Slider from 'rc-slider';
+
+// STYLES
 import 'rc-slider/assets/index.css';
 import "./SliderSelector.css"
 
 function SliderSelector({ value, setter }) {
+
+    // HANDLERS
     const handleSliderChange = ( value ) => {
         setter( value );
     };

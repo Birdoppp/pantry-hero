@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import "./PantryItem.css";
 
+// DEPENDENCIES
 import { db } from "../../features/Database/db";
+
+// COMPONENTS
 import Popup from "../Popup/Popup";
 
+// HELPERS
 import { handleConfirmation } from "../../helpers/handleConfirmation";
 import { addItemToShoppingList } from "../../helpers/addItemToShoppingList";
 
-/* Images */
+// IMAGES
 import { ReactComponent as IconAddToList } from "../../assets/icon-add_to_list.svg";
 import { ReactComponent as IconRemoveFromPantry } from "../../assets/icon-delete.svg";
 import { ReactComponent as IconExpiryInformation } from "../../assets/icon-expiry.svg";
 import { ReactComponent as IconReduceAmount } from "../../assets/icon-reduce.svg";
 import { ReactComponent as IconIncreaseAmount } from "../../assets/icon-add.svg";
+
+// STYLES
+import "./PantryItem.css";
 
 function PantryItem({ ingredient }) {
     const [ amount, setAmount ] = React.useState(ingredient.getAmount());
@@ -37,6 +43,7 @@ function PantryItem({ ingredient }) {
         expiryClass += " no-expiry";
     }
 
+    // HANDLERS
     async function handleAddItemToShoppingList() {
         try {
             const thisIngredient = await db.pantry.get( ingredient.id );

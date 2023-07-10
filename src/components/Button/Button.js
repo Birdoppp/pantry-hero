@@ -1,4 +1,6 @@
 import React from 'react';
+
+// STYLES
 import "./Button.css";
 
 function Button({ id, textValue, type, clickHandler, filledStatus, color }) {

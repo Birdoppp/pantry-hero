@@ -1,8 +1,14 @@
 import React, { createContext, useEffect, useState } from "react";
+
+// DEPENDENCIES
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { checkTokenValidity } from "../helpers/checkTokenValidity";
+
+// COMPONENTS
 import LoadingIcon from "../components/LoadingIcon/LoadingIcon";
+
+// HELPERS
+import { checkTokenValidity } from "../helpers/checkTokenValidity";
 
 export const AuthContext = createContext( null );
 

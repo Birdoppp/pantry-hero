@@ -1,6 +1,10 @@
 import React from "react";
-import "./Popup.css"
+
+// COMPONENTS
 import Button from "../Button/Button";
+
+// STYLES
+import "./Popup.css"
 
 function Popup ({ children, onConfirm, onCancel }) {
 

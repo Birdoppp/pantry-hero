@@ -1,12 +1,17 @@
 import React, {Fragment, useState} from 'react';
-import "./DropDownMenu.css"
+
+// IMAGES
 import { ReactComponent as ArrowDown } from "../../assets/icon-arrow_down.svg";
 import { ReactComponent as ArrowUp } from "../../assets/icon-arrow_up.svg";
+
+// STYLES
+import "./DropDownMenu.css"
 
 function DropDownMenu({ title, children }) {
     const childElements = Array.isArray( children ) ? children : [ children ];
     const [ isVisible, setIsVisible ] = useState(false)
 
+    // HANDLERS
     function handleToggleVisibility() {
         setIsVisible( prev => !prev );
     }
@@ -30,9 +35,9 @@ function DropDownMenu({ title, children }) {
 
             { isVisible && <div className="dropdown-items">
                 { childElements.map(( child, index ) => (
-                <Fragment key={ `dropdown-item-${ index }` }>
-                    { child }
-                </Fragment>
+                    <Fragment key={ `dropdown-item-${ index }` }>
+                        { child }
+                    </Fragment>
                 ))}
             </div> }
         </div>

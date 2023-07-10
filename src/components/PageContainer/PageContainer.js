@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import "./PageContainer.css";
+
+// IMAGES
 import { ReactComponent as SearchIcon } from "../../assets/icon-search.svg";
 import { ReactComponent as BackgroundImage } from "../../assets/icon-logo.svg"
+
+// STYLES
+import "./PageContainer.css";
 
 function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, isMirrored, children }) {
     const [ searchQuery, setSearchQuery ] = useState("");
 
+    // HANDLERS
     function handleInputChange ( e ) {
         setSearchQuery( e.target.value );
         onSearch( e.target.value );
@@ -33,17 +38,19 @@ function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, isMir
                         <h1 className="title">{ title }</h1>
                     ) }
 
-                    <div className="search-bar-container">
-                        <SearchIcon className="search-icon" />
-                        <input
-                            className="search-bar"
-                            type="text"
-                            value={ searchQuery }
-                            onChange={ handleInputChange }
-                            placeholder={ searchPlaceHolder }
-                            onKeyDown={ handleEnterPress }
-                        />
-                    </div>
+                    { !isMirrored &&
+                        <div className="search-bar-container">
+                            <SearchIcon className="search-icon" />
+                            <input
+                                className="search-bar"
+                                type="text"
+                                value={ searchQuery }
+                                onChange={ handleInputChange }
+                                placeholder={ searchPlaceHolder }
+                                onKeyDown={ handleEnterPress }
+                            />
+                        </div>
+                    }
 
                     { isMirrored ? (
                         <h1 className="title">{ title }</h1>

@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
-import "./Checkbox.css";
+
+// IMAGES
 import { ReactComponent as Checkmark } from "../../assets/icon-check.svg";
 
-function Checkbox({ checked, clickHandler, registerHandler, isLarge }) {
+// STYLES
+import "./Checkbox.css";
 
+function Checkbox({ checked, clickHandler, registerHandler, isLarge }) {
     const [ isChecked, setIsChecked ] = useState( checked || false );
 
+    // USE EFFECTS
     useEffect(() => {
         setIsChecked( checked || false  );
     }, [ checked ]);
 
     useEffect(() => {
         setIsChecked(checked || false);
-    }, [registerHandler]);
+    }, [registerHandler, checked]);
 
+    // HANDLERS
     function handleClick () {
         setIsChecked( prev => !prev );
         clickHandler();

@@ -24,6 +24,7 @@
     flex-grow: 1;
     gap: 12px;
     height: 85vh;
+    padding-bottom: 150px;
     overflow-y: scroll;
 }
 
@@ -48,7 +49,7 @@
 }
 
 /* 4. Selection list */
-#selection-list-overview {
+.selection-list-overview {
     display: flex;
     flex: 0 1 100%;
     flex-grow: 0;

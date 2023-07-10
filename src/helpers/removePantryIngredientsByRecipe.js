@@ -1,5 +1,7 @@
 import { db } from "../features/Database/db";
-import {adjustIngredientUnit} from "../features/API/Spoonacular";
+
+// HELPERS
+import { adjustIngredientUnit } from "../features/API/Spoonacular";
 
 export async function removePantryIngredientsByRecipe( recipe ) {
     async function queryDatabaseForIngredient( ingredient ) {

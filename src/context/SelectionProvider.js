@@ -1,4 +1,6 @@
 import React, { createContext, useState } from "react";
+
+// HELPERS
 import {getParsedSelection} from "../helpers/getParsedSelection";
 
 export const SelectionContext = createContext( null );

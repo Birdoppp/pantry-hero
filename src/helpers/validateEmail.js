@@ -6,4 +6,4 @@ export function validateEmail( value )  {
         return "Invalid email address";
     }
     return true;
-};
+}

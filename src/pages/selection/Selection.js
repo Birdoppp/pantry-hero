@@ -1,5 +1,11 @@
 import React, {useEffect, useState, useContext } from 'react';
+
+// DEPENDENCIES
 import { useMediaQuery } from "react-responsive";
+import { adjustIngredientUnit, getIngredientInfoByName } from "../../features/API/Spoonacular";
+import { db } from "../../features/Database/db";
+
+//COMPONENTS
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import LoadingIcon from "../../components/LoadingIcon/LoadingIcon";
@@ -7,15 +13,20 @@ import RecipeCard from "../../components/RecipeCard/RecipeCard";
 import DropDownMenu from "../../components/DropDownMenu/DropDownMenu";
 import IngredientStatusBlock from "../../components/IngredientStatusBlock/IngredientStatusBlock";
 import Button from "../../components/Button/Button";
-import { Link } from "react-router-dom";
-import { adjustIngredientUnit, getIngredientInfoByName } from "../../features/API/Spoonacular";
-import { matchRecipeListToPantry } from "../../helpers/matchRecipeListToPantry";
-import { db } from "../../features/Database/db";
-import { addItemToShoppingList } from "../../helpers/addItemToShoppingList";
-import { allUnits } from "../pantry/Pantry";
-import { ReactComponent as IconCheckList } from "../../assets/icon-checklist.svg"
+
+// CONTEXT
 import { HistoryContext } from "../../context/HistoryProvider";
 import { SelectionContext } from "../../context/SelectionProvider";
+
+// HELPERS
+import { matchRecipeListToPantry } from "../../helpers/matchRecipeListToPantry";
+import { addItemToShoppingList } from "../../helpers/addItemToShoppingList";
+import { allUnits } from "../pantry/Pantry";
+
+// IMAGES
+import { ReactComponent as IconCheckList } from "../../assets/icon-checklist.svg"
+
+// STYLES
 import "./Selection.css"
 
 function Selection() {
@@ -27,6 +38,7 @@ function Selection() {
 
     const isMobile = useMediaQuery({ maxWidth: 600 })
 
+    // USE EFFECTS
     useEffect( () => {
         async function fetchIngredientsMatch() {
             const fullIngredientList = await getAllIngredients();
@@ -37,36 +49,9 @@ function Selection() {
         }
 
         fetchIngredientsMatch().catch(console.error)
-    }, [ selectionState ])
+    }, [ selectionState, getAllIngredients ])
 
-    function handleSearch() {
-        console.log("Searching");
-    }
-
-    async function getAllIngredients() {
-        const ingredientsList = [];
-
-        for ( const recipe of selectionState ) {
-            for ( const ingredient of recipe.ingredients ) {
-                const existingIngredient = ingredientsList.find( item => item.name === ingredient.name )
-
-                if ( existingIngredient ) {
-                    if (existingIngredient.unit === ingredient.unit ) {
-                        existingIngredient.amount += ingredient.amount;
-                    } else {
-                        const newAmount = await adjustIngredientUnit(ingredient, existingIngredient.unit);
-
-                        existingIngredient.amount += newAmount;
-                    }
-                } else {
-                    ingredientsList.push(ingredient);
-                }
-            }
-        }
-
-       return ingredientsList;
-    }
-
+    // HANDLERS
     async function handleAddMissingIngredientsToShoppingList() {
         for ( const ingredient of unMatchingIngredients )  {
             const ingredientInfo = await getIngredientInfoByName( ingredient.name );
@@ -106,11 +91,34 @@ function Selection() {
         }
     }
 
+    async function getAllIngredients() {
+        const ingredientsList = [];
+
+        for ( const recipe of selectionState ) {
+            for ( const ingredient of recipe.ingredients ) {
+                const existingIngredient = ingredientsList.find( item => item.name === ingredient.name )
+
+                if ( existingIngredient ) {
+                    if (existingIngredient.unit === ingredient.unit ) {
+                        existingIngredient.amount += ingredient.amount;
+                    } else {
+                        const newAmount = await adjustIngredientUnit(ingredient, existingIngredient.unit);
+
+                        existingIngredient.amount += newAmount;
+                    }
+                } else {
+                    ingredientsList.push(ingredient);
+                }
+            }
+        }
+
+        return ingredientsList;
+    }
+
     return (
         <PageContainer
             title="My recipes"
             searchPlaceHolder="recipes"
-            onSearch={ handleSearch }
             isMirrored={ true }
         >
             <div
@@ -152,44 +160,40 @@ function Selection() {
                         </div>
                     </Dashboard>
                 ) : (
-                    <Link to="/recipes">
-                        <button>To other page</button>
-                    </Link>
+                    <div></div>
                 ) }
 
 
                 <div id="selection-item-overview">
                     <h2 className="selection-title">My selection</h2>
-                    <div id="selection-list-overview">
+                    <div className="selection-list-overview">
                         { recipesAreLoading ? (
                             <LoadingIcon/>
                         ) : (
                             selectionState &&
                             selectionState.length > 0 &&
                             selectionState.map(( recipe, index ) => (
-                                <RecipeCard key={`recipe-${ index }`} recipe={ recipe } isSelection={ true } />
+                                <RecipeCard key={`recipe-${ index }`} recipe={ recipe } isSelection={ true } storage="recipeSelection" />
                             ))
                         ) }
                     </div>
 
                     <h2 className="selection-title">Recently cooked</h2>
-                    <div id="selection-list-overview">
+                    <div className="selection-list-overview">
                         { recipesAreLoading ? (
                             <LoadingIcon/>
                         ) : (
                             historyState &&
                             historyState.length > 0 &&
                             historyState.map(( recipe, index ) => (
-                                <RecipeCard key={`recipe-${ index }`} recipe={ recipe } />
+                                <RecipeCard key={`recipe-${ index }`} recipe={ recipe } storage="history" />
                             ))
                         ) }
                     </div>
                 </div>
 
                 { isMobile ? (
-                    <Link to="/recipes">
-                        <button>To other page</button>
-                    </Link>
+                    <div></div>
                 ) : (
                     <Dashboard className="dashboard">
                         <div id="quick-check-dashboard">

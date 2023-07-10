@@ -1,6 +1,7 @@
 import React from 'react';
+
+// STYLES
 import "./Homepage.css"
-import "../../assets/pantry-wallpaper.jpeg"
 
 function Homepage() {
     return (

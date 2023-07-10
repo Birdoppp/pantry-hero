@@ -1,4 +1,4 @@
-import {getExpiryString} from "./getExpiryString";
+import { getExpiryString } from "./getExpiryString";
 
 export function getExpiryItemsCount( list, offset, checkDate ) {
     return list?.filter((item) => {

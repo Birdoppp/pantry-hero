@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import {useLiveQuery} from "dexie-react-hooks";
+
+// DEPENDENCIES
+import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
 import { db, checkIfEntryExists, getCheckedItems } from "../../features/Database/db";
-import { allUnits } from "../pantry/Pantry";
 import { createAbortController, fetchIngredientSuggestion } from "../../features/API/Spoonacular";
+
+// COMPONENTS
+import Button from "../../components/Button/Button";
+import PageContainer from "../../components/PageContainer/PageContainer";
+import Dashboard from "../../components/Dashboard/Dashboard";
+import FilterSelector from "../../components/FilterSelector/FilterSelector";
+import ListItem from "../../constructors/ListItem/ListItem";
+import ShoppingItem from "../../components/ShoppingItem/ShoppingItem";
+import Popup from "../../components/Popup/Popup";
+
+// HELPERS
+import { allUnits } from "../pantry/Pantry";
 import { addIngredientToPantry } from "../../helpers/addIngredientToPantry";
 import { addItemToShoppingList } from "../../helpers/addItemToShoppingList";
 import { handleConfirmation } from "../../helpers/handleConfirmation";
@@ -11,16 +24,8 @@ import { handleSuggestionClick } from "../../helpers/handleSuggestionClick";
 import { handleSorting } from "../../helpers/handleSorting";
 import { debounce } from "../../helpers/debounce";
 
-import Button from "../../components/Button/Button";
-import PageContainer from "../../components/PageContainer/PageContainer";
-import Dashboard from "../../components/Dashboard/Dashboard";
-import FilterSelector from "../../components/FilterSelector/FilterSelector";
-import ListItem from "../../constructors/ListItem/ListItem";
-import ShoppingItem from "../../components/ShoppingItem/ShoppingItem";
-
+// STYLES
 import "./ShoppingList.css"
-import Popup from "../../components/Popup/Popup";
-
 
 function ShoppingList() {
     const { register, reset, handleSubmit, setValue, formState: { errors }, watch} = useForm( {mode: "onBlur"} );
@@ -43,7 +48,7 @@ function ShoppingList() {
         () => db.shoppinglist.toArray()
     );
 
-    // DATABASE EFFECTS
+    // USE EFFECTS
     useEffect(() => {
         if (myShoppingList) {
             const sorted = [...myShoppingList].sort((a, b) => {

@@ -1,7 +1,13 @@
 import React, {useContext, useState} from 'react';
+
+// COMPONENTS
 import Button from "../Button/Button";
-import { AuthContext } from "../../context/AuthProvider";
 import Popup from "../Popup/Popup";
+
+// CONTEXT
+import { AuthContext } from "../../context/AuthProvider";
+
+// STYLES
 import "./HamburgerMenu.css"
 
 
@@ -11,6 +17,7 @@ function HamburgerMenu() {
     const [ showPopout, setShowPopout ] = useState( false);
     const [ showConfirmationPopup, setShowConfirmationPopup ] = useState(false);
 
+    // HANDLERS
     function handleClick() {
         if ( isOpen ) {
             setShowPopout( false );
@@ -32,7 +39,7 @@ function HamburgerMenu() {
 
     return (
         <>
-            <div className={`menu ${isOpen ? "open" : ""}`}
+            <div className={`menu ${ isOpen ? "open" : "" }`}
                  onClick={ handleClick }
             >
                 <div className="line"></div>
@@ -65,6 +72,6 @@ function HamburgerMenu() {
             )}
         </>
     );
-};
+}
 
 export default HamburgerMenu;

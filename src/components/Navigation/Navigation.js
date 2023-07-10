@@ -1,15 +1,27 @@
 import React, {useState, useEffect, useContext} from 'react';
+
+// DEPENDENCIES
+import { NavLink } from "react-router-dom";
+
+// COMPONENTS
 import Button from "../Button/Button";
 import AuthPopup from "../AuthPopup/AuthPopup";
 import HamburgerMenu from "../HamburgerMenu/HamburgerMenu";
-import { NavLink } from "react-router-dom";
+
+// HELPERS
 import { handleConfirmation } from "../../helpers/handleConfirmation";
 import { useForm } from 'react-hook-form';
 import { validateEmail } from "../../helpers/validateEmail";
 import { validatePassword } from "../../helpers/validatePassword";
 import { sendUserRegistration, sendUserLogin } from "../../features/Authentication/Authentication";
+
+// CONTEXT
 import { AuthContext } from "../../context/AuthProvider";
+
+// IMAGES
 import { ReactComponent as Logo } from "../../assets/icon-logo.svg";
+
+// STYLES
 import "./Navigation.css";
 
 function Navigation() {
@@ -20,6 +32,20 @@ function Navigation() {
     const [ showErrorMessage, setShowErrorMessage ] = useState(false);
     const [ serverResponse, setServerResponse ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
+
+    // USE EFFECTS
+    useEffect(() => {
+        if (showErrorMessage) {
+            const timeout = setTimeout(() => {
+                setShowErrorMessage(false);
+                setServerResponse( null );
+            }, 3000 );
+
+            return () => {
+                clearTimeout( timeout );
+            };
+        }
+    }, [showErrorMessage]);
 
     // HANDLERS
     async function handleLoginSubmit( userData ) {
@@ -97,19 +123,6 @@ function Navigation() {
 
         return true;
     }
-
-    useEffect(() => {
-        if (showErrorMessage) {
-            const timeout = setTimeout(() => {
-                setShowErrorMessage(false);
-                setServerResponse( null );
-            }, 3000 );
-
-            return () => {
-                clearTimeout( timeout );
-            };
-        }
-    }, [showErrorMessage]);
 
     return (
         <>

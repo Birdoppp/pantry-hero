@@ -1,19 +1,32 @@
 import React, { useEffect } from 'react';
-import "./ShoppingItem.css"
+
+// DEPENDENCIES
 import { db } from "../../features/Database/db";
 
+// COMPONENTS
 import Popup from "../Popup/Popup";
 import Checkbox from "../Checkbox/Checkbox";
 
+// HELPERS
 import { handleConfirmation } from "../../helpers/handleConfirmation";
 
+// IMAGES
 import { ReactComponent as DeleteIcon } from "../../assets/icon-delete.svg";
 
+// STYLES
+import "./ShoppingItem.css"
+
 function ShoppingItem( { listItem } ) {
-    const [ amount, setAmount ] = React.useState(listItem.getAmount()); // setAmount for future editing of shopping list items purpose
+    const [ amount, setAmount ] = React.useState( listItem.getAmount() ); // setAmount for future editing of shopping list items purpose
     const [ showPopup, setShowPopup ] = React.useState(false);
     const [ isItemChecked, setIsItemChecked ] = React.useState(listItem.Checked);
 
+    // USE EFFECTS
+    useEffect( () => {
+        db.shoppinglist.update(listItem.id, {checked: isItemChecked});
+    }, [listItem.id, isItemChecked]);
+
+    // HANDLERS
     function handleCheckboxChange() {
         setIsItemChecked( prev => !prev );
     }
@@ -21,10 +34,6 @@ function ShoppingItem( { listItem } ) {
     function handleDeleteFromShoppinglist() {
         db.shoppinglist.delete(listItem.id);
     }
-
-    useEffect( () => {
-        db.shoppinglist.update(listItem.id, {checked: isItemChecked});
-    }, [listItem.id, isItemChecked]);
 
     return (
         <article className={ `shopping-item ${isItemChecked? "checked" : ""}` }>
@@ -65,11 +74,11 @@ function ShoppingItem( { listItem } ) {
             {showPopup && (
                 <Popup message={ `Are you sure you want to delete ${ listItem.Name } from your list?` }
                        onConfirm={ () => {
-                                       handleConfirmation( true, setShowPopup, handleDeleteFromShoppinglist );
-                                   }}
+                           handleConfirmation( true, setShowPopup, handleDeleteFromShoppinglist );
+                       }}
                        onCancel={ () => {
-                                       handleConfirmation(false, setShowPopup );
-                                   } }
+                           handleConfirmation(false, setShowPopup );
+                       } }
                 >
                     <p>Are you sure you want to delete { listItem.Name } from your list?</p>
                 </Popup>

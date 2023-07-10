@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+
+// STYLES
 import './FilterSelector.css';
 
 function FilterSelector({ children }) {
     const [ highlightedButtonIndex, setHighlightedButtonIndex ] = useState(0);
 
+    // HANDLERS
     function handleButtonClick ( buttonIndex )  {
         setHighlightedButtonIndex( buttonIndex );
 

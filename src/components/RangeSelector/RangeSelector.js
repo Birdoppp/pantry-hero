@@ -1,10 +1,15 @@
 import React from 'react';
+
+// DEPENDENCIES
 import Slider from 'rc-slider';
+
+// STYLES
 import 'rc-slider/assets/index.css';
 import "./RangeSelector.css"
 
 
 function RangeSelector({ rangeMin, rangeMax, range, rangeSetter }) {
+    // HANDLERS
     const handleSliderChange = ( value ) => {
         rangeSetter( value );
     };
@@ -28,6 +33,6 @@ function RangeSelector({ rangeMin, rangeMax, range, rangeSetter }) {
             </div>
         </>
     );
-};
+}
 
 export default RangeSelector;

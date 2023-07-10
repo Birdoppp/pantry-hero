@@ -1,5 +1,5 @@
 export function formatUnitString(unitString) {
-    let str = "";
+    let str;
 
     if (unitString.includes("tablespoon")) {
         str = "tbsp";

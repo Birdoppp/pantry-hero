@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import RecipePopup from "../RecipePopup/RecipePopup";
-import { matchRecipeToPantry } from "../../helpers/matchRecipeToPantry";
+
+// DEPENDENCIES
 import { db } from "../../features/Database/db";
 
+// COMPONENTS
+import RecipePopup from "../RecipePopup/RecipePopup";
+
+// HELPERS
+import { matchRecipeToPantry } from "../../helpers/matchRecipeToPantry";
+
+// IMAGES
 import { ReactComponent as IconPrepTime } from "../../assets/icon-prep_time.svg"
 import { ReactComponent as IconIngredientsInfo } from "../../assets/icon-checklist.svg";
 import { ReactComponent as IconServingInfo } from "../../assets/icon-servings.svg";
+
+// STYLES
 import "./RecipeCard.css"
 
-function RecipeCard({ recipe, isSelection }) {
+function RecipeCard({ recipe, isSelection, storage }) {
     const { image, title, readyInMinutes, servings } = recipe
     const [ matchingIngredientsCount, setMatchingIngredientsCount ] = useState( 0 );
     const [ showFullRecipe, setShowFullRecipe ] = useState(false);
     const [ ingredientAmountString, setIngredientAmountString ] = useState("");
-    const storage = isSelection ? "recipeSelection" : "recipes";
 
+    // USE EFFECTS
     useEffect(() => {
         async function updateMatchingIngredients() {
             const matchingIngredientsNum = await matchRecipeToPantry(recipe, db, storage);
@@ -22,7 +31,7 @@ function RecipeCard({ recipe, isSelection }) {
         }
 
         void updateMatchingIngredients();
-    }, [recipe]);
+    }, [recipe, storage]);
 
     useEffect(() => {
         function getIngredientAmountString() {

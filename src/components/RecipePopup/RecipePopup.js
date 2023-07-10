@@ -1,18 +1,28 @@
 import React, { useContext } from 'react';
+
+// COMPONENTS
 import RecipeSubtitle from "../RecipeSubtitle/RecipeSubtitle";
 import IngredientStatusBlock from "../IngredientStatusBlock/IngredientStatusBlock";
 import Button from "../Button/Button";
-import { db } from "../../features/Database/db";
+
+// HELPERS
 import { findObjectByName } from "../../helpers/findObjectByName";
 import { checkForIngredientAvailability } from "../../helpers/checkForIngredientAvailability";
+import { removePantryIngredientsByRecipe } from "../../helpers/removePantryIngredientsByRecipe";
+
+// CONTEXTS
 import { HistoryContext } from "../../context/HistoryProvider";
+import { SelectionContext } from "../../context/SelectionProvider";
+
+// IMAGES
 import { ReactComponent as IconReturn } from "../../assets/icon-arrow_back.svg";
 import { ReactComponent as IconPrepTime } from "../../assets/icon-prep_time.svg";
 import { ReactComponent as IconServings } from "../../assets/icon-servings.svg";
 import { ReactComponent as IconCalories } from "../../assets/icon-calories.svg";
-import { SelectionContext } from "../../context/SelectionProvider";
+
+// STYLES
 import "./RecipePopup.css";
-import { removePantryIngredientsByRecipe } from "../../helpers/removePantryIngredientsByRecipe";
+
 
 function RecipePopup({ recipe, onClose, ingredientAmount, isSelection }) {
     const { setHistoryState } = useContext( HistoryContext );
@@ -63,6 +73,7 @@ function RecipePopup({ recipe, onClose, ingredientAmount, isSelection }) {
 
         void removePantryIngredientsByRecipe( recipe );
         setHistoryState( history );
+        setSelectionState( recipeSelection );
         localStorage.setItem("history", JSON.stringify(history));
         localStorage.setItem("recipeSelection", JSON.stringify(recipeSelection));
 

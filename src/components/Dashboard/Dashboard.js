@@ -1,13 +1,18 @@
 import React, { Fragment, useState } from 'react';
-import "./Dashboard.css";
+
+// IMAGES
 import { ReactComponent as ArrowDown } from "../../assets/icon-arrow_down.svg";
 import { ReactComponent as ArrowUp } from "../../assets/icon-arrow_up.svg";
+
+// STYLES
+import "./Dashboard.css";
 
 function Dashboard({ children }) {
     const childElements = Array.isArray( children ) ? children : [ children ];
     const [ isVisible, setIsVisible ] = useState(true);
 
-    function handleToggleVisibility( e ) {
+    // HANDLERS
+    function handleToggleVisibility() {
         setIsVisible( prev => !prev );
     }
 

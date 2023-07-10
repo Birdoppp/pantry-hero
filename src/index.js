@@ -10,17 +10,15 @@ import SelectionContextProvider from "./context/SelectionProvider";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <Router>
-          <AuthContextProvider>
-              <HistoryContextProvider>
-                  <SelectionContextProvider>
-                      <App />
-                  </SelectionContextProvider>
-              </HistoryContextProvider>
-          </AuthContextProvider>
-      </Router>
-  </React.StrictMode>
+  <Router>
+      <AuthContextProvider>
+          <HistoryContextProvider>
+              <SelectionContextProvider>
+                  <App />
+              </SelectionContextProvider>
+          </HistoryContextProvider>
+      </AuthContextProvider>
+  </Router>
 );
 
 reportWebVitals();

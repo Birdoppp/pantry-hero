@@ -1,4 +1,6 @@
 import React, { createContext, useState } from "react";
+
+// HELPERS
 import { getParsedHistory } from "../helpers/getParsedHistory";
 
 export const HistoryContext = createContext( null );

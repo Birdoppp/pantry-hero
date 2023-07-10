@@ -1,4 +1,6 @@
 import { db } from "../features/Database/db";
+
+// HELPERS
 import { getFullIngredientAmount } from "./getFullIngredientAmount";
 
 export async function checkForIngredientAvailability( ingredient ) {

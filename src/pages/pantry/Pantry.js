@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useForm} from 'react-hook-form';
+
+// DEPENDENCIES
+import { useForm } from 'react-hook-form';
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
 import { fetchIngredientSuggestion, createAbortController } from "../../features/API/Spoonacular";
-import { addIngredientToPantry } from "../../helpers/addIngredientToPantry";
-import { formatNumber } from "../../helpers/formatNumber";
-import { getExpiryItemsCount } from "../../helpers/getExpiryItemsCount";
-import { handleSuggestionClick } from "../../helpers/handleSuggestionClick";
-import { handleSorting } from "../../helpers/handleSorting";
-import { debounce } from "../../helpers/debounce";
 
+// COMPONENTS
 import Button from "../../components/Button/Button";
 import PantryItem from "../../components/PantryItem/PantryItem";
 import Dashboard from "../../components/Dashboard/Dashboard";
@@ -19,6 +16,15 @@ import InformationTag from "../../components/InformationTag/InformationTag";
 import FilterSelector from "../../components/FilterSelector/FilterSelector";
 import PageContainer from "../../components/PageContainer/PageContainer";
 
+// HELPERS
+import { addIngredientToPantry } from "../../helpers/addIngredientToPantry";
+import { formatNumber } from "../../helpers/formatNumber";
+import { getExpiryItemsCount } from "../../helpers/getExpiryItemsCount";
+import { handleSuggestionClick } from "../../helpers/handleSuggestionClick";
+import { handleSorting } from "../../helpers/handleSorting";
+import { debounce } from "../../helpers/debounce";
+
+// STYLES
 import "./Pantry.css"
 
 export const allUnits = [ "package", "teaspoon", "tablespoon", "cup", "fluid ounce", "pint", "quart", "gallon", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "drop", "sprig", "slice", "piece", "can", "bottle" ];
@@ -49,7 +55,7 @@ function Pantry() {
         () => db.pantry.toArray()
     );
 
-    // DATABASE EFFECTS
+    // USE EFFECTS
     useEffect(() => {
         if ( myPantry ) {
             const sorted = [...myPantry].sort((a, b) => {

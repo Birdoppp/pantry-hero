@@ -1,6 +1,6 @@
 export function getRandomArrayEntries( array, count ) {
     if ( count > array.length ) {
-        throw new Error('Requested count exceeds array length.');
+        throw new Error("Requested count exceeds array length.");
     }
 
     const shuffledArray = array.slice();

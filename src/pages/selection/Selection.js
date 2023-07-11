@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext } from 'react';
+import React, {useEffect, useState, useContext } from "react";
 
 // DEPENDENCIES
 import { useMediaQuery } from "react-responsive";
@@ -49,7 +49,7 @@ function Selection() {
         }
 
         fetchIngredientsMatch().catch(console.error)
-    }, [ selectionState, getAllIngredients ])
+    }, [ selectionState ])
 
     // HANDLERS
     async function handleAddMissingIngredientsToShoppingList() {

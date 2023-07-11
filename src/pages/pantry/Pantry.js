@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // DEPENDENCIES
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../features/Database/db";
 import { fetchIngredientSuggestion, createAbortController } from "../../features/API/Spoonacular";

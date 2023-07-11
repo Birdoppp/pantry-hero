@@ -18,7 +18,7 @@ function PageContainer({ title, searchPlaceHolder, onSearch, onEnterPress, isMir
 
     function handleEnterPress( e ) {
         if ( onEnterPress && onEnterPress !== "undefined" ) {
-            if (e.key === "Enter") {
+            if ( e.key === "Enter" ) {
                 onEnterPress();
                 setSearchQuery( "" );
             }

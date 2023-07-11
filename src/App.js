@@ -1,12 +1,10 @@
-import "./App.css";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
-// Dependencies
-import React, {useContext, useEffect, useRef, useState} from "react";
+// DEPENDENCIES
 import {Routes, Route, useNavigate, useLocation, Link} from "react-router-dom";
-import { AuthContext } from "./context/AuthProvider";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-// Constructors
+// CONSTRUCTORS
 import Navigation from "./components/Navigation/Navigation";
 import Pantry from "./pages/pantry/Pantry";
 import ShoppingList from "./pages/shoppinglist/ShoppingList";
@@ -14,12 +12,17 @@ import Recipes from "./pages/recipes/Recipes";
 import Homepage from "./pages/homepage/Homepage";
 import Selection from "./pages/selection/Selection";
 
+// CONTEXT
+import { AuthContext } from "./context/AuthProvider";
+
+// STYLES
+import "./App.css";
+
 function App() {
     const location = useLocation();
     const prevLocationRef = useRef();
     const navigate = useNavigate();
     const { isAuth } = useContext( AuthContext );
-
 
     useEffect(() => {
         if (!isAuth) {
@@ -101,6 +104,7 @@ function App() {
                     </div>
                 }
             </main>
+
         </div>
     );
 }

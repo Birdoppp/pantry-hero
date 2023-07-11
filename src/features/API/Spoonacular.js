@@ -4,6 +4,7 @@ const baseURL = "https://api.spoonacular.com/";
 const numIngredientSuggestions = 5;
 let controller;
 
+
 async function fetchIngredientSuggestion( input, signal ) {
     try {
         const result = await axios.get( `${ baseURL }food/ingredients/autocomplete?apiKey=${ process.env.REACT_APP_API_KEY }&query=${ input }&metaInformation=true&number=${ numIngredientSuggestions }`, {
@@ -12,7 +13,7 @@ async function fetchIngredientSuggestion( input, signal ) {
 
         return result.data;
     } catch ( e ) {
-        if ( e.name === "CanceledError" ) {
+        if (e.name === "CanceledError") {
             console.log("fetch aborted");
         } else {
             console.error( e );
@@ -21,7 +22,7 @@ async function fetchIngredientSuggestion( input, signal ) {
     }
 }
 
-async function fetchRecipes( input, ingredients ) {
+async function fetchRecipes( input, ingredients, errorSetter ) {
     const { cuisines, diets, intolerances, calories, maxCookingTime } = input;
     const allResults = [];
 
@@ -45,21 +46,26 @@ async function fetchRecipes( input, ingredients ) {
 
         localStorage.removeItem("recipes");
         localStorage.setItem("recipes", JSON.stringify( allResults ));
-    } catch (e) {
-        console.error(e);
+    } catch ( e ) {
+        if ( e.name === "AxiosError" ) {
+            errorSetter( e.response.data.message );
+        }
+
+        console.error( e );
     }
 }
 
-async function searchRecipeByString( stringInput, signal ) {
+async function searchRecipeByString( stringInput, errorSetter ) {
     try {
-        const result = await axios.get( `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${ stringInput }&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&ignorePantry=false&sort=random&number=6`, {
-                signal
-            }
-        );
+        const result = await axios.get( `${baseURL}/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${ stringInput }&instructionsRequired=true&fillIngredients=false&addRecipeInformation=true&addRecipeNutrition=true&ignorePantry=false&sort=random&number=6`);
 
         localStorage.removeItem("recipes");
         localStorage.setItem("recipes", JSON.stringify( result.data.results ));
     } catch ( e ) {
+        if ( e.name === "AxiosError" ) {
+            errorSetter( e.response.data.message );
+        }
+
         console.error( e );
     }
 }

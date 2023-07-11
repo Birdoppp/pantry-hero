@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // DEPENDENCIES
 import { db } from "../../features/Database/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
-import { createAbortController, fetchRecipes, searchRecipeByString } from "../../features/API/Spoonacular";
+import { fetchRecipes, searchRecipeByString } from "../../features/API/Spoonacular";
 
 // COMPONENTS
 import PageContainer from "../../components/PageContainer/PageContainer";
@@ -23,10 +23,12 @@ import { getParsedRecipes } from "../../helpers/getParsedRecipes";
 
 // STYLES
 import "./Recipes.css"
+import ErrorPopup from "../../components/ErrorPopup/ErrorPopup";
 
-const signal = createAbortController();
 function Recipes() {
     const { handleSubmit, setValue, watch, reset } = useForm( {mode: "onSubmit"} );
+    const [ errorMessage, setErrorMessage ] = useState("");
+    const [ showErrorPopup, setShowErrorPopup ] = useState(false);
 
     const allCuisines = [
         "African",
@@ -130,13 +132,18 @@ function Recipes() {
 
         const ingredients = getRandomIngredients( myPantry );
 
-        fetchRecipes( data, ingredients )
+        fetchRecipes( data, ingredients, handleError )
             .then( () => {
                 setRecipes( getParsedRecipes );
             })
             .finally( () => {
                 setRecipesAreLoading( false );
             });
+    }
+
+    function handleError( message ) {
+        setErrorMessage( message );
+        setShowErrorPopup( true );
     }
 
     function handleFormClear() {
@@ -146,7 +153,7 @@ function Recipes() {
     function handleEnterPress() {
         setRecipesAreLoading( true );
 
-        void searchRecipeByString( searchResults, signal )
+        void searchRecipeByString( searchResults, handleError )
             .then( () => {
                 setRecipes( getParsedRecipes );
             })
@@ -267,6 +274,16 @@ function Recipes() {
                     ) }
                 </div>
             </div>
+
+            { showErrorPopup &&
+                <ErrorPopup onConfirm={ () => {
+                    setErrorMessage("");
+                    setShowErrorPopup( false );
+                } }>
+                    <p>{ errorMessage }</p>
+                </ErrorPopup>
+            }
+
         </PageContainer>
     );
 }

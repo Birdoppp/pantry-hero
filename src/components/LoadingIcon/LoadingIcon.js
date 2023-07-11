@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 // STYLES
-import './LoadingIcon.css';
+import "./LoadingIcon.css";
 
 const LoadingIcon = () => (
     <div className="loader">

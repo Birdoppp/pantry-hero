@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState } from "react";
 
 // IMAGES
 import { ReactComponent as ArrowDown } from "../../assets/icon-arrow_down.svg";

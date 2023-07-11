@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 // DEPENDENCIES
-import Slider from 'rc-slider';
+import Slider from "rc-slider";
 
 // STYLES
-import 'rc-slider/assets/index.css';
+import "rc-slider/assets/index.css";
 import "./RangeSelector.css"
 
 

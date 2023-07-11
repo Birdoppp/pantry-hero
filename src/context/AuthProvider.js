@@ -67,7 +67,7 @@ function AuthContextProvider({ children }) {
             setAuthState({
                 isAuth: false,
                 user: null,
-                status: 'done',
+                status: "done",
             });
         }
     }, [] );

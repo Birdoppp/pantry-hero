@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 // DEPENDENCIES
 import { db } from "../../features/Database/db";

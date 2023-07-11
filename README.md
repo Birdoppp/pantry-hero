@@ -33,7 +33,7 @@ When the user has found a recipe they like, they can add it to their selection, 
 This application makes use of several dependencies, in order to make sure these all install correctly run the following command before starting the application:
 ```npm install```
 
-To make use of the API the user will have to get their own API key, this API key can be gotten by visiting [Spoonacular](https://spoonacular.com/food-api/console#Dashboard) and creating an account, with the account you receive your own API key and 150 free points to use per day.
+To make use of the API the user will have to get their own API key, this API key can be gotten by visiting [Spoonacular](https://spoonacular.com/food-api/console#Dashboard) and creating an account, with the account you receive your own API key and 150 free points to use per day. (*Teachers reviewing this assignment can make use of my personal API KEY: ```850e550630214c8fb9f11f5a1db10196```*)
 
 To start using the API key follow these steps:
 1. Create a new file in the "pantry-hero-app" folder and name it ```.env``` (*note: this file should be at the same level as the ```.env.dist``` file* )

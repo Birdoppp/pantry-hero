@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext} from "react";
 
 // DEPENDENCIES
 import { NavLink } from "react-router-dom";
@@ -10,7 +10,7 @@ import HamburgerMenu from "../HamburgerMenu/HamburgerMenu";
 
 // HELPERS
 import { handleConfirmation } from "../../helpers/handleConfirmation";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { validateEmail } from "../../helpers/validateEmail";
 import { validatePassword } from "../../helpers/validatePassword";
 import { sendUserRegistration, sendUserLogin } from "../../features/Authentication/Authentication";
@@ -137,7 +137,7 @@ function Navigation() {
                         <li>
                             <NavLink
                                 className={({ isActive }) =>
-                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                    isActive ? "page-link active-menu-link" : "page-link default-menu-link"
                                 }
                                 to="/pantry"
                             >
@@ -147,7 +147,7 @@ function Navigation() {
                         <li>
                             <NavLink
                                 className={({ isActive }) =>
-                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                    isActive ? "page-link active-menu-link" : "page-link default-menu-link"
                                 }
                                 to="/shoppinglist"
                             >
@@ -157,7 +157,7 @@ function Navigation() {
                         <li>
                             <NavLink
                                 className={({ isActive }) =>
-                                    isActive ? 'page-link active-menu-link' : 'page-link default-menu-link'
+                                    isActive ? "page-link active-menu-link" : "page-link default-menu-link"
                                 }
                                 to="/recipes"
                             >
